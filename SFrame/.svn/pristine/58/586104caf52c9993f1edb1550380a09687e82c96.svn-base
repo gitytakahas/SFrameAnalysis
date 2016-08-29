@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<!DOCTYPE JobConfiguration PUBLIC "" "JobConfig.dtd">
+
+<!-- ======================================================================= -->
+<!-- @Project: SFrame - ROOT-based analysis framework for ATLAS              -->
+<!-- @Package: User                                                          -->
+<!--                                                                         -->
+<!-- @author Stefan Ask       <Stefan.Ask@cern.ch>           - Manchester    -->
+<!-- @author David Berge      <David.Berge@cern.ch>          - CERN          -->
+<!-- @author Johannes Haller  <Johannes.Haller@cern.ch>      - Hamburg       -->
+<!-- @author A. Krasznahorkay <Attila.Krasznahorkay@cern.ch> - CERN/Debrecen -->
+<!--                                                                         -->
+<!-- ======================================================================= -->
+
+<!--OutputLevel: Possibilities: VERBOSE, DEBUG, INFO, WARNING, ERROR, FATAL, ALWAYS -->
+<JobConfiguration JobName="TestJob" OutputLevel="DEBUG" >
+
+  <!-- List of libraries to be loaded for the analysis.             -->
+  <!-- Note the MathCore is needed to import the dictionary for the -->
+  <!-- SParticle base class when using ROOT < 5.20.                 -->
+  <!-- On ROOT 5.20 and newer versions you should load libGenVector -->
+  <!-- for this purpose instead!                                    -->
+  <!-- <Library Name="libMathCore" /> -->
+  <Library Name="libGenVector" />
+  <Library Name="libSFramePlugIns" />
+  <Library Name="libSFrameUser" />
+
+  <!-- Packages that have to be uploaded and enabled on the PROOF cluster. -->
+  <!-- The standard SFrame libraries all create such a PAR package under   -->
+  <!-- SFRAME_LIB_DIR. For each custom library that is loaded in the       -->
+  <!-- configuration, a package also has to be defined...                  -->
+  <Package Name="SFrameCore.par" />
+  <Package Name="SFramePlugIns.par" />
+  <Package Name="SFrameUser.par" />
+
+  <!-- List of cycles to be executed.                                       -->
+  <!-- Name: specifies the class name to be executed in this cycle          -->
+  <!-- name of Output-File: automically give by Name+Type+PostFix+".root"   -->
+  <!-- OutputDirectory: directory to which output is written                -->
+  <!--                  must finish with a "/"                             -->
+  <!-- PostFix: A string that should be added to the output file name.      -->
+  <!--          Can be useful for differentiating differently configured    -->
+  <!--          instances of the same cycle class.                          -->
+  <!-- RunMode: Can be "LOCAL" or "PROOF", depending on how you want to run -->
+  <!--          your analysis.                                              -->
+  <!-- ProofServer: Name of the PROOF server that you want to connect to.   -->
+  <!--              Set it to "" or "lite" to run PROOF-Lite on your local  -->
+  <!--              machine.                                                -->
+  <!-- TargetLumi: luminosity value the output of this cycle is weighted to -->
+  <Cycle Name="SecondCycle" TargetLumi="1." RunMode="LOCAL" ProofServer="lite"
+         OutputDirectory="./" PostFix="" >
+
+    <!-- list of input data for given data type                                   -->
+    <!-- type: type of events: e.g. "Zee", "ttbar", ...                           -->
+    <!--       names are up to the user; exception: for data use "data"!          -->  
+    <!-- Lumi: either specify it in InputData (ie. the luminosity sum of all <In> -->
+    <!--       or specify it in each <In> separately                              -->
+    <!--       In case both are filled the sum in <InputData> is used.            -->
+    <!--       The values in <In> are ignored                                     -->
+    <!--       units: [pb^-1]                                                     -->
+    <!-- NEventsMax: optional, specifies the number of events that are looped     -->
+    <!--             over.                                                        -->
+    <!--             If not existant: all events of this InputData set are used   -->
+    <!--             Please Note: NEventsMax is a mean to shorten the event loop  -->
+    <!--                          for test runs;                                  -->
+    <!--             the weights of the events are adapted.                       -->
+    <!--             For final plots, i.e. maximum statistics, NEventsMax         -->
+    <!--             shouldn't be used.                                           -->
+
+    <InputData Type="MC" Version="Zee" Lumi="0." NEventsMax="-1">
+
+      <!-- List of input files                -->
+      <!-- Lumi: optional, see comments above -->
+      <In FileName="FirstCycle.MC.Zee_2.root" Lumi="209.8" />
+
+      <!-- Specification of the input and output trees. -->
+      <!-- Name: Name of the tree in the ROOT file      -->
+      <InputTree Name="FirstCycleTree" />
+
+    </InputData>
+    
+    <!-- User configuration: properties -->
+    <UserConfig>
+      <Item Name="FirstCycleTreeString" Value="FirstCycleTree" />
+    </UserConfig>
+    
+  </Cycle>
+  
+</JobConfiguration>

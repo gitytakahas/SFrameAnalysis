@@ -1,0 +1,854 @@
+2014.09.25 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* sframe_main.cxx now instantiates a TApplication object to make
+	  it possible to nicely (auto-)load libraries at runtime. The
+	  system should be much more flexible in this respect now.
+	* Added a new configuration option for the XML files: Macro.
+	  It can be used to execute a ROOT macro at initialisation time.
+	  (Which can potentially load libraries.)
+
+2014.05.23 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Hiding the auto-generated .pcm file from SVN.
+
+2014.03.10 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+   * Trying to fix yet another issue with missing input files. This time the
+     issue was reported by Christoph Wasicki.
+   * SInputData::ValidateInputFiles() now tries to keep the iterators and the
+     summed luminosity correct when non-existent input files are removed.
+
+2013.12.02 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+   * Making the PROOF files aware of the ROOTPROOFLIBDIR environment variable,
+     which can be used to specify a common library directory that should be
+     searched for libraries on a PROOF cluster with a shared filesystem.
+
+2013.11.25 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* In ROOT v5-34-12 TSelectorList now inherits from THashList, and
+	  not TList.
+	* For this reason the SCycleBaseHist::Book(...) and
+	  SCycleBaseHist::WriteObj(...) functions have been updated to take this
+	  into account.
+	* At the same time, changed the type of the output list from TList to
+	  TSelectorList in SCycleBaseNTuple and SCycleBaseHist. This should make
+	  it easier to react to such changes in the future.
+
+2013.11.13 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+   * DeclareVariable<...>(...) no longer uses cxxabi.h to declare branches
+     to ROOT. The type names reported by clang 5.0 on MacOS X Mavericks are
+     not recognised by ROOT.
+   * Put explicit "::" in front of the message level enumeration values in the
+     header/icc files to avoid clashes with the same sort of enumeration values
+     coming from the RooFit code. (RooFit::MsgLevel)
+
+2013.10.17 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Fixed the compilation of SCycleConfig in C++11 mode with GCC.
+	  Apparently in this mode the language is more strict about automatic
+	  type conversions.
+	* Removed libpcre.so from the list of libraries that sframe_main is
+	  linked against. It was left here from an earlier version of the code,
+	  back when the core library was using TPRegexp. It's not doing that
+	  these days.
+	* Thanks to Jochen Ott for pointint both of these issues out.
+
+2013.06.19 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+   * SCycleController.cxx now opens the output file for writing with
+     TFile::Open(...) rather than just creating a TFile on the stack. This makes
+     it possible to use output directories on XRootD/EOS. So far the code was
+     silently failing when trying to use such an output directory in the XML
+     configuration...
+
+2013.04.15 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+   * Adding a fix proposed by Mike Hance. With this fix the cache files made
+     will finally store the full names of the metadata trees. (Including
+     possible directory names.) Previously just the tree's name was saved,
+     making the cache fail on reading.
+
+2013.02.02 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+   * Made the print macros in SLogger.h a bit more robust. Had some problems
+     with using output operators designed for std::ostream instead of SLogger
+     when using these macros. (clang 4.2 started complaining about these.)
+
+2013.01.21 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+   * Found a bug in the code that makes absolute path names from relative ones.
+     DCache file names usually start with "dcache:/". (Only a single slash.)
+     The code now looks for just ":/" in a file name to decide whether it should
+     make it an absolute path name.
+
+2013.01.21 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+   * Added a new property to SInputData, which controls whether files belonging
+     to this input data object should be "looked up" during dataset validation.
+     Turning this look-up off makes the code not try to check where a given file
+     is located in an XRootD storage. (Most notably EOS.) This can come in very
+     handy with some storage systems.
+   * Updated all the code to print/respect this new configuration option.
+   * Updated SCycleBaseConfig to read this new configuration option from the XML
+     files.
+
+2013.01.20 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+   * Cycles no longer continue when they detect a TTree write failure. This can
+     happen sometimes on the grid when the worker node runs out of free space.
+     Until now the job would print ERROR messages in this case, but would
+     continue to run, usually ending up with a quite empty output file, and
+     the grid job marked successful.
+
+2013.01.16 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+   * PROOF-Lite (at least in ROOT 5.34.04) doesn't seem to like relative path
+     names to the input files anymore. In order not to have to always use
+     absolute path names for the input files just to use PROOF-Lite, the code
+     now makes sure that all path names are absolute when passing them to ROOT.
+
+2013.01.10 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+   * Found another way in which the code can crash if none of the input files
+     can be used. It is fixed now.
+
+2013.01.07 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+   * Discovered that if all the input files from an InputData block would be
+     unaccessible, the code crashed. This is now fixed, the code just reports
+     the appropriate ERROR and WARNING messages, and finishes gracefully.
+     (Stating that it processed 0 events.)
+
+2012.12.19 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+   * SFileMerger now also respects the $SFRAME_TEMP_DIR environment variable if
+     it is set. This avoids problems in case the user has a too small default
+     temporary directory. (Usually /tmp on linux.)
+
+2012.12.13 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+   * Updated the documentation of practically all the files.
+   * Modified the source text formatting a bit for it to fit into 80 column
+     editors.
+
+2012.12.03 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+   * File merging on PROOF with TProofOutputFile is now configured to always
+     download the files-to-be-merged before the merging starts. This should
+     provide better performance on clusters with slower networks. Should not
+     be an issue on quick networks either, so I didn't make this a configurable
+     option.
+
+2012.11.29 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* The code seems to be working now.
+	* The output file opening and closing is now handled by
+	  SCycleBaseNTuple, and not SCycleBaseExec.
+	* SCycleBaseHist can request an output file to be created on
+	  demand, it can not only work with in-file histogram merging
+	  in case the user also writes an output TTree.
+	* Empty output trees are no longer written to the output file
+	  on the PROOF workers. This avoids the problem of TFileMerger
+	  creating empty merged trees when it receives an empty TTree
+	  as its first input.
+
+2012.11.29 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+   * Intermediate check-in. I have to test the code's behaviour on Linux as
+     well.
+   * Re-arranged a bit how output files are handled during the event processing.
+     This will make it possible to handle in-file histogram merging, and empty
+     TTrees more elegantly.
+
+2012.11.21 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Made a number of changes to make it possible to merge histograms
+	  and other objects in-file on PROOF, and not only in-memory.
+	* Updated SFileMerger to handle regular TObject objects as well,
+	  not just TTree-s. Tried to use TFileMerger once more, but gave
+	  up after some failed attempts. Should re-visit this later on
+	  again.
+	* In any case, SFileMerger now has pretty much the same interface
+	  as TFileMerger. It just does slightly different things...
+	* The Book(...) and WriteObj(...) functions now have one more
+	  optional parameter. This controls whether the object created
+	  should be merged in memory, or in file when running on PROOF.
+	  The default choice is in-memory merging (the previous
+	  implementation).
+	* Updated the code to use the in-file merging correctly in
+	  SCycleBaseExec and SCycleController.
+	* Moved some DEBUG messages to VERBOSE in SCycleBaseNTuple,
+	  which were printed too often now that DeclareVariable(...)
+	  handles metadata trees as well.
+
+2012.11.21 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* SCycleBaseNTuple::DeclareVariable(...) will now add variables
+	  to metadata output trees as well if the user asks explicitly
+	  for such a tree by name.
+	* The ConnectVariable(...) functions still don't support
+	  metadata trees, as this would mean a big-big development
+	  effort, and nobody really asked for this functionality anyway...
+	* The name of the cycle is written into the metadata of the
+	  output file in a more robust way now.
+
+2012.11.20 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* All SFrame cycles will now add a TObjString description to their
+	  output files, which describes the full configuration that was used
+	  to produce this output file.
+	* Only configuration that the cycle knows about is written at the
+	  moment. But it wouldn't be terribly difficult to add some info
+	  about the loaded libraries/packages later on as well.
+	* Had to touch quite a few classes to implement this new feature in
+	  a way that I liked...
+
+2012.10.11 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+   * Cycles running in LOCAL mode will now either create a temporary directory
+     in the running directory as they did so far, or, if the
+     SFRAME_TEMP_DIR environment variable is set, create a temporary directory
+     inside that directory. (A unique directory is still made, the files are
+     not just put blindly into the specified directory.)
+
+2012.07.17 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+   * Disabled the code setting up TTreeCache in LOCAL mode for now.
+     It seems to cause serious problems.
+
+2012.06.22 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+   * Added some non-siginificant updates to make the code fit more on
+     my screen.
+   * Added an implementation to TObject::ExecuteEvent(...) in SCycleBase to
+     avoid a very verbose warning from the compiler. This doesn't however
+     change the fact that the user code would still fire this warning.
+   * Tweaked the cache handling a bit, to no effect.
+   * Added the ability to start the memory profiling of the PROOF master or
+     worker processes by specifying ";MemProfMaster" or ";MemProfWorkers"
+     after the PROOF server name in the ProofServer XML property of the
+     cycles.
+   * SProofManager still doesn't download the full Valgrind logs correctly.
+     This will have to be fixed. For now one has to look at the full Valgrind
+     logs directly on the PROOF workers.
+
+2012.04.12 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+   * Updated BUILD.sh not to compile the code when running on PROOF-Lite
+
+2012.04.11 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+   * SProofManager now keeps track of which PROOF servers have been
+     "configured" already. This way the code no longer needs to go through
+     the exercise of loading all packages on all nodes in a job that runs
+     multiple cycle instances. (The package configuration is job-wide,
+     not specific for a given cycle.)
+   * Updated SCycleController to take advantage of the new feature.
+
+2012.03.28 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Trying to enable TTree caching in LOCAL mode once more.
+	* Code seems to be reasonably stable (no crashes at file changes
+	  anymore), but the D3PDReader code still reports inconsistent
+	  cache sizes...
+
+2012.03.19 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Exchanged the simple Add(...) calls with TList::AddLast(...) in
+	  the Book(...) and WriteObj(...) functions on the suggestion
+	  of Mike Hance. Previously both SFrame and ROOT were
+	  checking for duplicates in the output object list, leading to
+	  measurable slowdowns when handling a lot of histograms.
+
+2012.03.07 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Fixed the == operator as well... :-P
+
+2012.03.07 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Fixed the assignment operator of SInputData. The operator
+	  forgot about the dataset and current-entry variables. This
+	  lead to weird problems when the InputData objects were
+	  re-ordered.
+
+2012.01.16 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* In ROOT 5.32 TProof::GetMissingFiles() doesn't play nicely
+	  with PROOF-Lite. So for the moment I just disabled the
+	  missing file list request for PROOF-Lite until I understand
+	  what's going wrong.
+
+2011.11.17 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Added a new cycle property (ProcessOnlyLocal) for forcing
+	  the PROOF workers to only process files that are on their
+	  local disks. In some cases enabling this speeded up long
+	  jobs on the NYU PROOF cluster. (By default it is left off.)
+	* Introduced some more rigorous testing for the user
+	  properties. If the same property is defined multiple times
+	  in the XML, the code will now print a warning.
+	* The DeclareProperty(...) functions also do a more verbose
+	  checking to decide whether a given property name was used
+	  already or not.
+	* Added some extra documentation to the SCycleConfig
+	  members.
+
+2011.11.15 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* DecodeEnvVar(...) now only does anything if a property value
+	  begins with ":exp:". This is needed to be able to give actual
+	  regular expressions, and unexpanded environment variable
+	  names to the code.
+	* Returned to printing an ERROR in this function when the
+	  environment variable expansion fails, even though the user
+	  explicitly requested it.
+
+2011.11.14 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Fixing how the learning period of TTreeCache is handled on
+	  PROOF. Now setting a positive number for the learning
+	  period actually works...
+	* Added the possibility for letting the user set up the caching
+	  details when the new files are opened. Will be useful with
+	  the new D3PDReader features.
+
+2011.11.10 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Changed the message printed by DecodeEnvVar from ERROR
+	  to DEBUG when something unexpected happens. Apparently
+	  unexpected things can happen more often than I thought.
+	* Added 3 new parameters to a cycle, which control how
+	  TTreeCache should be used by the SFrame job.
+	* At the moment TTreeCache is only used in PROOF mode,
+	  but I plan on adding this feature for LOCAL running as well.
+	* The default configuration still has TTreeCache disabled, as
+	  it doesn't play nicely with MC10b D3PDs.
+
+2011.10.21 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Fixed the DecodeEnvVar(...) function after reading the ROOT
+	  documentation a little more carefully.
+
+2011.10.11 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Small correction to the SCycleBaseConfig::DecodeEnvVar(...)
+	  function.
+
+2011.10.11 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Removed the automatic disabling of branches in
+	  SCycleBaseNTuple::LoadInputTrees(...). That function call
+	  was just giving us problems, and now actually caused
+	  very measurable performance problems.
+	* Added the patches of Massimiliano to SCycleBaseConfig,
+	  needed for his extension to SFrame.
+	* Made his code a bit more general in the DecodeEnvVar(...)
+	  function.
+
+2011.08.05 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Disabled some messages from being printed on PROOF.
+	  This reduces the logs considerably when creating many histograms
+	  in a PROOF session.
+
+2011.07.30 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Fixed hopefully all the file merging issues on MacOS X
+	  Lion, while keeping all the previous features of the code.
+	* The usage of TFileMerger has once again been dropped, as
+	  it was producing unreliable results somehow... (Don't know
+	  why, since PROOF-Lite uses the same code, and that makes
+	  usable output files...)
+
+2011.07.08 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Found out that the last change only works with ROOT versions
+	  >= 5.28. So now that code is protected by pre-processor
+	  macros.
+
+2011.07.06 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* At the end of processing an InputData block using PROOF,
+	  the cycle controller can now print which files were not
+	  available/had problems during event processing.
+	* This is because we had some faulty file replications on the
+	  NYU Tier3.
+
+2011.06.27 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Made the Retrieve<...>(...) function in SCycleBaseHist a bit
+	  more general by making it possible to retrieve output objects
+	  only. (This is needed for the ATLAS lumiblock merger code.)
+	* Added a new function, RetrieveAll<...>(...) to SCycleBaseHist.
+	  It can be used to retrieve all versions of a given object from
+	  the input file. (Was needed for the ATLAS lumiblock merger
+	  code.)
+
+2011.06.26 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Made it possible to write out metadata trees into
+	  sub-directories. This required changes in SCycleBaseNTuple
+	  and SFileMerger.
+	* For the moment event-level trees are still only supported in
+	  the main directory. But on request it should be pretty simple
+	  to add this capability for those trees as well.
+
+2011.06.24 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Made output ntuple management a bit more robust.
+	  Now the code can efficiently use distant PROOF clusters
+	  and retrieve the merged ntuple files from the PROOF
+	  work directory using TFileMerger. Then it uses
+	  SFileMerger to merge the file into the InputData's
+	  output file.
+
+2011.06.03 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Disabling the usage of TTreeCache when running in PROOF mode.
+	  This is a temporary measure to avoid crashes on MC10b D3PDs.
+	  But obviously this will cause a significant performance
+	  decrease, so a proper fix will have to be found quickly!
+
+2011.03.23 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Fixing a compilation warning on MacOS X that was introduced
+	  with the last update.
+
+2011.03.18 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Made the temporary file creation in LOCAL running more a
+	  little smarter. Now the code always creates unique file
+	  names, making it possible to run multiple jobs in the
+	  same directory.
+	* Added a protection to the DeclareProperty(...) functions
+	  which will print an ERROR message if the user tries to
+	  use the same property name in multiple places by
+	  mistake.
+	* Tried to get rid of some memory leaks, but apparently
+	  there are still a few of them... :-(
+
+2011.02.21 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Modified SLogWriter so the ALWAYS messages would be shown
+	  with the default terminal colors from now on. Beforehand
+	  they were always shown with black characters. But this
+	  created a problem when people were using a terminal with
+	  black background.
+
+2011.02.18 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Added a little hack to SCycleBaseExec so that it would
+	  only call BeginInputFile(...) once at the beginning of the
+	  job when running in LOCAL mode. Previously this function
+	  was always called twice for the first file in this mode.
+	* Tried to check in all running scenarios that the modification
+	  is not disruptive.
+
+2011.02.14 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Fixed a previous limitation of the code, that it would
+	  only process a maximum of 1E8 events if "EvMax" was set
+	  to "-1" in the configuration. Now the code uses the
+	  maximal number that can be expressed with Long64_t.
+
+2011.02.14 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Made the type checking in the "primitive version" of
+	  ConnectVariable(...) more permissive. The previous
+	  implementation was very much based on the conventions
+	  of ATLAS ntuples. With the new one it's now even possible
+	  to use branches which have multiple leaves for multiple
+	  primitives. While this is not used in ATLAS, it's one of the
+	  common ways of creating a TTree.
+	  (See: http://root.cern.ch/root/html528/TTree.html)
+
+2011.02.10 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Added a cleanup function to SCycleBaseNTuple. Justin
+	  Griffiths reported that under certain conditions dangling
+	  TTree pointers can cause problems. Now the code should
+	  always clean up after itself.
+
+2011.02.09 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Extended SInputData with the current entry number
+	  This can be used to feed the D3PDReader objects with
+	  the information.
+	* Updated SCycleBaseExec so that it fills this information.
+	* Fixed a problem in SCycleBaseHist::Hist(...) in which it
+	  could get into an improper state when the user asked for
+	  a non-existent histogram.
+
+2010.12.03 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Re-introduced the ClassDef(...) and ClassImp(...) macros
+	  for the SCycleBase component classes. These macros are
+	  necessary if you want to hide some member variables from
+	  the dictionary generation. This is unfortunately a needed
+	  feature for making the code work without WARNING/ERROR
+	  messages in the ROOT trunk. (To become 5.28 soon.)
+	* Hid some of the SCycleBase variables from the dictionary
+	  generator.
+
+2010.12.01 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Tried to fix the ERROR messages coming from the SCycleBaseConfig
+	  class in ROOT 5.28, but didn't succeed for now. Issue is
+	  followed up on: http://savannah.cern.ch/bugs/?75727
+	* Added the long missing functionality to be able to retrieve
+	  histograms and other kinds of objects from the input files.
+	  Now the Retrieve<...>(...) function of SCycleBaseHist looks
+	  first in the output object list for the requested object,
+	  and if it doesn't find it there, it looks in the input file.
+
+2010.11.25 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Removed the Cintex specific code from the core library.
+
+2010.11.05 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Linked the SFrameCore library against the Cintex ROOT library.
+	  It turns out that this ROOT library has been with us since
+	  a long time (it's already in ROOT 5.20). So explicitly
+	  relying on it is not a problem.
+	* This should solve the issues seen by people using a ROOT
+	  version coupled to an ATLAS offline software release.
+
+2010.10.27 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Moved some of the functions of SCycleBaseConfig,
+	  SCycleBaseHist and SCycleBaseNTuple into public scope.
+	  Having them as protected function and declaring all
+	  SToolBase incarnations as friends of these classes was just
+	  not scaling...
+
+2010.09.27 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Re-wrote how ConnectVariable(...) checks whether the user
+	  tries to connect the correct type of primitive to a branch.
+	  The previous implementation used a convention of the ATLAS
+	  D3PDs which is not followed anymore...
+
+2010.09.20 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Migrated back the change from the development branch that
+	  enables the user to connect polymorphic object pointers to
+	  input ntuple branches.
+	* Unfortunately the code to write out poymorphic objects in
+	  a smart way to the output is still not fully solved. (I can't
+	  get the sub-branch names to inherit the name of the main branch
+	  as prefix correctly...)
+
+2010.08.20 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Changed the order of the TTree::SetBranchAddress(...) and
+	  TTree::SetBranchStatus(...) calls in the ConnectVariable(...)
+	  functions. Apparently putting them in the wrong order can
+	  disable the reading of the branches completely... :-/
+
+2010.08.16 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Put the function calls operation on the cache inside #if
+	  statements, as these function calls are not available in old ROOT
+	  releases. So SFrameARA would not be able to compile with them.
+
+2010.08.16 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Made the GetInputTree(...) and GetOutputTree(...) functions
+	  of SCycleBaseNTuple protected. This should help users in some
+	  special circumstances.
+	* Started playing with TTreeCache, but not much effect on the
+	  performance so far. Will talk with Gerri next week (when he's
+	  back from vacation) to see how caching could be used effectively
+	  in SFrame.
+
+2010.08.06 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Modified the friend relations of the classes a little bit in
+	  order to account for the changes in the SToolBase class.
+
+2010.08.04 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Added a few non-const Write(...) functions to various classes.
+	  This is to get rid of some of the overloaded virtual warnings
+	  of GCC. However I still couldn't get rid of all these warnings.
+	  TObject has a function called ExecuteEvent(...) and even if I
+	  remove the warning from the compilation of SCycleBaseExec, the
+	  users would still have to modify their cycles as well.
+	  So for now I leave the flag that turns the overloaded virtual
+	  warning off active in the Makefile.
+
+2010.08.02 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Modified the friend-relations of SCycleNTupleBase to make
+	  it possible to use SOutputVariables-derived classes with this
+	  template parameter.
+
+2010.06.30 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Re-designed the SInputData class in some details. Now the
+	  types of input and output trees can be extended by the
+	  libraries built on top of SFrame. (Like SFrameARA.)
+	* Modifed all the code handling the SInputData class (basically
+	  all SFrame classes...) to use the new "formalism".
+	* Added some macros to SLogger.h to help with printing
+	  verbose and error messages with more information on
+	  where they're coming from in the code.
+	* Added a new helper class, STreeTypeDecoder that is used
+	  by the framework so that it doesn't have to know about all
+	  the possible tree types in the base library.
+
+2010.06.21 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Fixed the long-standing double-event-issue in the output
+	  TTree-s...
+	* SFileMerger was modified to take it into account that a single
+	  object might be present in the input files with multiple
+	  versions/cycles. In this case, since the code always asks for
+	  the latest version of the object for the merging, it has to
+	  process that object only once. Previously it processed every
+	  object (TTree) as many times as they appeared in the list of
+	  keys in the input file. (Most of the time twice in some older
+	  versions of ROOT.)
+
+2010.05.20 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Added a new property to SInputData: SkipValid
+	  When this property is set to kTRUE, the validation of the files
+	  (datasets) in that SInputData is skipped. This can be very
+	  useful when running on a lot of individually declared files
+	  on a remote PROOF farm. (Since the input files are remote,
+	  reading from all of them can take a *long* time.)
+	* The property can only be used when all the events from the
+	  InputData are to be processed. If the configuration specifies
+	  that only a subset of events should be processed, the
+	  validation is forced. (So that the event weigthing can be
+	  correct.)
+
+2010.05.12 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Made the code aware that ROOT version "5.26/00-proof" can also
+	  handle multiple datasets per query (per InputData).
+
+2010.05.03 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Added some fixes after trying to run some "real" jobs on
+	  PROOF (PQ2) datasets.
+	* SCycleController now automatically specifies to PROOF which
+	  TTree the cycle should run on. If it's not specified for a
+	  D3PD file for which an event selection was applied in Athena
+	  (CollectionTree has more entries than the D3PD tree), then the
+	  job crashes.
+	* Disabled the checking of the metadata trees when running on a
+	  dataset. The current implementation of PROOF doesn't catalog
+	  the TTree-s inside subdirectories of a file, so the PROOF
+	  dataset doesn't know about these metadata trees. This cataloging
+	  should be added in a future version of PROOF.
+
+2010.04.30 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Added first implementation to support PROOF (PQ2) datasets in
+	  the InputData.
+	* Created a new singleton class (SProofManager) to handle the
+	  PROOF connections. Moved some of the functionality that was
+	  previously in SCycleController, to this new class.
+
+2010.04.27 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Added a check in SCycleBaseNTuple::ConnectVariable(...) that makes
+	  sure that the user tries to connect the correct type of variable
+	  to a branch. Previously it was possible to try to connect a
+	  primitive variable (bool, int, etc.) to a branch holding let's
+	  say a vector<double> variable. In this case ROOT crashed in a
+	  quite undecipherable way in the ConnectVariable(...) function.
+	  This should not happen anymore, the code will exit with an error
+	  message if the user makes this mistake.
+
+2010.04.13 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Added a new configuration option to the XML files: <MetadataTree>
+	  Using this the user can access additional TTree-s in the input
+	  files which don't hold event-level data. The used case for this
+	  right now is to be able to read the trigger configuration
+	  metadata from the D3PD ntuples.
+	* Added a new function in SCycleBaseNTuple to give access to the
+	  metadata trees.
+	* The metadata trees can also be in subdirectories inside the file,
+	  just like it is done with the trigger configuration metadata
+	  right now.
+
+2010.04.09 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Fixed the way SCycleBaseConfig handles the case when it receives
+	  an empty string as a vector property. (Now the std::vector remains
+	  empty.)
+
+2010.04.08 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Created a non-const accessor to the SCycleConfig object
+	  of the cycle. This can apparently be used to modify the total
+	  luminosity of the cycle for the re-weighting in a nicer fasion,
+	  but that doesn't work with PROOF yet...
+	* Added a new feature to SCycleBaseConfig: It is now possible to
+	  add and retrieve TObject based "configuration objects" to/from
+	  the cycle. The model is that the user creates/initializes a
+	  configuration object in BeginCycle(), and adds it as a configuration
+	  object with AddConfigObject(...). Then the user can retrieve
+	  this same object inside the function which are executed
+	  on the worker nodes, with GetConfigObject(...). The first example
+	  is sending a TGoodRunsList object to the workers, to select
+	  the good luminosity blocks out of ATLAS data.
+	* This feature needed some modification in SCycleBaseExec, and
+	  SCycleController as well.
+	* Added some "friend ..." lines to the cycle base classes to make
+	  it possible for the new classes in plug-ins to function.
+	  I might get rid of these "friend ..." declarations and make all the
+	  used functions public in a later release...
+
+2010.03.02 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Made a few smaller changes to revive the SFrameARA packages.
+	* SInputData::ValidateInput() is now aware of the persistent
+	  trees. The same holds for the TTree information caching.
+	* Made SCycleController play nicely with persistent
+	  trees.
+
+2009.11.24 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Revived the ISCycleBase class. Now it should be possible once
+	  again to write custom cycle base classes in external packages.
+	  (Like how the Manchester group does it...)
+
+2009.11.24 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Updated the file information caching in SInputData to
+	  save TDSet objects as well. This means that when running
+	  with PROOF, neither SFrame nor PROOF will check the files
+	  after they've been checked in a previous running.
+
+2009.11.19 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Added the capability to "cache" the information about the
+	  InputData configuration locally. This means that the input
+	  files don't have to be validated at the beginning of each
+	  job, which can save many-many minutes in larger jobs.
+	* The feature is turned off by default, it can be enabled
+	  by adding Cacheable="True" to the InputData definition in
+	  the configuration XML. See the example configurations
+	  for more details.
+	* The cached information is stored in the same way that
+	  PROOF stores information about datasets. But by using our
+	  own solution, the jobs can still be run without requiring
+	  a PROOF server.
+	* Removed the possibility of defining EV input trees for a cycle.
+	  The framework didn't support such trees ever sice moving to
+	  using PROOF anyway.
+
+2009.09.17 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Fixed a problem with using PROOF machines/clusters with
+	  a large number of worker nodes.
+
+2009.09.10 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Fixed a crash that happened on SLC4 when shutting down
+	  a PROOF connection.
+
+2009.08.19 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Changed the way the files for the output ntuples are
+	  closed.
+
+2009.06.23 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Adding first modifications into the SVN repository.
+	* Added a new class: SPointer. It's used to clean up the
+	  objects created by the ConnectVariable(...) calls.
+	  So far there was a memory leak here...
+	* Fixed a memory leak in SParLocator::Locate(...) as well.
+	* Changed the level of the messages reporing about the
+	  event processing status to DEBUG when running in PROOF
+	  mode. (In this mode the progress is shown by PROOF
+	  anyway...)
+
+2009.05.13 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Modified SLogWriter such that it now only prints the
+	  output in different colours if it's being printed on
+	  the console. This makes the logfiles easier to read.
+	  Unfortunately it also has the sideeffect that all output
+	  from the worker nodes appears colourless...
+	* Changed SCycleBaseNTuple::ConnectVariable so that it now
+	  returns whether it was successful or not.
+	* Thanks to Alexander Mann for both of these suggestions!
+
+2009.04.07 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Introduced a new specialisation of
+	  SCycleBaseNTuple::ConnectVariable(...). It allows to
+	  connect to array inputs very easily. Some documentation
+	  about its usage can be found in the source files.
+
+2009.02.24 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Fixed SFileMerger to be able to handle empty TTrees.
+
+2009.01.22 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Added new Cycle parameter: ProofWorkDir
+	  It specifies where the temporary ntuple files should be
+	  put when running on a PROOF cluster. The point is that
+	  this location should be writable by all machines taking
+	  part in the PROOF running.
+
+2009.01.05 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Added missing <cstdlib> includes to fix compilation errors
+	  with GCC 4.3. The code is now tested to compile and run
+	  on SLC5 and GCC 4.3. :-)
+
+2008.12.02 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Now the job automatically prints the output messages
+	  from the worker nodes once the event processing is done.
+	* Created a new function called SErrorHandler. It can
+	  be used to print the ROOT messages using SLogger.
+
+2008.12.02 David Berge <berge@cern.ch>
+	* Fix small bug in SCycleController, now properly checking the
+	return code of gSystem->Load('libXX'), which is 1 i.e. not zero if
+	the library was already loaded; this last case isn't an error,
+	errors are only negative return codes
+
+2008.10.14 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Added the feature to skip events at the beginning of
+	  an InputData. The property to specify in the header of
+	  the InputData configuration in XML is "NEventsSkip".
+	* Updated the format of the output messages during event
+	  processing.
+
+2008.03.21. Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Added libutil to the list of libraries that sframe_main
+	  is lined against. (Needed when compiling with gcc >=4.1)
+
+2008.02.14. Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Now SCycleBaseNTuple opens the input files through
+	  TFile::Open(...) rather than creating a TFile object
+	  itself. According to Wolfgang, SFrame should play more
+	  nicely with dCache and Castor like this...
+
+2008.02.11. Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Added new type of property: bool
+	  Such properties can now be used in the same way as all
+	  the others. See the Doxygen documentation for details.
+	* Removed "u_int" in SCycleBaseNTuple.icc that caused problems
+	  on MacOS X 10.5 / ROOT 5.18.
+
+2008.02.08. Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Fixed bug in SCycleBaseExec that caused a crash when
+	  running over multiple InputData of the same type.
+
+2008.02.01. Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Removed the Doxyfile file from this directory and put
+	  it directly under SFrame/
+	* Updated/extended the documentation in a number of files.
+
+2008.01.28. Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Added memory consumption and memory leak DEBUG printouts.
+	  (Should be useful for finding problems with code.)
+	* Added new function (SCycleBaseHist::Write(...)) for
+	  persistifying non-TH1 objects in the output. (Putting
+	  a special emphasis on persistifying TGraph-like
+	  objects.) Usage instructions are in the Doxygen
+	  documentation.
+
+2008.01.25. Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Made big structural changes in the SCycleBase class.
+	  - The SCycleBase class doesn't hold any code itself now,
+	  but is "just" a composite object made from the
+	  various SCycleBase* classes.
+	  - Introduced a new class, SCycleBaseExec. Its function
+	  is to provide the event looping functionality to
+	  SCycleBase.
+	  - All components of SCycleBase have an interface class
+	  now. SCycleBaseExec can access the other parts of the
+	  SCycleBase object through these interfaces. If the
+	  functionality of SCycleBase has to be extended, it's
+	  enough to create a new kind of SCycleBase class that
+	  inherits from different kind of constituents. (For instance
+	  the SCycleBaseNTuple constituent can be replaced
+	  while not touching the SCycleBaseExec class.)
+	* Extended SInputData. It now holds a new kind of input
+	  tree, called "persistent tree". This is used to describe
+	  input trees from POOL based DPD files. The name of the
+	  persistent tree is practically always "CollectionTree",
+	  but it is configurable through XML nevertheless.
+	* A new kind of property can be defined for the
+	  <JobConfiguration>, <PyLibrary>. It is very similar to
+	  the <Library> property, but it defines a Python module
+	  that should be loaded by the framework at initialisation.
+	* The EventView tree handling functions don't have to be
+	  called separately by SCycleBaseExec anymore. They are
+	  called internally in SCycleBaseNTuple by the functions
+	  that used to only handle the regular input trees. (This
+	  way the transient input trees can be handled just by
+	  overwriting these functions.)
+
+2007.11.26. Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Added something to SCycleBaseHist that I wanted to do
+	  for a while now: the SCycleBaseHist::Hist(...)
+	  function. It can be used to *quickly* retrieve
+	  (1-dimensional) histograms from the output file. It
+	  proved to be very useful for me when handling a lot
+	  of output histograms. See the Doxygen documentation
+	  for further details.:-)
+
+2007.11.22. Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Added a *lot* of Doxygen documentation to the code.
+	  Added a new directory called "doc/" which contains a
+	  single header (mainpage.h) by default, and in which
+	  the HTML documentation is put by Doxygen when calling
+	  "doxygen" in the current directory.
+	* Added a file called "Doxyfile" that describes the
+	  project to Doxygen. It is currently configured to use
+	  a tool called "dot" to create the graphs for the
+	  documentation. Unfortunately it is not available on
+	  SLC by default, but it can easily be installed. To
+	  disable the usage of "dot", change the line in the
+	  configuration file
+
+	    HAVE_DOT = YES
+
+	  to
+
+	    HAVE_DOT = NO
+
+2007.11.20. Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Disabled the "parameter-less" running of sframe_main.
+	  Now one always has to define exactly one XML file on
+	  the command prompt, else the usage help is printed.
+	* Added the possibility to use a new feature of ROOT.
+	  (Awailable in ROOT >= 5.17/04) This new feature makes
+	  it possible to use a bit more complicated XML files
+	  for configuring the job. It is only used when compiling
+	  against a proper ROOT version. (Pre-processor
+	  conditional statements rule...)
+
+2007.11.13. Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Created first version of the "SFrameCore" library.
+	* The makefile also automatically compiles and links the
+	  "sframe_main" executable. One shortcoming is that
+	  "make clean" doesn't delete the executable...
+	* Added appropriate headers with the SFrame authors to
+	  all the files.
+	* Used a little C++ magic in SCycleBase to make it impossible
+	  for the users to call internal functions of the class that
+	  they're not supposed to.

@@ -1,0 +1,159 @@
+2014.09.25 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Updated the JobConfig.dtd file to include the description of the
+	  new Macro node.
+
+2014.05.23 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Hiding the auto-generated .pcm file from SVN.
+	* Commented the Cintex parts of the example configuration,
+	  as very soon those lines should not be used anymore.
+	  (Once ROOT 6 becomes production ready.)
+
+2013.12.02 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+   * Making the PROOF files aware of the ROOTPROOFLIBDIR environment variable,
+     which can be used to specify a common library directory that should be
+     searched for libraries on a PROOF cluster with a shared filesystem.
+
+2013.01.21 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+   * Added the new SkipLookup property of InputData blocks to the JobConfig.dtd
+     file.
+   * Added an example usage of SkipLookup to FirstCycle_config.xml, together
+     with a short description of this property left in the comments.
+
+2012.11.21 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Updated the example cycles to make use of the new in-file
+	  histogram merging functionality.
+
+2012.11.21 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Updated the FirstCycle example to make use of the new feature
+	  that allows us to create branches in output metadata trees
+	  using DeclareVariable(...).
+	* SecondCycle now prints messages with their proper source string
+	  when running.
+
+2012.04.12 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+   * Updated BUILD.sh not to compile the code when running on PROOF-Lite
+
+2012.03.28 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Updated FirstCycle example to use TTree caching explicitly.
+
+2011.11.17 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Added the new property (ProcessOnlyLocal) to the common
+	  DTD (JobConfig.dtd)
+
+2011.11.15 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Added some documentation to FirstCycle_config.xml about
+	  how to use the environment variable expansion in property
+	  values.
+
+2011.11.10 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Added some documentation about the new TTreeCache features
+	  to FirstCycle_config.xml
+
+2011.10.21 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Changed "lite" to "lite://" as the PROOF server name in the
+	  example configuration. This is the new ROOT naming scheme.
+
+2011.02.21 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Added a few lines of output to FirstCycle::BeginCycle() that
+	  demonstrate how messages of different message levels look
+	  like on the terminal.
+
+2011.02.10 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Modified JobConfig.dtd to allow the user to run the same
+	  cycle with different configurations one after the other.
+	  (There's no reason for not allowing this.)
+
+2010.12.01 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Marked the SSummedVar variables as transient in the FirstCycle
+	  class.
+	* Added some code to SecodCycle to show off how to use the
+	  Retrieve<...>(...) function for accessing objects from
+	  the input file.
+
+2010.11.25 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Modified the DTD to enable the declaration of some of the XML
+	  elements in random order inside the configuration XMLs.
+	* Extended the FirstCycle_config.xml example to explicitly
+	  load the SFrameCintex library.
+
+2010.09.27 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* The example SecondCycle configuration uses LOCAL mode once
+	  again. Unfortunately PROOF(-Lite) doesn't play nicely with
+	  relative file paths.
+
+2010.08.16 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Put a security check into FirstCycle::EndMasterInputData(...).
+	  This way when the worker nodes die, the master process is
+	  still able to collect the messages from the workers.
+
+2010.06.30 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Updated FirstCycle to show off some of the new features of
+	  the framework.
+	* Modified JobConfig.dtd to adhere to the new design of
+	  SInputData.
+
+2010.05.20 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Added the SkipValid property to the InputData definitions
+	  in the DTD
+	* Added some explanation about this property to
+	  FirstCycle_config.xml
+
+2010.04.30 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Revived the <DataSet> node in the DTD which I actually left in
+	  it the last time I tried to implement the support for
+	  PROOF (PQ2) datasets.
+
+2010.04.13 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Updated the DTD to know about the new <MetadataTree> input
+	  type. Removed the EVInputTree parameter from the DTD, which
+	  is not supported by the code since a while.
+
+2009.11.20 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Updated the DTD and configuration files to account for the
+	  updates made to SInputData. A short description is available
+	  for the "Cacheable" property in FirstCycle_config.py.
+
+2009.08.19 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Removed the LeakCheck cycle, and the associated files.
+	  These are now put into a new package called
+	  SFrameStressTest.
+
+2009.02.24 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Removed my specific configuration from FirstCycle_config.xml
+	* Added some more documentation to the same file
+
+2009.01.22 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Adopted the FirstCycle configuration to the latest core
+	  changes.
+
+2009.01.05 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Modified FirstCycle_config.xml and SecondCycle_config.xml to
+	  work with ROOT 5.20 and newer versions by default. If you
+	  use an older version of ROOT, you should modify the configuration
+	  files as instructed in the comments, to run the example
+	  cycles.
+
+2008.12.02 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Speeded up the examples a little bit
+
+2008.10.14 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Added example usage of "NEventsSkip" to FirstCycle_config.xml.
+
+2008.02.11. Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Extended FirstCycle to give examples of how to use
+	  boolean properties.
+
+2008.02.01. Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Very small changes in the documentation...
+
+2007.11.21. Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Changed the location of the example input file in
+	  FirstCycle_config.xml. The file is put on AFS now,
+	  so anyone could run the example out of the box.
+
+2007.11.13. Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Created first version of the "SFrameUser" library.
+	* The package holds two example analysis cycles that
+	  can be good starting points for newcomers.
+	* Cleanded-up and extended the descriptions in the
+	  XML configuration files a bit.

@@ -1,0 +1,187 @@
+# Dear emacs, this is a -*- makefile -*-
+# $Id: Makefile.common 380 2014-05-23 12:52:54Z krasznaa $
+###########################################################################
+# @Project: SFrame - ROOT-based analysis framework for ATLAS              #
+#                                                                         #
+# @author Stefan Ask       <Stefan.Ask@cern.ch>           - Manchester    #
+# @author David Berge      <David.Berge@cern.ch>          - CERN          #
+# @author Johannes Haller  <Johannes.Haller@cern.ch>      - Hamburg       #
+# @author A. Krasznahorkay <Attila.Krasznahorkay@cern.ch> - NYU/Debrecen  #
+#                                                                         #
+#  This is the general part of any SFrame related libraries's Makefile.   #
+#  It needs the following definitions to work:                            #
+#   - LIBRARY                                                             #
+#   - OBJDIR                                                              #
+#   - DEPDIR                                                              #
+#   - SRCDIR                                                              #
+#   - INCDIR                                                              #
+#                                                                         #
+#  It is also possible to extend the following variables in a package's   #
+#  Makefile:                                                              #
+#   - INCLUDES                                                            #
+#   - USERCXXFLAGS                                                        #
+#   - USERLDFLAGS                                                         #
+#                                                                         #
+#  And of course all the definitions from $(ROOTSYS)/test/Makefile.arch   #
+#                                                                         #
+###########################################################################
+
+MAKEFLAGS = --no-print-directory -r -s
+
+#
+# Include the architecture definitions from the ROOT sources
+#
+#  Makefile.arch can be in two different locations depending on the system
+#  you're compiling on. The Fink installed version of ROOT has this file
+#  in a different location than the "normally installed" ROOT versions...
+#
+ARCH_LOC_1 := $(wildcard $(shell root-config --prefix)/test/Makefile.arch)
+ARCH_LOC_2 := $(wildcard $(shell root-config --prefix)/share/root/test/Makefile.arch)
+ARCH_LOC_3 := $(wildcard $(shell root-config --prefix)/share/doc/root/test/Makefile.arch)
+ARCH_LOC_4 := $(wildcard $(shell root-config --prefix)/etc/Makefile.arch)
+ARCH_LOC_5 := $(wildcard $(shell root-config --prefix)/etc/root/Makefile.arch)
+ifneq ($(strip $(ARCH_LOC_1)),)
+  $(info Using $(ARCH_LOC_1))
+  include $(ARCH_LOC_1)
+else
+  ifneq ($(strip $(ARCH_LOC_2)),)
+    $(info Using $(ARCH_LOC_2))
+    include $(ARCH_LOC_2)
+  else
+    ifneq ($(strip $(ARCH_LOC_3)),)
+      $(info Using $(ARCH_LOC_3))
+      include $(ARCH_LOC_3)
+    else
+		ifneq ($(strip $(ARCH_LOC_4)),)
+        $(info Using $(ARCH_LOC_4))
+        include $(ARCH_LOC_4)
+      else
+        ifneq ($(strip $(ARCH_LOC_5)),)
+          $(info Using $(ARCH_LOC_5))
+          include $(ARCH_LOC_5)
+        else
+          $(error Could not find Makefile.arch!)
+        endif
+		endif
+    endif
+  endif
+endif
+
+# Some compilation options
+VPATH    += $(OBJDIR) $(SRCDIR)
+INCLUDES += -I$(SFRAME_DIR) -I./
+CXXFLAGS += -Wall -Wno-overloaded-virtual -Wno-unused $(USERCXXFLAGS) $(CPPEXPFLAGS)
+
+# Set the locations of some files
+DICTHEAD  = $(SRCDIR)/$(LIBRARY)_Dict.h
+DICTFILE  = $(SRCDIR)/$(LIBRARY)_Dict.$(SrcSuf)
+DICTOBJ   = $(OBJDIR)/$(LIBRARY)_Dict.$(ObjSuf)
+DICTLDEF  = $(INCDIR)/$(LIBRARY)_LinkDef.h
+SKIPCPPLIST = $(DICTFILE)
+SKIPHLIST   = $(DICTHEAD) $(DICTLDEF)
+LIBFILE   = $(SFRAME_LIB_PATH)/lib$(LIBRARY).a
+SHLIBFILE = $(SFRAME_LIB_PATH)/lib$(LIBRARY).$(DllSuf)
+PCMFILE   = $(SFRAME_LIB_PATH)/$(LIBRARY)_Dict_rdict.pcm
+UNAME = $(shell uname)
+
+# Set up the default targets
+default: shlib setlinks par
+
+# List of all header and source files to build
+HLIST   = $(filter-out $(SKIPHLIST),$(wildcard $(INCDIR)/*.h))
+CPPLIST = $(filter-out $(SKIPCPPLIST),$(wildcard $(SRCDIR)/*.$(SrcSuf)))
+
+# List of all object files to build
+OLIST = $(patsubst %.$(SrcSuf),%.o,$(notdir $(CPPLIST)))
+
+# Implicit rule to compile all sources
+%.o : %.$(SrcSuf)
+	@echo "Compiling $<"
+	@mkdir -p $(OBJDIR)
+	@$(CXX) $(CXXFLAGS) -c $< -o $(OBJDIR)/$(notdir $@) $(INCLUDES)
+
+# Rule to create the dictionary
+$(DICTFILE): $(HLIST) $(DICTLDEF)
+	@echo "Generating dictionary $@" 
+	@$(shell root-config --exec-prefix)/bin/rootcint -f $(DICTFILE) -c -p \
+		$(INCLUDES) $^
+
+# Rule to comile the dictionary
+$(DICTOBJ): $(DICTFILE)
+	@echo "Compiling $<"
+	@mkdir -p $(OBJDIR)
+	@$(CXX) $(CXXFLAGS) -c $(INCLUDES) -o $@ $<
+
+# Rule to install the PCM file when using ROOT 6:
+$(PCMFILE): $(DICTFILE)
+ifneq ($(ROOTCLING),rootcling)
+	@echo "Creating dummy $@"
+	@touch $@
+else
+	@echo "Installing $@"
+	@cp $(SRCDIR)/$(LIBRARY)_Dict_rdict.pcm $@
+endif
+
+# Rule that creates various symbolic links
+setlinks: $(SHLIBFILE)
+	if [ `root-config --platform` = "macosx" -a \
+        ! -e $(SFRAME_LIB_PATH)/lib$(LIBRARY).so ]; then \
+		echo "Linking $(SHLIBFILE) to $(SFRAME_LIB_PATH)/lib$(LIBRARY).so"; \
+		ln -s $(SHLIBFILE) $(SFRAME_LIB_PATH)/lib$(LIBRARY).so; \
+	fi
+
+# Rule that creates a PAR package for this library:
+par: $(SFRAME_LIB_PATH)/$(LIBRARY).par
+
+$(SFRAME_LIB_PATH)/$(LIBRARY).par: $(SHLIBFILE)
+	@sframe_parMaker.py -s ./ -o $@ \
+		-i $(INCDIR) -c $(SRCDIR)
+
+##############################
+# The dependencies section   
+# - the purpose of the .d files is to keep track of the
+#   header file dependence
+# - this can be achieved using the makedepend command 
+##############################
+# .d tries to pre-process .cc
+ifneq ($(MAKECMDGOALS),clean)
+ifneq ($(MAKECMDGOALS),distclean)
+-include $(foreach var,$(notdir $(CPPLIST:.$(SrcSuf)=.d)),$(DEPDIR)/$(var))
+endif
+endif
+
+$(DEPDIR)/%.d: %.$(SrcSuf)
+	@mkdir -p $(DEPDIR)
+	if test -f $< ; then \
+		echo "Making $(@F)"; \
+		$(SHELL) -ec '$(CPP) -MM $(CXXFLAGS) $(INCLUDES) $< | sed '\''/Cstd\/rw/d'\'' > $@'; \
+	fi
+
+# Rule to combine objects into a unix shared library
+$(SHLIBFILE): $(OLIST) $(DICTOBJ) $(PCMFILE)
+	@echo "Making shared library: $(SHLIBFILE)"
+	@rm -f $(SHLIBFILE)
+ifneq (,$(findstring macosx,$(ARCH)))
+	@$(LD) $(LDFLAGS) $(USERLDFLAGS) -dynamiclib -single_module -undefined \
+		dynamic_lookup $(addprefix $(OBJDIR)/,$(OLIST)) $(DICTOBJ) \
+		-o $(SHLIBFILE)
+else
+	@$(LD) $(LDFLAGS) $(USERLDFLAGS) $(SOFLAGS) $(addprefix $(OBJDIR)/,$(OLIST)) \
+		$(DICTOBJ) -o $(SHLIBFILE)
+endif
+
+# Useful build targets
+shlib: $(SHLIBFILE)
+
+clean:
+	@rm -f $(DICTFILE) $(DICTHEAD)
+	@rm -f $(OBJDIR)/*.o
+	@rm -f $(SHLIBFILE)
+	@rm -f $(PCMFILE)
+
+distclean: clean
+	@rm -rf $(OBJDIR)
+	@rm -rf $(DEPDIR)
+	@rm -f $(SFRAME_LIB_PATH)/$(LIBRARY).par
+
+.PHONY : shlib default clean

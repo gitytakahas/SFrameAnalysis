@@ -1,0 +1,1 @@
+make distclean && make && sframe_main config/TauTauAnalysis_config.xml 2>&1 | tee log

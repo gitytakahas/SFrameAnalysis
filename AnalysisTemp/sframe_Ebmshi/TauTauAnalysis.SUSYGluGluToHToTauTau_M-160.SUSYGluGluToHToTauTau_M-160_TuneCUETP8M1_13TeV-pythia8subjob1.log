@@ -1,0 +1,3527 @@
+Sun Aug 28 10:04:21 CEST 2016
+t3wn51.psi.ch
+Linux t3wn51.psi.ch 2.6.32-573.26.1.el6.x86_64 #1 SMP Tue May 3 14:22:07 CDT 2016 x86_64 x86_64 x86_64 GNU/Linux
+Filesystem            Size  Used Avail Use% Mounted on
+/dev/md1               20G  6.5G   12G  36% /
+tmpfs                  63G   12K   63G   1% /dev/shm
+/dev/md0              2.9G  106M  2.6G   4% /boot
+/dev/md10              98G   60G   39G  61% /cvmfs_local
+/dev/md11              98G   33M   98G   1% /fs_cache
+/dev/md5               20G  866M   18G   5% /opt
+/dev/md6              1.3T   82M  1.3T   1% /scratch
+/dev/md3              9.5G   23M  9.0G   1% /tmp
+/dev/md2              9.5G  5.6G  3.5G  62% /var
+/dev/md7               20G  338M   18G   2% /var/cache/openafs
+/dev/md8               39G  309M   37G   1% /var/log
+/dev/md9              1.9G   32M  1.8G   2% /var/log/audit
+t3nfs01:/zfs/data01/swshare
+                      3.1T  345G  2.8T  11% /mnt/t3nfs01/data01/swshare
+t3nfs01:/zfs/data01/shome
+                      2.8T  1.0M  2.8T   1% /mnt/t3nfs01/data01/shome
+t3nfs02:/zfs/data01/t3nfs01_data01/swshare
+                      5.6T  273G  5.4T   5% /mnt/t3nfs02/data01/swshare
+t3nfs02:/zfs/data01/t3nfs01_data01/shome
+                      5.4T     0  5.4T   0% /mnt/t3nfs02/data01/shome
+t3dcachedb03:/pnfs/psi.ch/cms
+                      1.0E  415T  1.0E   1% /pnfs/psi.ch/cms
+AFS                   2.0T     0  2.0T   0% /afs
+Setting up environment for compiling/running SFrame
+/shome/ytakahas/work/TauTau/SFrameAnalysis/SFrame/python:/shome/ytakahas/work/TauTau/SFrameAnalysis/SFrame/python:/mnt/t3nfs01/data01/shome/ytakahas/work/TauTau/CMSSW_8_0_11/python:/mnt/t3nfs01/data01/shome/ytakahas/work/TauTau/CMSSW_8_0_11/lib/slc6_amd64_gcc530:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/cms/cmssw/CMSSW_8_0_11/python:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/cms/cmssw/CMSSW_8_0_11/lib/slc6_amd64_gcc530:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/cms/coral/CORAL_2_3_21-ikhhed6/slc6_amd64_gcc530/python:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/cms/coral/CORAL_2_3_21-ikhhed6/slc6_amd64_gcc530/lib:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/pyqt/4.8.1-ikhhed/lib/python2.7/site-packages:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/python-ldap/2.4.10-ikhhed/lib/python2.7/site-packages:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/py2-scipy/0.8.0-giojec/lib/python2.7/site-packages:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/py2-pandas/0.17.1-giojec/lib/python2.7/site-packages:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/py2-matplotlib/1.2.1-giojec/lib/python2.7/site-packages:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/yoda/1.5.5-ikhhed/lib/python2.7/site-packages:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/sip/4.11.2-ikhhed/lib/python2.7/site-packages:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/llvm/3.7.1-giojec/lib64/python2.7/site-packages:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/py2-sqlalchemy/0.8.2-ikhhed/lib/python2.7/site-packages:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/py2-pycurl/7.43.0/lib/python2.7/site-packages:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/py2-pytz/2014.7-ikhhed/lib/python2.7/site-packages:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/py2-python-dateutil/1.5-ikhhed/lib/python2.7/site-packages:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/py2-numpy/1.9.2-giojec/lib/python2.7/site-packages:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/py2-lint/0.25.1-ikhhed/lib/python2.7/site-packages:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/py2-ipython/3.1.0-ikhhed/lib/python2.7/site-packages:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/py2-dxr/1.0-giojec/lib/python2.7/site-packages:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/py2-cx-oracle/5.1-ikhhed/lib/python2.7/site-packages:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/py2-cjson/1.0.5-ikhhed/lib/python2.7/site-packages:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/frontier_client/2.8.19-ikhhed/python/lib:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/cms/das_client/v02.05.00-ikhhed/bin:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/cython/0.22-ikhhed/lib/python2.7/site-packages:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/rivet/2.4.0-giojec/lib/python2.7/site-packages:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/lcg/root/6.06.00-ikhhed4/lib:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/pyminuit2/0.0.1-ikhhed4/lib/python2.7/site-packages:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/py2-six/1.9.0-ikhhed/lib/python2.7/site-packages:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/py2-schema/0.3.1-ikhhed/lib/python2.7/site-packages:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/py2-requests/2.5.1-ikhhed/lib/python2.7/site-packages:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/py2-PyYAML/3.11-ikhhed/lib/python2.7/site-packages:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/py2-pyparsing/2.0.3-ikhhed/lib/python2.7/site-packages:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/py2-pygithub/1.23.0-ikhhed/lib/python2.7/site-packages:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/py2-prettytable/0.7.2-ikhhed/lib/python2.7/site-packages:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/py2-networkx/1.8.1-giojec/lib/python2.7/site-packages:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/py2-pysqlite/2.8.1-ikhhed/lib/python2.7/site-packages:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/py2-pygments/1.6-ikhhed/lib/python2.7/site-packages:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/py2-parsimonious/0.6.1-ikhhed/lib/python2.7/site-packages:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/py2-ordereddict/1.1-ikhhed/lib/python2.7/site-packages:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/py2-markupsafe/0.23-ikhhed/lib/python2.7/site-packages:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/py2-jinja/2.7.2-ikhhed/lib/python2.7/site-packages:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/py2-futures/2.2.0-ikhhed/lib/python2.7/site-packages:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/py2-docopt/0.6.2-ikhhed/lib/python2.7/site-packages:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/py2-dablooms/0.9.1-ikhhed/lib/python2.7/site-packages:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/professor/1.4.0-ikhhed4/lib/python2.7/site-packages:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/cms/dbs-client/DBS_2_1_9-ikhhed/lib:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/cms/dbs-client/DBS_2_1_9-ikhhed/lib/DBSAPI:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/cvs2git/5419-ikhhed/lib
+MANPATH=/opt/glite/share/man::
+GLITE_SD_PLUGIN=file,bdii
+HOSTNAME=t3wn51.psi.ch
+SGE_TASK_STEPSIZE=undefined
+GRID_ENV_LOCATION=/usr/libexec
+SHELL=/bin/zsh
+TERM=linux
+VOMS_USERCONF=/etc/vomses
+NHOSTS=1
+SGE_O_WORKDIR=/mnt/t3nfs01/data01/shome/ytakahas/work/TauTau/SFrameAnalysis/AnalysisTemp/sframe_xk5gwa
+TMPDIR=/scratch/tmpdir-3323802.1.all.q
+SGE_O_HOME=/shome/ytakahas
+DPM_HOST=my-dpm.psi.ch
+GT_PROXY_MODE=old
+SGE_ARCH=lx24-amd64
+SGE_CELL=default
+X509_CERT_DIR=/etc/grid-security/certificates
+RESTARTED=0
+ARC=lx24-amd64
+USER=ytakahas
+LCG_LOCATION=/usr
+VO_CMS_SW_DIR=/cvmfs/cms.cern.ch
+SGE_TASK_LAST=undefined
+QUEUE=all.q
+SGE_TASK_ID=undefined
+SGE_BINARY_PATH=/gridware/sge/bin/lx24-amd64
+PATH=/shome/ytakahas/work/TauTau/SFrameAnalysis/SFrame/bin:/shome/ytakahas/work/TauTau/SFrameAnalysis/SFrame/bin:/cvmfs/cms.cern.ch/share/overrides/bin:/mnt/t3nfs01/data01/shome/ytakahas/work/TauTau/CMSSW_8_0_11/bin/slc6_amd64_gcc530:/mnt/t3nfs01/data01/shome/ytakahas/work/TauTau/CMSSW_8_0_11/external/slc6_amd64_gcc530/bin:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/cms/cmssw/CMSSW_8_0_11/bin/slc6_amd64_gcc530:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/cms/cmssw/CMSSW_8_0_11/external/slc6_amd64_gcc530/bin:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/llvm/3.7.1-giojec/bin:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/gcc/5.3.0/bin:/cvmfs/cms.cern.ch/common:/cvmfs/cms.cern.ch/bin:/bin:/gridware/sge/bin/lx24-amd64:/usr/lib64/qt-3.3/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/mnt/t3nfs01/data01/swshare/psit3/bin:/shome/ytakahas/bin
+DPNS_HOST=my-dpm.psi.ch
+runlevel=3
+RUNLEVEL=3
+VO_CMS_DEFAULT_SE=t3se01.psi.ch
+SGE_STDERR_PATH=/shome/ytakahas/work/TauTau/SFrameAnalysis/SFrame/../AnalysisTemp/sframe_Ebmshi/TauTauAnalysis.SUSYGluGluToHToTauTau_M-160.SUSYGluGluToHToTauTau_M-160_TuneCUETP8M1_13TeV-pythia8subjob1.log
+LANGSH_SOURCED=1
+PWD=/shome/ytakahas/work/TauTau/SFrameAnalysis/SFrame
+SGE_STDOUT_PATH=/shome/ytakahas/work/TauTau/SFrameAnalysis/SFrame/../AnalysisTemp/sframe_Ebmshi/TauTauAnalysis.SUSYGluGluToHToTauTau_M-160.SUSYGluGluToHToTauTau_M-160_TuneCUETP8M1_13TeV-pythia8subjob1.log
+SGE_ACCOUNT=sge
+SGE_EXECD_PORT=6445
+LANG=en_US.UTF-8
+JOB_SCRIPT=/gridware/sge/default/spool/t3wn51/job_scripts/3323802
+JOB_NAME=SUSYGluGluToHToTauTau_M-160SUSYGluGluToHToTauTau_M-160_TuneCUETP8M1_13TeV-pythia8subjob1
+SGE_QMASTER_PORT=6444
+X509_VOMS_DIR=/etc/grid-security/vomsdir
+SGE_ROOT=/gridware/sge
+BDII_LIST=lcg-bdii.cern.ch:2170
+previous=N
+PREVLEVEL=N
+MYPROXY_SERVER=myproxy.cern.ch
+REQNAME=SUSYGluGluToHToTauTau_M-160SUSYGluGluToHToTauTau_M-160_TuneCUETP8M1_13TeV-pythia8subjob1
+SGE_JOB_SPOOL_DIR=/gridware/sge/default/spool/t3wn51/active_jobs/3323802.1
+ENVIRONMENT=BATCH
+CONSOLETYPE=serial
+GLITE_SD_SERVICES_XML=/usr/etc/services.xml
+GLITE_LOCATION_VAR=/var
+HOME=/shome/ytakahas
+SHLVL=3
+GLOBUS_TCP_PORT_RANGE=20000,25000
+SGE_CWD_PATH=/shome/ytakahas
+NQUEUES=1
+X509_USER_PROXY=/mnt/t3nfs01/data01/shome/ytakahas/.x509up_u639
+SGE_O_LOGNAME=ytakahas
+SGE_O_MAIL=/var/spool/mail/ytakahas
+UPSTART_INSTANCE=
+LCG_GFAL_INFOSYS=bdii-fzk.gridka.de:2170
+TMP=/scratch/tmpdir-3323802.1.all.q
+JOB_ID=3323802
+LOGNAME=ytakahas
+UPSTART_EVENTS=runlevel
+SGE_STARTER_SHELL_START_MODE=posix_compliant
+SGE_STARTER_SHELL_PATH=/bin/zsh
+SGE_TASK_FIRST=undefined
+SGE_O_PATH=/shome/ytakahas/work/TauTau/SFrameAnalysis/SFrame/bin:/cvmfs/cms.cern.ch/share/overrides/bin:/mnt/t3nfs01/data01/shome/ytakahas/work/TauTau/CMSSW_8_0_11/bin/slc6_amd64_gcc530:/mnt/t3nfs01/data01/shome/ytakahas/work/TauTau/CMSSW_8_0_11/external/slc6_amd64_gcc530/bin:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/cms/cmssw/CMSSW_8_0_11/bin/slc6_amd64_gcc530:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/cms/cmssw/CMSSW_8_0_11/external/slc6_amd64_gcc530/bin:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/llvm/3.7.1-giojec/bin:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/gcc/5.3.0/bin:/cvmfs/cms.cern.ch/common:/cvmfs/cms.cern.ch/bin:/bin:/gridware/sge/bin/lx24-amd64:/usr/lib64/qt-3.3/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/mnt/t3nfs01/data01/swshare/psit3/bin:/shome/ytakahas/bin
+UPSTART_JOB=rc
+SGE_O_HOST=t3ui12
+SGE_O_SHELL=/bin/bash
+GLITE_LOCATION=/usr
+REQUEST=SUSYGluGluToHToTauTau_M-160SUSYGluGluToHToTauTau_M-160_TuneCUETP8M1_13TeV-pythia8subjob1
+NSLOTS=1
+SRM_PATH=/usr/share/srm
+SGE_STDIN_PATH=/dev/null
+OLDPWD=/shome/ytakahas/work/TauTau/SFrameAnalysis
+ROOTSYS=/cvmfs/cms.cern.ch/slc6_amd64_gcc530/lcg/root/6.06.00-ikhhed4/
+LD_LIBRARY_PATH=/shome/ytakahas/work/TauTau/SFrameAnalysis/SFrame/lib:/shome/ytakahas/work/TauTau/SFrameAnalysis/SFrame/lib:/mnt/t3nfs01/data01/shome/ytakahas/work/TauTau/CMSSW_8_0_11/biglib/slc6_amd64_gcc530:/mnt/t3nfs01/data01/shome/ytakahas/work/TauTau/CMSSW_8_0_11/lib/slc6_amd64_gcc530:/mnt/t3nfs01/data01/shome/ytakahas/work/TauTau/CMSSW_8_0_11/external/slc6_amd64_gcc530/lib:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/cms/cmssw/CMSSW_8_0_11/biglib/slc6_amd64_gcc530:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/cms/cmssw/CMSSW_8_0_11/lib/slc6_amd64_gcc530:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/cms/cmssw/CMSSW_8_0_11/external/slc6_amd64_gcc530/lib:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/llvm/3.7.1-giojec/lib64:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/gcc/5.3.0/lib64:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/gcc/5.3.0/lib
+PYTHONPATH=/shome/ytakahas/work/TauTau/SFrameAnalysis/SFrame/python:/shome/ytakahas/work/TauTau/SFrameAnalysis/SFrame/python:/mnt/t3nfs01/data01/shome/ytakahas/work/TauTau/CMSSW_8_0_11/python:/mnt/t3nfs01/data01/shome/ytakahas/work/TauTau/CMSSW_8_0_11/lib/slc6_amd64_gcc530:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/cms/cmssw/CMSSW_8_0_11/python:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/cms/cmssw/CMSSW_8_0_11/lib/slc6_amd64_gcc530:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/cms/coral/CORAL_2_3_21-ikhhed6/slc6_amd64_gcc530/python:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/cms/coral/CORAL_2_3_21-ikhhed6/slc6_amd64_gcc530/lib:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/pyqt/4.8.1-ikhhed/lib/python2.7/site-packages:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/python-ldap/2.4.10-ikhhed/lib/python2.7/site-packages:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/py2-scipy/0.8.0-giojec/lib/python2.7/site-packages:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/py2-pandas/0.17.1-giojec/lib/python2.7/site-packages:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/py2-matplotlib/1.2.1-giojec/lib/python2.7/site-packages:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/yoda/1.5.5-ikhhed/lib/python2.7/site-packages:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/sip/4.11.2-ikhhed/lib/python2.7/site-packages:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/llvm/3.7.1-giojec/lib64/python2.7/site-packages:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/py2-sqlalchemy/0.8.2-ikhhed/lib/python2.7/site-packages:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/py2-pycurl/7.43.0/lib/python2.7/site-packages:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/py2-pytz/2014.7-ikhhed/lib/python2.7/site-packages:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/py2-python-dateutil/1.5-ikhhed/lib/python2.7/site-packages:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/py2-numpy/1.9.2-giojec/lib/python2.7/site-packages:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/py2-lint/0.25.1-ikhhed/lib/python2.7/site-packages:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/py2-ipython/3.1.0-ikhhed/lib/python2.7/site-packages:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/py2-dxr/1.0-giojec/lib/python2.7/site-packages:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/py2-cx-oracle/5.1-ikhhed/lib/python2.7/site-packages:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/py2-cjson/1.0.5-ikhhed/lib/python2.7/site-packages:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/frontier_client/2.8.19-ikhhed/python/lib:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/cms/das_client/v02.05.00-ikhhed/bin:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/cython/0.22-ikhhed/lib/python2.7/site-packages:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/rivet/2.4.0-giojec/lib/python2.7/site-packages:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/lcg/root/6.06.00-ikhhed4/lib:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/pyminuit2/0.0.1-ikhhed4/lib/python2.7/site-packages:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/py2-six/1.9.0-ikhhed/lib/python2.7/site-packages:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/py2-schema/0.3.1-ikhhed/lib/python2.7/site-packages:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/py2-requests/2.5.1-ikhhed/lib/python2.7/site-packages:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/py2-PyYAML/3.11-ikhhed/lib/python2.7/site-packages:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/py2-pyparsing/2.0.3-ikhhed/lib/python2.7/site-packages:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/py2-pygithub/1.23.0-ikhhed/lib/python2.7/site-packages:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/py2-prettytable/0.7.2-ikhhed/lib/python2.7/site-packages:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/py2-networkx/1.8.1-giojec/lib/python2.7/site-packages:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/py2-pysqlite/2.8.1-ikhhed/lib/python2.7/site-packages:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/py2-pygments/1.6-ikhhed/lib/python2.7/site-packages:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/py2-parsimonious/0.6.1-ikhhed/lib/python2.7/site-packages:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/py2-ordereddict/1.1-ikhhed/lib/python2.7/site-packages:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/py2-markupsafe/0.23-ikhhed/lib/python2.7/site-packages:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/py2-jinja/2.7.2-ikhhed/lib/python2.7/site-packages:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/py2-futures/2.2.0-ikhhed/lib/python2.7/site-packages:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/py2-docopt/0.6.2-ikhhed/lib/python2.7/site-packages:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/py2-dablooms/0.9.1-ikhhed/lib/python2.7/site-packages:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/professor/1.4.0-ikhhed4/lib/python2.7/site-packages:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/cms/dbs-client/DBS_2_1_9-ikhhed/lib:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/cms/dbs-client/DBS_2_1_9-ikhhed/lib/DBSAPI:/cvmfs/cms.cern.ch/slc6_amd64_gcc530/external/cvs2git/5419-ikhhed/lib
+SFRAME_DIR=/shome/ytakahas/work/TauTau/SFrameAnalysis/SFrame
+SFRAME_BIN_PATH=/shome/ytakahas/work/TauTau/SFrameAnalysis/SFrame/bin
+SFRAME_LIB_PATH=/shome/ytakahas/work/TauTau/SFrameAnalysis/SFrame/lib
+PAR_PATH=./:/shome/ytakahas/work/TauTau/SFrameAnalysis/SFrame/lib
+_=/bin/env
+Using SFrame in /shome/ytakahas/work/TauTau/SFrameAnalysis/SFrame
+##################################################
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE JobConfiguration PUBLIC "" "/shome/ytakahas/work/TauTau/SFrameAnalysis/SFrame/user/config/JobConfig.dtd">
+<JobConfiguration JobName="test_v3" OutputLevel="INFO">
+  <Library Name="libNtupleVariables" />
+  <Library Name="libGoodRunsLists" />
+  <Library Name="libPileupReweightingTool" />
+  <Library Name="libBTaggingTools" />
+  <Library Name="libTauTauResonances" />
+  <Library Name="libScaleFactorTool" />
+
+  <Package Name="SFrameCore.par" />
+  <Package Name="NtupleVariables.par" />
+  <Package Name="GoodRunsLists.par" />
+  <Package Name="PileupReweightingTool.par" />
+  <Package Name="BTaggingTools.par" />
+  <Package Name="TauTauResonances.par" />
+  <Package Name="ScaleFactorTool.par" />
+
+  <Cycle Name="TauTauAnalysis" RunMode="LOCAL" UseTreeCache="True" TreeCacheSize="30000000" TreeCacheLearnEntries="10" ProofServer="lite" ProofWorkDir="" OutputDirectory="./" PostFix="" TargetLumi="0.166666666667">
+    <InputData Lumi="0.0" Type="SUSYGluGluToHToTauTau_M-160" Version="SUSYGluGluToHToTauTau_M-160_TuneCUETP8M1_13TeV-pythia8" NEventsMax="-1" NEventsSkip="0" SkipValid="True" >
+      <In FileName="dcap://t3se01.psi.ch:22125//pnfs/psi.ch/cms/trivcat/store/user/ytakahas/Ntuple_SUSY/SUSYGluGluToHToTauTau_M-160_TuneCUETP8M1_13TeV-pythia8/SUSYGluGluToHToTauTau_M-160_TuneCUETP8M1_13TeV-pythia8_v0/160818_162010/0000/flatTuple_1.root" Lumi="1.0" />
+      <InputTree Name="ntuplizer/tree" />
+      <OutputTree Name="tree" />
+    </InputData>
+
+    <UserConfig>
+      <Item Name="IsData" Value="false" />
+      <Item Name="IsSignal" Value="true" />
+      <Item Name="RecoTreeName" Value="tree" />
+
+    </UserConfig>
+  </Cycle>
+</JobConfiguration>
+##################################################
+Sun Aug 28 10:04:22 CEST 2016
+ ( INFO  )  SCycleController   : Initializing
+ ( INFO  )  SCycleController   : Deleting all analysis cycle algorithms from memory
+ ( INFO  )  SCycleController   : Reading xml file: 'TauTauAnalysis.SUSYGluGluToHToTauTau_M-160.SUSYGluGluToHToTauTau_M-160_TuneCUETP8M1_13TeV-pythia8subjob1.xml'
+ ( INFO  )  SCycleBaseExec     : Hello!
+ ( INFO  )  SCycleController   : Created cycle 'TauTauAnalysis'
+ ( INFO  )  TauTauAnalysis     : Initializing from configuration
+ ( INFO  )  TauTauAnalysis     : Reading SInputData: SUSYGluGluToHToTauTau_M-160 - SUSYGluGluToHToTauTau_M-160_TuneCUETP8M1_13TeV-pythia8
+ ( INFO  )  SCycleConfig       : ===========================================================
+ ( INFO  )  SCycleConfig       :                     Cycle configuration
+ ( INFO  )  SCycleConfig       :   - Running mode: LOCAL
+ ( INFO  )  SCycleConfig       :   - Target luminosity: 0.166667
+ ( INFO  )  SCycleConfig       :   - Output directory: ./
+ ( INFO  )  SCycleConfig       :   - Post-fix: 
+ ( INFO  )  SCycleConfig       :   - Using TTreeCache with size: 30000000
+ ( INFO  )  SCycleConfig       :                  learn entries: 10
+ ( INFO  )  SInputData         :  ---------------------------------------------------------
+ ( INFO  )  SInputData         :  Type               : SUSYGluGluToHToTauTau_M-160
+ ( INFO  )  SInputData         :  Version            : SUSYGluGluToHToTauTau_M-160_TuneCUETP8M1_13TeV-pythia8
+ ( INFO  )  SInputData         :  Total luminosity   : 1pb-1
+ ( INFO  )  SInputData         :  NEventsMax         : -1
+ ( INFO  )  SInputData         :  NEventsSkip        : 0
+ ( INFO  )  SInputData         :  Cacheable          : No
+ ( INFO  )  SInputData         :  Skip validation    : Yes
+ ( INFO  )  SInputData         :  Skip file lookup   : No
+ ( INFO  )  SInputData         :  Input File         : 'dcap://t3se01.psi.ch:22125//pnfs/psi.ch/cms/trivcat/store/user/ytakahas/Ntuple_SUSY/SUSYGluGluToHToTauTau_M-160_TuneCUETP8M1_13TeV-pythia8/SUSYGluGluToHToTauTau_M-160_TuneCUETP8M1_13TeV-pythia8_v0/160818_162010/0000/flatTuple_1.root' (file) | '1' (lumi)
+ ( INFO  )  SInputData         :  Tree               : 'ntuplizer/tree' (name) | 'Flat input tree' (type)
+ ( INFO  )  SInputData         :  Tree               : 'tree' (name) | 'Flat output tree' (type)
+ ( INFO  )  SInputData         :  ---------------------------------------------------------
+ ( INFO  )  SCycleConfig       : ===========================================================
+ ( INFO  )  SCycleController   : Job 'test_v3' configured
+ ( INFO  )  SCycleController   : Time needed for initialisation:   0.26 s
+ ( INFO  )  SCycleController   : Entering ExecuteAllCycles()
+ ( INFO  )  SInputData         : Input type "SUSYGluGluToHToTauTau_M-160" version "SUSYGluGluToHToTauTau_M-160_TuneCUETP8M1_13TeV-pythia8" : Validation skipped
+ ( INFO  )  SCycleController   : Executing Cycle #0 ('TauTauAnalysis') locally
+ ( INFO  )  TauTauAnalysis     : BeginCycle ... 
+ ( INFO  )  SCycleController   : Processing input data type: SUSYGluGluToHToTauTau_M-160 version: SUSYGluGluToHToTauTau_M-160_TuneCUETP8M1_13TeV-pythia8
+ ( INFO  )  TauTauAnalysis     : RecoTreeName:         tree
+ ( INFO  )  TauTauAnalysis     : JetAK4Name:           jetAK4
+ ( INFO  )  TauTauAnalysis     : ElectronName:         el
+ ( INFO  )  TauTauAnalysis     : MuonName:             mu
+ ( INFO  )  TauTauAnalysis     : TauName:             tau
+ ( INFO  )  TauTauAnalysis     : GenParticleName:      genParticle
+ ( INFO  )  TauTauAnalysis     : IsData:           FALSE
+ ( INFO  )  TauTauAnalysis     : IsSignal:           TRUE
+ ( INFO  )  TauTauAnalysis     : ElectronPtCut:           24
+ ( INFO  )  TauTauAnalysis     : ElectronEtaCut:           2.1
+ ( INFO  )  TauTauAnalysis     : ElectronD0Cut:           0.045
+ ( INFO  )  TauTauAnalysis     : ElectronDzCut:           0.2
+ ( INFO  )  TauTauAnalysis     : ElectronIsoCut:           0.1
+ ( INFO  )  TauTauAnalysis     : MuonPtCut:           19
+ ( INFO  )  TauTauAnalysis     : MuonEtaCut:           2.1
+ ( INFO  )  TauTauAnalysis     : MuonD0Cut:           0.045
+ ( INFO  )  TauTauAnalysis     : MuonDzCut:           0.2
+ ( INFO  )  TauTauAnalysis     : MuonIsoCut:           0.15
+ ( INFO  )  TauTauAnalysis     : TauPtCut:           20
+ ( INFO  )  TauTauAnalysis     : TauEtaCut:           2.3
+ ( INFO  )  TauTauAnalysis     : TauDzCut:           0.2
+ ( INFO  )  TauTauAnalysis     : JSONName:           /shome/ytakahas/work/TauTau/SFrameAnalysis/SFrame/../GoodRunsLists/JSON/Cert_271036-277148_13TeV_PromptReco_Collisions16_JSON_NoL1T.txt
+ ( INFO  )  PileupReweighti... : HistoPath:        $SFRAME_DIR/../PileupReweightingTool/histograms/
+ ( INFO  )  PileupReweighti... : DataRootFileName: MyDataPileupHistogram_69p2_15p9.root
+ ( INFO  )  PileupReweighti... : DataRootHistName: pileup
+ ( INFO  )  PileupReweighti... : MCScenario:      PUS25ns
+ ( INFO  )  PileupReweighti... : Pileup weights initialised
+ declaring variables
+cutflow_mutau histogram_mutau
+cutflow_eletau histogram_eletau
+ ( INFO  )  ScaleFactorTool    : Initializing ScaleFactor for lepons
+ ( INFO  )  ScaleFactorTool    : Efficiency file Trig: /shome/ytakahas/work/TauTau/SFrameAnalysis/SFrame/../LepEff2016/data/Muon/SingleMuonTrigger_Z_RunBCD_prompt80X_7p65.root
+ ( INFO  )  ScaleFactorTool    : Efficiency file MuSF: /shome/ytakahas/work/TauTau/SFrameAnalysis/SFrame/../LepEff2016/data/Muon/MuonID_Z_RunBCD_prompt80X_7p65.root
+ ( INFO  )  ScaleFactorTool    : Efficiency file eleSF: /shome/ytakahas/work/TauTau/SFrameAnalysis/SFrame/../LepEff2016/data/Electron/egammaEffi_txt_SF2D.root
+ Want the input file .root /shome/ytakahas/work/TauTau/SFrameAnalysis/SFrame/../LepEff2016/data/Muon/SingleMuonTrigger_Z_RunBCD_prompt80X_7p65.root
+ ( INFO  )  ScaleFactorTool    : Scale factor Mu trig  initialised
+ Want the input file .root /shome/ytakahas/work/TauTau/SFrameAnalysis/SFrame/../LepEff2016/data/Muon/MuonID_Z_RunBCD_prompt80X_7p65.root
+ ( INFO  )  ScaleFactorTool    : Scale factor Mu ID initialised
+ Want the input file .root /shome/ytakahas/work/TauTau/SFrameAnalysis/SFrame/../LepEff2016/data/Muon/MuonIso_Z_RunBCD_prompt80X_7p65.root
+ ( INFO  )  ScaleFactorTool    : Scale factor Mu Iso initialised
+ Want the input file .root /shome/ytakahas/work/TauTau/SFrameAnalysis/SFrame/../LepEff2016/data/Electron/egammaEffi_txt_SF2D.root
+ ( INFO  )  ScaleFactorTool    : Scale factor Ele ID initialised
+ ( INFO  )  TauTauAnalysis     : Initialised InputData "SUSYGluGluToHToTauTau_M-160" (Version:SUSYGluGluToHToTauTau_M-160_TuneCUETP8M1_13TeV-pythia8) on worker node
+ ( INFO  )  TauTauAnalysis     : Connecting input variables
+ ( INFO  )  TauTauAnalysis     : Connecting input variables completed
+ (WARNING)  TauTauAnalysis     : Can't use a TTreeCache in LOCAL mode, sorry...
+	2147 1 12  -> pass !
+	2174 1 12  -> pass !
+	2211 1 12  -> pass !
+	2797 1 16  -> pass !
+	2822 1 16  -> pass !
+	2834 1 16  -> pass !
+	2872 1 16  -> pass !
+	2877 1 16  -> pass !
+	2920 1 16  -> pass !
+	2941 1 16  -> pass !
+	3032 1 17  -> pass !
+	3034 1 17  -> pass !
+	3036 1 17  -> pass !
+	3051 1 17  -> pass !
+	3062 1 17  -> pass !
+	3126 1 17  -> pass !
+	3160 1 17  -> pass !
+	3195 1 18  -> pass !
+	3276 1 18  -> pass !
+	3291 1 18  -> pass !
+	3296 1 18  -> pass !
+	6653 1 37  -> pass !
+	6665 1 37  -> pass !
+	6684 1 37  -> pass !
+	6715 1 37  -> pass !
+	6721 1 37  -> pass !
+	6730 1 37  -> pass !
+	6739 1 37  -> pass !
+	6767 1 37  -> pass !
+	6784 1 37  -> pass !
+	6803 1 37  -> pass !
+	6814 1 37  -> pass !
+	6827 1 37  -> pass !
+	6832 1 37  -> pass !
+	194127 1 1052  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 999 (999 / 0 events processed so far)
+	194209 1 1052  -> pass !
+	194217 1 1052  -> pass !
+	194261 1 1052  -> pass !
+	194264 1 1052  -> pass !
+	194288 1 1052  -> pass !
+	194356 1 1053  -> pass !
+	194365 1 1053  -> pass !
+	194392 1 1053  -> pass !
+	194395 1 1053  -> pass !
+	205565 1 1114  -> pass !
+	205589 1 1114  -> pass !
+	205641 1 1114  -> pass !
+	205654 1 1114  -> pass !
+	205795 1 1115  -> pass !
+	205810 1 1115  -> pass !
+	205837 1 1115  -> pass !
+	205856 1 1115  -> pass !
+	205882 1 1115  -> pass !
+	205884 1 1115  -> pass !
+	205892 1 1115  -> pass !
+	205899 1 1115  -> pass !
+	206006 1 1116  -> pass !
+	206028 1 1116  -> pass !
+	280380 1 1519  -> pass !
+	280433 1 1519  -> pass !
+	280449 1 1519  -> pass !
+	280469 1 1519  -> pass !
+	280487 1 1519  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 1999 (1999 / 0 events processed so far)
+	280524 1 1519  -> pass !
+	280527 1 1520  -> pass !
+	280533 1 1520  -> pass !
+	280563 1 1520  -> pass !
+	280589 1 1520  -> pass !
+	280605 1 1520  -> pass !
+	280636 1 1520  -> pass !
+	280664 1 1520  -> pass !
+	280670 1 1520  -> pass !
+	280683 1 1520  -> pass !
+	280842 1 1521  -> pass !
+	280846 1 1521  -> pass !
+	280854 1 1521  -> pass !
+	280874 1 1521  -> pass !
+	341314 1 1849  -> pass !
+	341319 1 1849  -> pass !
+	341374 1 1849  -> pass !
+	341391 1 1849  -> pass !
+	341427 1 1849  -> pass !
+	341492 1 1850  -> pass !
+	341505 1 1850  -> pass !
+	341557 1 1850  -> pass !
+	341578 1 1850  -> pass !
+	341601 1 1850  -> pass !
+	341609 1 1850  -> pass !
+	351102 1 1902  -> pass !
+	351104 1 1902  -> pass !
+	351202 1 1902  -> pass !
+	351229 1 1902  -> pass !
+	392233 1 2125  -> pass !
+	392236 1 2125  -> pass !
+	392242 1 2125  -> pass !
+	392256 1 2125  -> pass !
+	392295 1 2125  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 2999 (2999 / 0 events processed so far)
+	392393 1 2125  -> pass !
+	392425 1 2125  -> pass !
+	392433 1 2126  -> pass !
+	392470 1 2126  -> pass !
+	392488 1 2126  -> pass !
+	392527 1 2126  -> pass !
+	392528 1 2126  -> pass !
+	392600 1 2126  -> pass !
+	392641 1 2127  -> pass !
+	392654 1 2127  -> pass !
+	392660 1 2127  -> pass !
+	392698 1 2127  -> pass !
+	392723 1 2127  -> pass !
+	392749 1 2127  -> pass !
+	399997 1 2167  -> pass !
+	399999 1 2167  -> pass !
+	400035 1 2167  -> pass !
+	400062 1 2167  -> pass !
+	400069 1 2167  -> pass !
+	400128 1 2167  -> pass !
+	400129 1 2167  -> pass !
+	6124 1 34  -> pass !
+	6127 1 34  -> pass !
+	6144 1 34  -> pass !
+	6149 1 34  -> pass !
+	6156 1 34  -> pass !
+	6161 1 34  -> pass !
+	6178 1 34  -> pass !
+	6233 1 34  -> pass !
+	6255 1 34  -> pass !
+	6278 1 34  -> pass !
+	6279 1 34  -> pass !
+	6285 1 34  -> pass !
+	6291 1 34  -> pass !
+	6319 1 35  -> pass !
+	6346 1 35  -> pass !
+	6379 1 35  -> pass !
+	6384 1 35  -> pass !
+	6414 1 35  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 3999 (3999 / 0 events processed so far)
+	6478 1 35  -> pass !
+	6517 1 36  -> pass !
+	6526 1 36  -> pass !
+	6532 1 36  -> pass !
+	6536 1 36  -> pass !
+	6579 1 36  -> pass !
+	6610 1 36  -> pass !
+	6621 1 36  -> pass !
+	6638 1 36  -> pass !
+	6642 1 36  -> pass !
+	31585 1 172  -> pass !
+	31591 1 172  -> pass !
+	31650 1 172  -> pass !
+	31657 1 172  -> pass !
+	31660 1 172  -> pass !
+	31718 1 172  -> pass !
+	31731 1 172  -> pass !
+	31757 1 172  -> pass !
+	31779 1 173  -> pass !
+	31789 1 173  -> pass !
+	31800 1 173  -> pass !
+	31821 1 173  -> pass !
+	31837 1 173  -> pass !
+	31864 1 173  -> pass !
+	31878 1 173  -> pass !
+	31930 1 173  -> pass !
+	31970 1 173  -> pass !
+	31971 1 173  -> pass !
+	397773 1 2155  -> pass !
+	397776 1 2155  -> pass !
+	397777 1 2155  -> pass !
+	397791 1 2155  -> pass !
+	397807 1 2155  -> pass !
+	397841 1 2155  -> pass !
+	397856 1 2155  -> pass !
+	397858 1 2155  -> pass !
+	397873 1 2155  -> pass !
+	397947 1 2155  -> pass !
+	397967 1 2155  -> pass !
+	398024 1 2156  -> pass !
+	398025 1 2156  -> pass !
+	398083 1 2156  -> pass !
+	398128 1 2156  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 4999 (4999 / 0 events processed so far)
+	398226 1 2157  -> pass !
+	398244 1 2157  -> pass !
+	398255 1 2157  -> pass !
+	398287 1 2157  -> pass !
+	398294 1 2157  -> pass !
+	398326 1 2157  -> pass !
+	414947 1 2248  -> pass !
+	414952 1 2248  -> pass !
+	414966 1 2248  -> pass !
+	414984 1 2248  -> pass !
+	414995 1 2248  -> pass !
+	415018 1 2248  -> pass !
+	415022 1 2248  -> pass !
+	415036 1 2248  -> pass !
+	415070 1 2248  -> pass !
+	415111 1 2248  -> pass !
+	415204 1 2249  -> pass !
+	415207 1 2249  -> pass !
+	415213 1 2249  -> pass !
+	415316 1 2249  -> pass !
+	415329 1 2249  -> pass !
+	403318 1 2185  -> pass !
+	403380 1 2185  -> pass !
+	403394 1 2185  -> pass !
+	403420 1 2185  -> pass !
+	403428 1 2185  -> pass !
+	403453 1 2185  -> pass !
+	403470 1 2185  -> pass !
+	403508 1 2185  -> pass !
+	403513 1 2186  -> pass !
+	403581 1 2186  -> pass !
+	403582 1 2186  -> pass !
+	403682 1 2186  -> pass !
+	403693 1 2186  -> pass !
+	403696 1 2186  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 5999 (5999 / 0 events processed so far)
+	403754 1 2187  -> pass !
+	403756 1 2187  -> pass !
+	403793 1 2187  -> pass !
+	403858 1 2187  -> pass !
+	409983 1 2221  -> pass !
+	409984 1 2221  -> pass !
+	409987 1 2221  -> pass !
+	410009 1 2221  -> pass !
+	410017 1 2221  -> pass !
+	410025 1 2221  -> pass !
+	410031 1 2221  -> pass !
+	410035 1 2221  -> pass !
+	410074 1 2221  -> pass !
+	410091 1 2221  -> pass !
+	410092 1 2221  -> pass !
+	410101 1 2221  -> pass !
+	410139 1 2221  -> pass !
+	410144 1 2221  -> pass !
+	410145 1 2221  -> pass !
+	410159 1 2221  -> pass !
+	410167 1 2222  -> pass !
+	410187 1 2222  -> pass !
+	410196 1 2222  -> pass !
+	410197 1 2222  -> pass !
+	410233 1 2222  -> pass !
+	410255 1 2222  -> pass !
+	410334 1 2222  -> pass !
+	410337 1 2222  -> pass !
+	410340 1 2222  -> pass !
+	7983 1 44  -> pass !
+	8018 1 44  -> pass !
+	8027 1 44  -> pass !
+	8086 1 44  -> pass !
+	8095 1 44  -> pass !
+	8113 1 44  -> pass !
+	8117 1 44  -> pass !
+	8122 1 44  -> pass !
+	8135 1 44  -> pass !
+	8157 1 45  -> pass !
+	8206 1 45  -> pass !
+	8226 1 45  -> pass !
+	8247 1 45  -> pass !
+	13309 1 73  -> pass !
+	13348 1 73  -> pass !
+	13349 1 73  -> pass !
+	13359 1 73  -> pass !
+	13373 1 73  -> pass !
+	13389 1 73  -> pass !
+	13391 1 73  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 6999 (6999 / 0 events processed so far)
+	13533 1 74  -> pass !
+	13594 1 74  -> pass !
+	13617 1 74  -> pass !
+	13642 1 74  -> pass !
+	13654 1 74  -> pass !
+	13665 1 74  -> pass !
+	13687 1 74  -> pass !
+	13702 1 75  -> pass !
+	13736 1 75  -> pass !
+	13738 1 75  -> pass !
+	13783 1 75  -> pass !
+	13805 1 75  -> pass !
+	13809 1 75  -> pass !
+	13814 1 75  -> pass !
+	13816 1 75  -> pass !
+	16090 1 88  -> pass !
+	16091 1 88  -> pass !
+	16108 1 88  -> pass !
+	16142 1 88  -> pass !
+	16173 1 88  -> pass !
+	16222 1 88  -> pass !
+	16228 1 88  -> pass !
+	16238 1 88  -> pass !
+	16256 1 88  -> pass !
+	16269 1 89  -> pass !
+	16281 1 89  -> pass !
+	16314 1 89  -> pass !
+	16318 1 89  -> pass !
+	16325 1 89  -> pass !
+	16330 1 89  -> pass !
+	16368 1 89  -> pass !
+	16404 1 89  -> pass !
+	16443 1 89  -> pass !
+	16449 1 89  -> pass !
+	16481 1 90  -> pass !
+	16488 1 90  -> pass !
+	16501 1 90  -> pass !
+	16522 1 90  -> pass !
+	16530 1 90  -> pass !
+	16577 1 90  -> pass !
+	16599 1 90  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 7999 (7999 / 0 events processed so far)
+	17183 1 94  -> pass !
+	17247 1 94  -> pass !
+	17285 1 94  -> pass !
+	17306 1 94  -> pass !
+	17366 1 94  -> pass !
+	17389 1 95  -> pass !
+	17411 1 95  -> pass !
+	17436 1 95  -> pass !
+	17446 1 95  -> pass !
+	17448 1 95  -> pass !
+	17492 1 95  -> pass !
+	17506 1 95  -> pass !
+	17554 1 95  -> pass !
+	17555 1 95  -> pass !
+	157745 1 855  -> pass !
+	157800 1 855  -> pass !
+	157805 1 855  -> pass !
+	157817 1 855  -> pass !
+	157841 1 855  -> pass !
+	170639 1 925  -> pass !
+	170681 1 925  -> pass !
+	170743 1 925  -> pass !
+	170747 1 925  -> pass !
+	170748 1 925  -> pass !
+	170769 1 925  -> pass !
+	170810 1 925  -> pass !
+	170861 1 926  -> pass !
+	170866 1 926  -> pass !
+	170881 1 926  -> pass !
+	170886 1 926  -> pass !
+	170922 1 926  -> pass !
+	170931 1 926  -> pass !
+	170932 1 926  -> pass !
+	170951 1 926  -> pass !
+	170959 1 926  -> pass !
+	170965 1 926  -> pass !
+	171018 1 926  -> pass !
+	171056 1 927  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 8999 (8999 / 0 events processed so far)
+	171115 1 927  -> pass !
+	171138 1 927  -> pass !
+	171173 1 927  -> pass !
+	181219 1 982  -> pass !
+	181226 1 982  -> pass !
+	181246 1 982  -> pass !
+	181268 1 982  -> pass !
+	181287 1 982  -> pass !
+	181300 1 982  -> pass !
+	181318 1 982  -> pass !
+	20927 1 114  -> pass !
+	20931 1 114  -> pass !
+	20950 1 114  -> pass !
+	20951 1 114  -> pass !
+	20955 1 114  -> pass !
+	20963 1 114  -> pass !
+	21034 1 114  -> pass !
+	443767 1 2404  -> pass !
+	443780 1 2404  -> pass !
+	443804 1 2404  -> pass !
+	443813 1 2404  -> pass !
+	443841 1 2404  -> pass !
+	443850 1 2404  -> pass !
+	443879 1 2404  -> pass !
+	443917 1 2404  -> pass !
+	443968 1 2405  -> pass !
+	443971 1 2405  -> pass !
+	444027 1 2405  -> pass !
+	444066 1 2405  -> pass !
+	444127 1 2405  -> pass !
+	444149 1 2405  -> pass !
+	444182 1 2406  -> pass !
+	444206 1 2406  -> pass !
+	444213 1 2406  -> pass !
+	444224 1 2406  -> pass !
+	444274 1 2406  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 9999 (9999 / 0 events processed so far)
+	21139 1 115  -> pass !
+	21178 1 115  -> pass !
+	21185 1 115  -> pass !
+	21187 1 115  -> pass !
+	21225 1 115  -> pass !
+	21320 1 116  -> pass !
+	21385 1 116  -> pass !
+	21402 1 116  -> pass !
+	21467 1 117  -> pass !
+	21487 1 117  -> pass !
+	21500 1 117  -> pass !
+	21565 1 117  -> pass !
+	21624 1 118  -> pass !
+	21640 1 118  -> pass !
+	21653 1 118  -> pass !
+	21680 1 118  -> pass !
+	21695 1 118  -> pass !
+	21746 1 118  -> pass !
+	21762 1 118  -> pass !
+	21784 1 118  -> pass !
+	21787 1 118  -> pass !
+	21862 1 119  -> pass !
+	21894 1 119  -> pass !
+	21960 1 119  -> pass !
+	137418 1 745  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 10999 (10999 / 0 events processed so far)
+	137468 1 745  -> pass !
+	137481 1 745  -> pass !
+	137483 1 745  -> pass !
+	137573 1 745  -> pass !
+	137603 1 746  -> pass !
+	137636 1 746  -> pass !
+	137690 1 746  -> pass !
+	137707 1 746  -> pass !
+	137738 1 746  -> pass !
+	137827 1 747  -> pass !
+	137832 1 747  -> pass !
+	137850 1 747  -> pass !
+	137914 1 747  -> pass !
+	137941 1 747  -> pass !
+	151807 1 823  -> pass !
+	151853 1 823  -> pass !
+	151858 1 823  -> pass !
+	151867 1 823  -> pass !
+	151873 1 823  -> pass !
+	151901 1 823  -> pass !
+	151911 1 823  -> pass !
+	151924 1 823  -> pass !
+	151977 1 823  -> pass !
+	152035 1 824  -> pass !
+	152057 1 824  -> pass !
+	152067 1 824  -> pass !
+	152088 1 824  -> pass !
+	152092 1 824  -> pass !
+	152213 1 825  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 11999 (11999 / 0 events processed so far)
+	152283 1 825  -> pass !
+	152286 1 825  -> pass !
+	152322 1 825  -> pass !
+	156238 1 847  -> pass !
+	156257 1 847  -> pass !
+	156292 1 847  -> pass !
+	156305 1 847  -> pass !
+	156317 1 847  -> pass !
+	156360 1 847  -> pass !
+	156431 1 848  -> pass !
+	156437 1 848  -> pass !
+	156441 1 848  -> pass !
+	156470 1 848  -> pass !
+	156519 1 848  -> pass !
+	156535 1 848  -> pass !
+	156565 1 848  -> pass !
+	156584 1 848  -> pass !
+	156590 1 848  -> pass !
+	156619 1 848  -> pass !
+	198755 1 1077  -> pass !
+	198803 1 1077  -> pass !
+	198823 1 1077  -> pass !
+	198835 1 1077  -> pass !
+	198836 1 1077  -> pass !
+	198868 1 1077  -> pass !
+	198878 1 1077  -> pass !
+	248792 1 1348  -> pass !
+	248806 1 1348  -> pass !
+	248848 1 1348  -> pass !
+	248883 1 1348  -> pass !
+	248925 1 1348  -> pass !
+	248997 1 1349  -> pass !
+	249105 1 1349  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 12999 (12999 / 0 events processed so far)
+	249147 1 1350  -> pass !
+	249205 1 1350  -> pass !
+	249206 1 1350  -> pass !
+	249224 1 1350  -> pass !
+	249251 1 1350  -> pass !
+	23168 1 126  -> pass !
+	23205 1 126  -> pass !
+	23221 1 126  -> pass !
+	23258 1 126  -> pass !
+	44352 1 241  -> pass !
+	44353 1 241  -> pass !
+	44369 1 241  -> pass !
+	44421 1 241  -> pass !
+	44422 1 241  -> pass !
+	44435 1 241  -> pass !
+	44445 1 241  -> pass !
+	44480 1 241  -> pass !
+	44555 1 242  -> pass !
+	44563 1 242  -> pass !
+	44624 1 242  -> pass !
+	44634 1 242  -> pass !
+	44646 1 242  -> pass !
+	44687 1 242  -> pass !
+	44690 1 242  -> pass !
+	44706 1 242  -> pass !
+	44729 1 243  -> pass !
+	44759 1 243  -> pass !
+	65993 1 358  -> pass !
+	66000 1 358  -> pass !
+	66009 1 358  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 13999 (13999 / 0 events processed so far)
+	66035 1 358  -> pass !
+	66043 1 358  -> pass !
+	66090 1 358  -> pass !
+	66119 1 358  -> pass !
+	118008 1 640  -> pass !
+	118044 1 640  -> pass !
+	118067 1 640  -> pass !
+	118101 1 640  -> pass !
+	118133 1 640  -> pass !
+	118165 1 640  -> pass !
+	118284 1 641  -> pass !
+	118285 1 641  -> pass !
+	118321 1 641  -> pass !
+	118335 1 641  -> pass !
+	118342 1 641  -> pass !
+	118366 1 641  -> pass !
+	118384 1 641  -> pass !
+	118393 1 641  -> pass !
+	118433 1 642  -> pass !
+	118530 1 642  -> pass !
+	118555 1 642  -> pass !
+	118599 1 643  -> pass !
+	118635 1 643  -> pass !
+	118638 1 643  -> pass !
+	118657 1 643  -> pass !
+	118667 1 643  -> pass !
+	118737 1 643  -> pass !
+	118752 1 643  -> pass !
+	118814 1 644  -> pass !
+	118815 1 644  -> pass !
+	118829 1 644  -> pass !
+	118841 1 644  -> pass !
+	118859 1 644  -> pass !
+	118887 1 644  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 14999 (14999 / 0 events processed so far)
+	118917 1 644  -> pass !
+	118930 1 644  -> pass !
+	118940 1 644  -> pass !
+	118943 1 644  -> pass !
+	118952 1 644  -> pass !
+	154055 1 835  -> pass !
+	154059 1 835  -> pass !
+	154073 1 835  -> pass !
+	154104 1 835  -> pass !
+	154122 1 835  -> pass !
+	154157 1 835  -> pass !
+	154198 1 835  -> pass !
+	154210 1 835  -> pass !
+	154211 1 835  -> pass !
+	154262 1 836  -> pass !
+	154290 1 836  -> pass !
+	154396 1 836  -> pass !
+	154407 1 836  -> pass !
+	154423 1 837  -> pass !
+	154467 1 837  -> pass !
+	154505 1 837  -> pass !
+	154508 1 837  -> pass !
+	154512 1 837  -> pass !
+	154537 1 837  -> pass !
+	154539 1 837  -> pass !
+	154546 1 837  -> pass !
+	158472 1 859  -> pass !
+	158522 1 859  -> pass !
+	158540 1 859  -> pass !
+	158591 1 859  -> pass !
+	158593 1 859  -> pass !
+	158595 1 859  -> pass !
+	158622 1 859  -> pass !
+	158643 1 859  -> pass !
+	158646 1 860  -> pass !
+	158695 1 860  -> pass !
+	158714 1 860  -> pass !
+	158745 1 860  -> pass !
+	158755 1 860  -> pass !
+	158757 1 860  -> pass !
+	158765 1 860  -> pass !
+	158772 1 860  -> pass !
+	158775 1 860  -> pass !
+	158778 1 860  -> pass !
+	158785 1 860  -> pass !
+	158816 1 860  -> pass !
+	158818 1 860  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 15999 (15999 / 0 events processed so far)
+	252274 1 1367  -> pass !
+	252293 1 1367  -> pass !
+	252297 1 1367  -> pass !
+	252340 1 1367  -> pass !
+	252410 1 1367  -> pass !
+	252417 1 1367  -> pass !
+	252454 1 1367  -> pass !
+	252465 1 1367  -> pass !
+	252565 1 1368  -> pass !
+	252620 1 1368  -> pass !
+	272419 1 1476  -> pass !
+	272455 1 1476  -> pass !
+	272468 1 1476  -> pass !
+	272478 1 1476  -> pass !
+	348871 1 1890  -> pass !
+	348930 1 1890  -> pass !
+	348947 1 1890  -> pass !
+	348952 1 1890  -> pass !
+	348971 1 1890  -> pass !
+	349005 1 1890  -> pass !
+	414044 1 2243  -> pass !
+	414046 1 2243  -> pass !
+	414116 1 2243  -> pass !
+	414125 1 2243  -> pass !
+	414204 1 2243  -> pass !
+	414220 1 2243  -> pass !
+	414226 1 2243  -> pass !
+	414247 1 2244  -> pass !
+	414266 1 2244  -> pass !
+	414297 1 2244  -> pass !
+	414321 1 2244  -> pass !
+	414353 1 2244  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 16999 (16999 / 0 events processed so far)
+	414384 1 2244  -> pass !
+	7608 1 42  -> pass !
+	7625 1 42  -> pass !
+	7627 1 42  -> pass !
+	7664 1 42  -> pass !
+	7675 1 42  -> pass !
+	7680 1 42  -> pass !
+	7687 1 42  -> pass !
+	7701 1 42  -> pass !
+	15554 1 85  -> pass !
+	15580 1 85  -> pass !
+	15622 1 85  -> pass !
+	15634 1 85  -> pass !
+	15646 1 85  -> pass !
+	15660 1 85  -> pass !
+	15670 1 85  -> pass !
+	15673 1 85  -> pass !
+	15704 1 85  -> pass !
+	15707 1 85  -> pass !
+	15723 1 86  -> pass !
+	15794 1 86  -> pass !
+	15809 1 86  -> pass !
+	15845 1 86  -> pass !
+	15910 1 86  -> pass !
+	15924 1 87  -> pass !
+	15991 1 87  -> pass !
+	16016 1 87  -> pass !
+	16059 1 87  -> pass !
+	16062 1 87  -> pass !
+	16066 1 87  -> pass !
+	18289 1 100  -> pass !
+	18328 1 100  -> pass !
+	18390 1 100  -> pass !
+	18391 1 100  -> pass !
+	18430 1 100  -> pass !
+	18469 1 100  -> pass !
+	18470 1 100  -> pass !
+	435847 1 2361  -> pass !
+	435861 1 2361  -> pass !
+	435892 1 2361  -> pass !
+	435915 1 2361  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 17999 (17999 / 0 events processed so far)
+	435992 1 2361  -> pass !
+	438216 1 2374  -> pass !
+	438224 1 2374  -> pass !
+	438309 1 2374  -> pass !
+	438315 1 2374  -> pass !
+	438318 1 2374  -> pass !
+	438339 1 2374  -> pass !
+	438353 1 2374  -> pass !
+	438399 1 2374  -> pass !
+	438426 1 2375  -> pass !
+	438445 1 2375  -> pass !
+	438470 1 2375  -> pass !
+	438492 1 2375  -> pass !
+	438537 1 2375  -> pass !
+	438684 1 2376  -> pass !
+	438737 1 2376  -> pass !
+	459298 1 2488  -> pass !
+	459306 1 2488  -> pass !
+	459334 1 2488  -> pass !
+	459354 1 2488  -> pass !
+	459426 1 2488  -> pass !
+	459446 1 2488  -> pass !
+	468352 1 2537  -> pass !
+	468387 1 2537  -> pass !
+	468388 1 2537  -> pass !
+	468488 1 2537  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 18999 (18999 / 0 events processed so far)
+	468528 1 2537  -> pass !
+	468552 1 2538  -> pass !
+	468553 1 2538  -> pass !
+	468562 1 2538  -> pass !
+	468585 1 2538  -> pass !
+	468586 1 2538  -> pass !
+	468609 1 2538  -> pass !
+	468655 1 2538  -> pass !
+	488642 1 2647  -> pass !
+	488651 1 2647  -> pass !
+	488662 1 2647  -> pass !
+	488666 1 2647  -> pass !
+	488682 1 2647  -> pass !
+	488731 1 2647  -> pass !
+	488753 1 2647  -> pass !
+	488769 1 2647  -> pass !
+	488792 1 2647  -> pass !
+	488798 1 2647  -> pass !
+	488819 1 2647  -> pass !
+	488848 1 2648  -> pass !
+	488876 1 2648  -> pass !
+	488902 1 2648  -> pass !
+	488956 1 2648  -> pass !
+	488965 1 2648  -> pass !
+	489025 1 2648  -> pass !
+	489031 1 2649  -> pass !
+	489059 1 2649  -> pass !
+	489060 1 2649  -> pass !
+	489073 1 2649  -> pass !
+	489139 1 2649  -> pass !
+	489161 1 2649  -> pass !
+	489174 1 2649  -> pass !
+	489181 1 2649  -> pass !
+	45679 1 248  -> pass !
+	45704 1 248  -> pass !
+	45740 1 248  -> pass !
+	45797 1 248  -> pass !
+	45849 1 249  -> pass !
+	45869 1 249  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 19999 (19999 / 0 events processed so far)
+	45969 1 249  -> pass !
+	56542 1 307  -> pass !
+	56559 1 307  -> pass !
+	56603 1 307  -> pass !
+	56622 1 307  -> pass !
+	56630 1 307  -> pass !
+	56631 1 307  -> pass !
+	56665 1 307  -> pass !
+	56687 1 307  -> pass !
+	56757 1 308  -> pass !
+	56799 1 308  -> pass !
+	56859 1 308  -> pass !
+	56886 1 308  -> pass !
+	56902 1 308  -> pass !
+	56909 1 309  -> pass !
+	56921 1 309  -> pass !
+	56940 1 309  -> pass !
+	56999 1 309  -> pass !
+	57000 1 309  -> pass !
+	103825 1 563  -> pass !
+	103834 1 563  -> pass !
+	103960 1 563  -> pass !
+	104010 1 564  -> pass !
+	104020 1 564  -> pass !
+	104035 1 564  -> pass !
+	104046 1 564  -> pass !
+	104071 1 564  -> pass !
+	104140 1 564  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 20999 (20999 / 0 events processed so far)
+	479811 1 2599  -> pass !
+	479862 1 2599  -> pass !
+	479892 1 2599  -> pass !
+	479896 1 2599  -> pass !
+	479918 1 2599  -> pass !
+	479949 1 2599  -> pass !
+	479973 1 2600  -> pass !
+	480073 1 2600  -> pass !
+	480093 1 2600  -> pass !
+	480139 1 2600  -> pass !
+	480184 1 2601  -> pass !
+	480191 1 2601  -> pass !
+	480211 1 2601  -> pass !
+	480218 1 2601  -> pass !
+	480256 1 2601  -> pass !
+	480260 1 2601  -> pass !
+	398334 1 2158  -> pass !
+	398361 1 2158  -> pass !
+	398385 1 2158  -> pass !
+	398400 1 2158  -> pass !
+	398463 1 2158  -> pass !
+	398470 1 2158  -> pass !
+	398473 1 2158  -> pass !
+	398479 1 2158  -> pass !
+	398501 1 2158  -> pass !
+	398550 1 2159  -> pass !
+	398571 1 2159  -> pass !
+	398588 1 2159  -> pass !
+	398610 1 2159  -> pass !
+	398658 1 2159  -> pass !
+	398681 1 2159  -> pass !
+	398700 1 2159  -> pass !
+	398734 1 2160  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 21999 (21999 / 0 events processed so far)
+	398789 1 2160  -> pass !
+	398800 1 2160  -> pass !
+	398813 1 2160  -> pass !
+	398817 1 2160  -> pass !
+	398821 1 2160  -> pass !
+	398843 1 2160  -> pass !
+	408317 1 2212  -> pass !
+	408330 1 2212  -> pass !
+	408343 1 2212  -> pass !
+	408352 1 2212  -> pass !
+	408420 1 2212  -> pass !
+	408426 1 2212  -> pass !
+	408428 1 2212  -> pass !
+	408452 1 2212  -> pass !
+	408453 1 2212  -> pass !
+	408487 1 2212  -> pass !
+	408561 1 2213  -> pass !
+	408653 1 2213  -> pass !
+	408663 1 2213  -> pass !
+	408678 1 2213  -> pass !
+	408687 1 2213  -> pass !
+	47510 1 258  -> pass !
+	47528 1 258  -> pass !
+	47573 1 258  -> pass !
+	47575 1 258  -> pass !
+	47595 1 258  -> pass !
+	47601 1 258  -> pass !
+	47610 1 258  -> pass !
+	47620 1 258  -> pass !
+	60487 1 328  -> pass !
+	60489 1 328  -> pass !
+	60559 1 328  -> pass !
+	60585 1 328  -> pass !
+	60685 1 329  -> pass !
+	60707 1 329  -> pass !
+	60708 1 329  -> pass !
+	60712 1 329  -> pass !
+	60713 1 329  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 22999 (22999 / 0 events processed so far)
+	60754 1 329  -> pass !
+	60756 1 329  -> pass !
+	60806 1 330  -> pass !
+	60828 1 330  -> pass !
+	60834 1 330  -> pass !
+	60869 1 330  -> pass !
+	60886 1 330  -> pass !
+	60920 1 330  -> pass !
+	68707 1 373  -> pass !
+	68717 1 373  -> pass !
+	68746 1 373  -> pass !
+	68802 1 373  -> pass !
+	68884 1 373  -> pass !
+	132809 1 720  -> pass !
+	132870 1 720  -> pass !
+	139614 1 757  -> pass !
+	139634 1 757  -> pass !
+	139643 1 757  -> pass !
+	139664 1 757  -> pass !
+	139707 1 757  -> pass !
+	139712 1 757  -> pass !
+	139765 1 757  -> pass !
+	139795 1 757  -> pass !
+	139825 1 758  -> pass !
+	139856 1 758  -> pass !
+	139887 1 758  -> pass !
+	139903 1 758  -> pass !
+	139919 1 758  -> pass !
+	139947 1 758  -> pass !
+	139964 1 758  -> pass !
+	139966 1 758  -> pass !
+	140020 1 759  -> pass !
+	140021 1 759  -> pass !
+	140027 1 759  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 23999 (23999 / 0 events processed so far)
+	140086 1 759  -> pass !
+	140089 1 759  -> pass !
+	140123 1 759  -> pass !
+	140127 1 759  -> pass !
+	153475 1 832  -> pass !
+	153490 1 832  -> pass !
+	153493 1 832  -> pass !
+	153508 1 832  -> pass !
+	153596 1 832  -> pass !
+	153597 1 832  -> pass !
+	153620 1 832  -> pass !
+	153642 1 832  -> pass !
+	153652 1 832  -> pass !
+	153702 1 833  -> pass !
+	153710 1 833  -> pass !
+	153726 1 833  -> pass !
+	153743 1 833  -> pass !
+	435343 1 2358  -> pass !
+	435378 1 2358  -> pass !
+	435396 1 2358  -> pass !
+	435433 1 2358  -> pass !
+	441009 1 2389  -> pass !
+	441016 1 2389  -> pass !
+	441031 1 2389  -> pass !
+	441035 1 2389  -> pass !
+	441064 1 2389  -> pass !
+	441075 1 2389  -> pass !
+	441084 1 2389  -> pass !
+	441189 1 2390  -> pass !
+	441216 1 2390  -> pass !
+	441224 1 2390  -> pass !
+	441238 1 2390  -> pass !
+	441255 1 2390  -> pass !
+	441276 1 2390  -> pass !
+	441278 1 2390  -> pass !
+	441297 1 2390  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 24999 (24999 / 0 events processed so far)
+	441305 1 2390  -> pass !
+	441312 1 2390  -> pass !
+	441316 1 2390  -> pass !
+	441360 1 2390  -> pass !
+	441375 1 2390  -> pass !
+	441397 1 2391  -> pass !
+	442192 1 2395  -> pass !
+	442238 1 2395  -> pass !
+	442277 1 2395  -> pass !
+	442280 1 2395  -> pass !
+	442292 1 2395  -> pass !
+	105109 1 570  -> pass !
+	105131 1 570  -> pass !
+	105154 1 570  -> pass !
+	105157 1 570  -> pass !
+	105188 1 570  -> pass !
+	105209 1 570  -> pass !
+	105224 1 570  -> pass !
+	454431 1 2461  -> pass !
+	454439 1 2461  -> pass !
+	454459 1 2461  -> pass !
+	454481 1 2462  -> pass !
+	454483 1 2462  -> pass !
+	454501 1 2462  -> pass !
+	454540 1 2462  -> pass !
+	454541 1 2462  -> pass !
+	454583 1 2462  -> pass !
+	454588 1 2462  -> pass !
+	454602 1 2462  -> pass !
+	454612 1 2462  -> pass !
+	454632 1 2462  -> pass !
+	454677 1 2462  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 25999 (25999 / 0 events processed so far)
+	454701 1 2463  -> pass !
+	454722 1 2463  -> pass !
+	454732 1 2463  -> pass !
+	454783 1 2463  -> pass !
+	454813 1 2463  -> pass !
+	454827 1 2463  -> pass !
+	473117 1 2563  -> pass !
+	473119 1 2563  -> pass !
+	473125 1 2563  -> pass !
+	473136 1 2563  -> pass !
+	473137 1 2563  -> pass !
+	473142 1 2563  -> pass !
+	473166 1 2563  -> pass !
+	473188 1 2563  -> pass !
+	473196 1 2563  -> pass !
+	473237 1 2563  -> pass !
+	473242 1 2563  -> pass !
+	473286 1 2563  -> pass !
+	473297 1 2563  -> pass !
+	110681 1 600  -> pass !
+	110682 1 600  -> pass !
+	110741 1 600  -> pass !
+	110753 1 600  -> pass !
+	110777 1 600  -> pass !
+	110790 1 600  -> pass !
+	113642 1 616  -> pass !
+	113645 1 616  -> pass !
+	113657 1 616  -> pass !
+	113673 1 616  -> pass !
+	113726 1 616  -> pass !
+	113751 1 616  -> pass !
+	113825 1 617  -> pass !
+	113867 1 617  -> pass !
+	113889 1 617  -> pass !
+	113894 1 617  -> pass !
+	113902 1 617  -> pass !
+	113941 1 617  -> pass !
+	113989 1 618  -> pass !
+	114024 1 618  -> pass !
+	114029 1 618  -> pass !
+	114037 1 618  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 26999 (26999 / 0 events processed so far)
+	115320 1 625  -> pass !
+	115329 1 625  -> pass !
+	115373 1 625  -> pass !
+	115375 1 625  -> pass !
+	115387 1 625  -> pass !
+	125062 1 678  -> pass !
+	125063 1 678  -> pass !
+	125081 1 678  -> pass !
+	125089 1 678  -> pass !
+	125110 1 678  -> pass !
+	125129 1 678  -> pass !
+	125139 1 678  -> pass !
+	125173 1 678  -> pass !
+	125188 1 678  -> pass !
+	125219 1 679  -> pass !
+	125239 1 679  -> pass !
+	125260 1 679  -> pass !
+	125272 1 679  -> pass !
+	125275 1 679  -> pass !
+	125297 1 679  -> pass !
+	125299 1 679  -> pass !
+	125319 1 679  -> pass !
+	125355 1 679  -> pass !
+	125401 1 679  -> pass !
+	125408 1 680  -> pass !
+	125431 1 680  -> pass !
+	125449 1 680  -> pass !
+	125466 1 680  -> pass !
+	125472 1 680  -> pass !
+	125475 1 680  -> pass !
+	125492 1 680  -> pass !
+	125538 1 680  -> pass !
+	125561 1 680  -> pass !
+	125568 1 680  -> pass !
+	125624 1 681  -> pass !
+	125682 1 681  -> pass !
+	125685 1 681  -> pass !
+	125717 1 681  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 27999 (27999 / 0 events processed so far)
+	127463 1 691  -> pass !
+	127479 1 691  -> pass !
+	127487 1 691  -> pass !
+	127537 1 691  -> pass !
+	127580 1 691  -> pass !
+	127591 1 691  -> pass !
+	127606 1 691  -> pass !
+	127608 1 691  -> pass !
+	128015 1 694  -> pass !
+	128072 1 694  -> pass !
+	128081 1 694  -> pass !
+	128087 1 694  -> pass !
+	128094 1 694  -> pass !
+	128172 1 694  -> pass !
+	128219 1 695  -> pass !
+	128224 1 695  -> pass !
+	128237 1 695  -> pass !
+	128277 1 695  -> pass !
+	128281 1 695  -> pass !
+	128330 1 695  -> pass !
+	128397 1 696  -> pass !
+	128439 1 696  -> pass !
+	128444 1 696  -> pass !
+	128448 1 696  -> pass !
+	128488 1 696  -> pass !
+	128504 1 696  -> pass !
+	129647 1 703  -> pass !
+	129672 1 703  -> pass !
+	129673 1 703  -> pass !
+	129705 1 703  -> pass !
+	129782 1 703  -> pass !
+	129799 1 703  -> pass !
+	129834 1 703  -> pass !
+	129878 1 704  -> pass !
+	129905 1 704  -> pass !
+	129913 1 704  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 28999 (28999 / 0 events processed so far)
+	129944 1 704  -> pass !
+	251576 1 1363  -> pass !
+	251595 1 1363  -> pass !
+	251671 1 1363  -> pass !
+	251686 1 1363  -> pass !
+	251689 1 1363  -> pass !
+	251724 1 1364  -> pass !
+	251765 1 1364  -> pass !
+	251766 1 1364  -> pass !
+	251768 1 1364  -> pass !
+	251828 1 1364  -> pass !
+	251870 1 1364  -> pass !
+	251887 1 1364  -> pass !
+	251893 1 1364  -> pass !
+	251913 1 1364  -> pass !
+	251918 1 1365  -> pass !
+	251929 1 1365  -> pass !
+	251993 1 1365  -> pass !
+	252003 1 1365  -> pass !
+	252033 1 1365  -> pass !
+	252042 1 1365  -> pass !
+	393920 1 2134  -> pass !
+	393926 1 2134  -> pass !
+	393929 1 2134  -> pass !
+	394020 1 2134  -> pass !
+	394049 1 2134  -> pass !
+	394184 1 2135  -> pass !
+	394224 1 2135  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 29999 (29999 / 0 events processed so far)
+	394233 1 2135  -> pass !
+	394247 1 2135  -> pass !
+	394372 1 2136  -> pass !
+	394393 1 2136  -> pass !
+	394402 1 2136  -> pass !
+	394407 1 2136  -> pass !
+	394429 1 2136  -> pass !
+	394434 1 2136  -> pass !
+	475733 1 2577  -> pass !
+	475752 1 2577  -> pass !
+	475760 1 2577  -> pass !
+	475764 1 2577  -> pass !
+	475775 1 2577  -> pass !
+	475777 1 2577  -> pass !
+	475802 1 2577  -> pass !
+	475815 1 2577  -> pass !
+	475863 1 2577  -> pass !
+	475909 1 2578  -> pass !
+	475921 1 2578  -> pass !
+	475965 1 2578  -> pass !
+	475969 1 2578  -> pass !
+	475978 1 2578  -> pass !
+	475979 1 2578  -> pass !
+	475990 1 2578  -> pass !
+	476001 1 2578  -> pass !
+	476003 1 2578  -> pass !
+	476040 1 2578  -> pass !
+	476051 1 2578  -> pass !
+	476059 1 2578  -> pass !
+	476071 1 2578  -> pass !
+	476073 1 2578  -> pass !
+	476143 1 2579  -> pass !
+	476193 1 2579  -> pass !
+	476222 1 2579  -> pass !
+	476325 1 2580  -> pass !
+	476339 1 2580  -> pass !
+	476350 1 2580  -> pass !
+	476355 1 2580  -> pass !
+	476426 1 2580  -> pass !
+	476434 1 2580  -> pass !
+	488089 1 2644  -> pass !
+	488114 1 2644  -> pass !
+	488120 1 2644  -> pass !
+	488124 1 2644  -> pass !
+	488127 1 2644  -> pass !
+	488141 1 2644  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 30999 (30999 / 0 events processed so far)
+	488156 1 2644  -> pass !
+	488211 1 2644  -> pass !
+	488224 1 2644  -> pass !
+	488239 1 2644  -> pass !
+	13914 1 76  -> pass !
+	13987 1 76  -> pass !
+	14002 1 76  -> pass !
+	14019 1 76  -> pass !
+	14054 1 77  -> pass !
+	14122 1 77  -> pass !
+	14124 1 77  -> pass !
+	14161 1 77  -> pass !
+	14210 1 77  -> pass !
+	14296 1 78  -> pass !
+	14304 1 78  -> pass !
+	14336 1 78  -> pass !
+	14351 1 78  -> pass !
+	14357 1 78  -> pass !
+	14368 1 78  -> pass !
+	14369 1 78  -> pass !
+	14392 1 78  -> pass !
+	66483 1 361  -> pass !
+	66496 1 361  -> pass !
+	66505 1 361  -> pass !
+	66518 1 361  -> pass !
+	66539 1 361  -> pass !
+	66546 1 361  -> pass !
+	66574 1 361  -> pass !
+	66619 1 361  -> pass !
+	66737 1 362  -> pass !
+	66756 1 362  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 31999 (31999 / 0 events processed so far)
+	66819 1 362  -> pass !
+	66846 1 362  -> pass !
+	79646 1 432  -> pass !
+	79709 1 432  -> pass !
+	79718 1 432  -> pass !
+	79750 1 432  -> pass !
+	79764 1 432  -> pass !
+	83702 1 454  -> pass !
+	83708 1 454  -> pass !
+	83792 1 454  -> pass !
+	83810 1 454  -> pass !
+	83811 1 454  -> pass !
+	83812 1 454  -> pass !
+	83842 1 454  -> pass !
+	83854 1 454  -> pass !
+	83902 1 455  -> pass !
+	83907 1 455  -> pass !
+	83914 1 455  -> pass !
+	83934 1 455  -> pass !
+	83947 1 455  -> pass !
+	83981 1 455  -> pass !
+	83990 1 455  -> pass !
+	84107 1 456  -> pass !
+	84135 1 456  -> pass !
+	95305 1 517  -> pass !
+	95313 1 517  -> pass !
+	95325 1 517  -> pass !
+	95349 1 517  -> pass !
+	95367 1 517  -> pass !
+	95370 1 517  -> pass !
+	95438 1 517  -> pass !
+	95464 1 517  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 32999 (32999 / 0 events processed so far)
+	162232 1 879  -> pass !
+	162238 1 879  -> pass !
+	162289 1 879  -> pass !
+	162290 1 879  -> pass !
+	162318 1 879  -> pass !
+	175092 1 949  -> pass !
+	175097 1 949  -> pass !
+	175132 1 949  -> pass !
+	175147 1 949  -> pass !
+	175150 1 949  -> pass !
+	175168 1 949  -> pass !
+	175200 1 949  -> pass !
+	175227 1 949  -> pass !
+	175229 1 949  -> pass !
+	175231 1 949  -> pass !
+	175249 1 949  -> pass !
+	175277 1 950  -> pass !
+	175293 1 950  -> pass !
+	175377 1 950  -> pass !
+	175452 1 950  -> pass !
+	175484 1 951  -> pass !
+	175512 1 951  -> pass !
+	175515 1 951  -> pass !
+	175577 1 951  -> pass !
+	208878 1 1132  -> pass !
+	208897 1 1132  -> pass !
+	208918 1 1132  -> pass !
+	208940 1 1132  -> pass !
+	208965 1 1132  -> pass !
+	208966 1 1132  -> pass !
+	209006 1 1132  -> pass !
+	209007 1 1132  -> pass !
+	209021 1 1132  -> pass !
+	209029 1 1132  -> pass !
+	288703 1 1564  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 33999 (33999 / 0 events processed so far)
+	288736 1 1564  -> pass !
+	288747 1 1564  -> pass !
+	288795 1 1564  -> pass !
+	288802 1 1564  -> pass !
+	288898 1 1565  -> pass !
+	288913 1 1565  -> pass !
+	288921 1 1565  -> pass !
+	289029 1 1565  -> pass !
+	289040 1 1566  -> pass !
+	289058 1 1566  -> pass !
+	289074 1 1566  -> pass !
+	289094 1 1566  -> pass !
+	289101 1 1566  -> pass !
+	299717 1 1624  -> pass !
+	299762 1 1624  -> pass !
+	299776 1 1624  -> pass !
+	299812 1 1624  -> pass !
+	299816 1 1624  -> pass !
+	299846 1 1624  -> pass !
+	299866 1 1624  -> pass !
+	299894 1 1624  -> pass !
+	299898 1 1624  -> pass !
+	299917 1 1625  -> pass !
+	299929 1 1625  -> pass !
+	299931 1 1625  -> pass !
+	299952 1 1625  -> pass !
+	299968 1 1625  -> pass !
+	299982 1 1625  -> pass !
+	299998 1 1625  -> pass !
+	300113 1 1625  -> pass !
+	455954 1 2470  -> pass !
+	455955 1 2470  -> pass !
+	455967 1 2470  -> pass !
+	456008 1 2470  -> pass !
+	456070 1 2470  -> pass !
+	456073 1 2470  -> pass !
+	456077 1 2470  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 34999 (34999 / 0 events processed so far)
+	456105 1 2470  -> pass !
+	456120 1 2470  -> pass !
+	456126 1 2470  -> pass !
+	456151 1 2471  -> pass !
+	456240 1 2471  -> pass !
+	456309 1 2471  -> pass !
+	456314 1 2471  -> pass !
+	456348 1 2472  -> pass !
+	456363 1 2472  -> pass !
+	456371 1 2472  -> pass !
+	456378 1 2472  -> pass !
+	456380 1 2472  -> pass !
+	456390 1 2472  -> pass !
+	456410 1 2472  -> pass !
+	456421 1 2472  -> pass !
+	456431 1 2472  -> pass !
+	456474 1 2472  -> pass !
+	456485 1 2472  -> pass !
+	456495 1 2472  -> pass !
+	479291 1 2596  -> pass !
+	479311 1 2596  -> pass !
+	479327 1 2596  -> pass !
+	479329 1 2596  -> pass !
+	479331 1 2596  -> pass !
+	479339 1 2596  -> pass !
+	479349 1 2596  -> pass !
+	479382 1 2596  -> pass !
+	479388 1 2596  -> pass !
+	479389 1 2596  -> pass !
+	479393 1 2596  -> pass !
+	479401 1 2596  -> pass !
+	479430 1 2597  -> pass !
+	479483 1 2597  -> pass !
+	479507 1 2597  -> pass !
+	479536 1 2597  -> pass !
+	114888 1 623  -> pass !
+	114891 1 623  -> pass !
+	114933 1 623  -> pass !
+	114948 1 623  -> pass !
+	114974 1 623  -> pass !
+	115005 1 623  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 35999 (35999 / 0 events processed so far)
+	115109 1 624  -> pass !
+	115126 1 624  -> pass !
+	115138 1 624  -> pass !
+	115156 1 624  -> pass !
+	115161 1 624  -> pass !
+	115187 1 624  -> pass !
+	115207 1 624  -> pass !
+	115211 1 624  -> pass !
+	115231 1 624  -> pass !
+	116363 1 631  -> pass !
+	116405 1 631  -> pass !
+	116471 1 631  -> pass !
+	116484 1 631  -> pass !
+	116487 1 631  -> pass !
+	116523 1 631  -> pass !
+	116546 1 632  -> pass !
+	116605 1 632  -> pass !
+	116606 1 632  -> pass !
+	116640 1 632  -> pass !
+	116662 1 632  -> pass !
+	116732 1 632  -> pass !
+	116743 1 633  -> pass !
+	116761 1 633  -> pass !
+	116792 1 633  -> pass !
+	116813 1 633  -> pass !
+	116830 1 633  -> pass !
+	116861 1 633  -> pass !
+	186164 1 1009  -> pass !
+	186242 1 1009  -> pass !
+	186246 1 1009  -> pass !
+	186269 1 1009  -> pass !
+	186328 1 1009  -> pass !
+	186347 1 1010  -> pass !
+	186365 1 1010  -> pass !
+	186390 1 1010  -> pass !
+	186400 1 1010  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 36999 (36999 / 0 events processed so far)
+	186469 1 1010  -> pass !
+	186508 1 1010  -> pass !
+	186527 1 1010  -> pass !
+	186537 1 1010  -> pass !
+	186598 1 1011  -> pass !
+	186599 1 1011  -> pass !
+	186621 1 1011  -> pass !
+	206651 1 1120  -> pass !
+	206683 1 1120  -> pass !
+	206736 1 1120  -> pass !
+	206740 1 1120  -> pass !
+	206759 1 1120  -> pass !
+	206761 1 1120  -> pass !
+	206780 1 1120  -> pass !
+	206791 1 1120  -> pass !
+	206814 1 1120  -> pass !
+	206828 1 1120  -> pass !
+	206879 1 1121  -> pass !
+	206918 1 1121  -> pass !
+	206929 1 1121  -> pass !
+	206973 1 1121  -> pass !
+	206989 1 1121  -> pass !
+	207006 1 1121  -> pass !
+	207027 1 1121  -> pass !
+	207032 1 1121  -> pass !
+	294587 1 1596  -> pass !
+	294651 1 1596  -> pass !
+	294657 1 1596  -> pass !
+	294703 1 1596  -> pass !
+	338016 1 1831  -> pass !
+	338055 1 1831  -> pass !
+	338090 1 1831  -> pass !
+	338108 1 1831  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 37999 (37999 / 0 events processed so far)
+	338143 1 1832  -> pass !
+	338146 1 1832  -> pass !
+	338203 1 1832  -> pass !
+	338226 1 1832  -> pass !
+	338249 1 1832  -> pass !
+	338265 1 1832  -> pass !
+	338283 1 1832  -> pass !
+	338335 1 1832  -> pass !
+	338351 1 1833  -> pass !
+	338361 1 1833  -> pass !
+	338370 1 1833  -> pass !
+	338386 1 1833  -> pass !
+	338396 1 1833  -> pass !
+	338421 1 1833  -> pass !
+	338437 1 1833  -> pass !
+	338492 1 1833  -> pass !
+	338501 1 1834  -> pass !
+	338514 1 1834  -> pass !
+	338517 1 1834  -> pass !
+	338540 1 1834  -> pass !
+	338650 1 1834  -> pass !
+	338651 1 1834  -> pass !
+	338658 1 1834  -> pass !
+	338683 1 1834  -> pass !
+	339606 1 1840  -> pass !
+	339625 1 1840  -> pass !
+	339645 1 1840  -> pass !
+	339664 1 1840  -> pass !
+	339694 1 1840  -> pass !
+	339696 1 1840  -> pass !
+	339764 1 1840  -> pass !
+	339823 1 1841  -> pass !
+	339906 1 1841  -> pass !
+	339982 1 1841  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 38999 (38999 / 0 events processed so far)
+	340035 1 1842  -> pass !
+	340049 1 1842  -> pass !
+	340066 1 1842  -> pass !
+	340122 1 1842  -> pass !
+	340139 1 1842  -> pass !
+	340148 1 1842  -> pass !
+	377845 1 2047  -> pass !
+	377847 1 2047  -> pass !
+	377858 1 2047  -> pass !
+	377891 1 2047  -> pass !
+	377904 1 2047  -> pass !
+	377964 1 2047  -> pass !
+	377974 1 2047  -> pass !
+	377976 1 2047  -> pass !
+	377981 1 2047  -> pass !
+	377984 1 2047  -> pass !
+	378001 1 2047  -> pass !
+	378032 1 2048  -> pass !
+	378160 1 2048  -> pass !
+	378161 1 2048  -> pass !
+	378164 1 2048  -> pass !
+	378202 1 2048  -> pass !
+	378223 1 2048  -> pass !
+	381057 1 2064  -> pass !
+	381075 1 2064  -> pass !
+	399446 1 2164  -> pass !
+	399496 1 2164  -> pass !
+	399586 1 2164  -> pass !
+	399596 1 2164  -> pass !
+	399606 1 2164  -> pass !
+	399630 1 2164  -> pass !
+	399635 1 2165  -> pass !
+	399643 1 2165  -> pass !
+	399673 1 2165  -> pass !
+	399681 1 2165  -> pass !
+	399692 1 2165  -> pass !
+	399719 1 2165  -> pass !
+	399739 1 2165  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 39999 (39999 / 0 events processed so far)
+	399784 1 2165  -> pass !
+	399791 1 2165  -> pass !
+	399822 1 2165  -> pass !
+	399836 1 2166  -> pass !
+	399851 1 2166  -> pass !
+	399855 1 2166  -> pass !
+	399899 1 2166  -> pass !
+	405545 1 2197  -> pass !
+	405556 1 2197  -> pass !
+	405590 1 2197  -> pass !
+	405619 1 2197  -> pass !
+	405621 1 2197  -> pass !
+	405627 1 2197  -> pass !
+	405686 1 2197  -> pass !
+	405692 1 2197  -> pass !
+	126333 1 685  -> pass !
+	126338 1 685  -> pass !
+	126354 1 685  -> pass !
+	126375 1 685  -> pass !
+	126391 1 685  -> pass !
+	126446 1 685  -> pass !
+	126483 1 685  -> pass !
+	126517 1 686  -> pass !
+	126548 1 686  -> pass !
+	126602 1 686  -> pass !
+	126703 1 686  -> pass !
+	126731 1 687  -> pass !
+	126757 1 687  -> pass !
+	126762 1 687  -> pass !
+	126765 1 687  -> pass !
+	126785 1 687  -> pass !
+	126824 1 687  -> pass !
+	126843 1 687  -> pass !
+	126859 1 687  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 40999 (40999 / 0 events processed so far)
+	131304 1 712  -> pass !
+	131346 1 712  -> pass !
+	131414 1 712  -> pass !
+	131433 1 712  -> pass !
+	131449 1 712  -> pass !
+	131455 1 712  -> pass !
+	131507 1 713  -> pass !
+	131535 1 713  -> pass !
+	131546 1 713  -> pass !
+	131555 1 713  -> pass !
+	131574 1 713  -> pass !
+	131585 1 713  -> pass !
+	131607 1 713  -> pass !
+	131637 1 713  -> pass !
+	131657 1 713  -> pass !
+	202481 1 1097  -> pass !
+	202483 1 1097  -> pass !
+	202538 1 1097  -> pass !
+	202563 1 1097  -> pass !
+	202581 1 1097  -> pass !
+	202590 1 1097  -> pass !
+	202650 1 1098  -> pass !
+	202661 1 1098  -> pass !
+	202679 1 1098  -> pass !
+	202685 1 1098  -> pass !
+	202714 1 1098  -> pass !
+	202761 1 1098  -> pass !
+	232798 1 1261  -> pass !
+	232799 1 1261  -> pass !
+	232827 1 1261  -> pass !
+	232872 1 1261  -> pass !
+	232917 1 1262  -> pass !
+	232927 1 1262  -> pass !
+	232931 1 1262  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 41999 (41999 / 0 events processed so far)
+	232960 1 1262  -> pass !
+	232972 1 1262  -> pass !
+	232996 1 1262  -> pass !
+	233041 1 1262  -> pass !
+	233043 1 1262  -> pass !
+	233071 1 1262  -> pass !
+	233100 1 1263  -> pass !
+	233107 1 1263  -> pass !
+	233108 1 1263  -> pass !
+	233125 1 1263  -> pass !
+	233134 1 1263  -> pass !
+	233149 1 1263  -> pass !
+	233179 1 1263  -> pass !
+	233195 1 1263  -> pass !
+	233220 1 1263  -> pass !
+	241035 1 1306  -> pass !
+	241068 1 1306  -> pass !
+	241079 1 1306  -> pass !
+	241093 1 1306  -> pass !
+	241121 1 1306  -> pass !
+	241143 1 1306  -> pass !
+	241161 1 1306  -> pass !
+	241171 1 1306  -> pass !
+	241173 1 1306  -> pass !
+	241206 1 1307  -> pass !
+	241236 1 1307  -> pass !
+	241243 1 1307  -> pass !
+	241266 1 1307  -> pass !
+	241279 1 1307  -> pass !
+	241301 1 1307  -> pass !
+	241359 1 1307  -> pass !
+	241429 1 1308  -> pass !
+	241443 1 1308  -> pass !
+	241463 1 1308  -> pass !
+	241496 1 1308  -> pass !
+	241497 1 1308  -> pass !
+	241504 1 1308  -> pass !
+	241515 1 1308  -> pass !
+	241536 1 1308  -> pass !
+	241538 1 1308  -> pass !
+	241542 1 1308  -> pass !
+	241543 1 1308  -> pass !
+	260446 1 1411  -> pass !
+	260457 1 1411  -> pass !
+	260466 1 1411  -> pass !
+	260482 1 1411  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 42999 (42999 / 0 events processed so far)
+	260524 1 1411  -> pass !
+	260584 1 1412  -> pass !
+	260610 1 1412  -> pass !
+	260658 1 1412  -> pass !
+	260677 1 1412  -> pass !
+	260721 1 1412  -> pass !
+	264847 1 1435  -> pass !
+	264862 1 1435  -> pass !
+	264920 1 1435  -> pass !
+	264930 1 1435  -> pass !
+	265029 1 1436  -> pass !
+	265033 1 1436  -> pass !
+	265225 1 1437  -> pass !
+	265234 1 1437  -> pass !
+	265267 1 1437  -> pass !
+	265284 1 1437  -> pass !
+	265323 1 1437  -> pass !
+	265340 1 1437  -> pass !
+	272023 1 1474  -> pass !
+	272061 1 1474  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 43999 (43999 / 0 events processed so far)
+	272288 1 1475  -> pass !
+	272315 1 1475  -> pass !
+	272340 1 1475  -> pass !
+	272343 1 1475  -> pass !
+	272380 1 1475  -> pass !
+	272383 1 1475  -> pass !
+	326541 1 1769  -> pass !
+	326586 1 1769  -> pass !
+	326588 1 1769  -> pass !
+	326592 1 1769  -> pass !
+	326606 1 1769  -> pass !
+	326709 1 1770  -> pass !
+	326726 1 1770  -> pass !
+	326736 1 1770  -> pass !
+	326758 1 1770  -> pass !
+	326765 1 1770  -> pass !
+	326786 1 1770  -> pass !
+	326788 1 1770  -> pass !
+	326808 1 1770  -> pass !
+	326813 1 1770  -> pass !
+	326834 1 1770  -> pass !
+	326843 1 1770  -> pass !
+	366756 1 1987  -> pass !
+	366778 1 1987  -> pass !
+	366810 1 1987  -> pass !
+	366891 1 1987  -> pass !
+	366910 1 1987  -> pass !
+	366933 1 1987  -> pass !
+	366938 1 1987  -> pass !
+	366980 1 1988  -> pass !
+	366983 1 1988  -> pass !
+	367016 1 1988  -> pass !
+	367021 1 1988  -> pass !
+	367055 1 1988  -> pass !
+	367059 1 1988  -> pass !
+	367080 1 1988  -> pass !
+	367111 1 1988  -> pass !
+	367125 1 1988  -> pass !
+	367128 1 1988  -> pass !
+	367133 1 1988  -> pass !
+	367177 1 1989  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 44999 (44999 / 0 events processed so far)
+	367204 1 1989  -> pass !
+	367231 1 1989  -> pass !
+	367235 1 1989  -> pass !
+	367242 1 1989  -> pass !
+	367244 1 1989  -> pass !
+	367277 1 1989  -> pass !
+	367282 1 1989  -> pass !
+	367285 1 1989  -> pass !
+	55251 1 300  -> pass !
+	55263 1 300  -> pass !
+	55276 1 300  -> pass !
+	55280 1 300  -> pass !
+	55292 1 300  -> pass !
+	55319 1 300  -> pass !
+	55357 1 300  -> pass !
+	55369 1 300  -> pass !
+	63760 1 346  -> pass !
+	63763 1 346  -> pass !
+	63764 1 346  -> pass !
+	63775 1 346  -> pass !
+	63825 1 346  -> pass !
+	63828 1 346  -> pass !
+	63858 1 346  -> pass !
+	63872 1 346  -> pass !
+	63903 1 346  -> pass !
+	63942 1 347  -> pass !
+	63951 1 347  -> pass !
+	63965 1 347  -> pass !
+	63971 1 347  -> pass !
+	63991 1 347  -> pass !
+	63993 1 347  -> pass !
+	64000 1 347  -> pass !
+	64001 1 347  -> pass !
+	64050 1 347  -> pass !
+	64056 1 347  -> pass !
+	64062 1 347  -> pass !
+	64087 1 347  -> pass !
+	64152 1 348  -> pass !
+	64156 1 348  -> pass !
+	64163 1 348  -> pass !
+	64165 1 348  -> pass !
+	64229 1 348  -> pass !
+	64239 1 348  -> pass !
+	75366 1 409  -> pass !
+	75381 1 409  -> pass !
+	75392 1 409  -> pass !
+	75407 1 409  -> pass !
+	75461 1 409  -> pass !
+	75486 1 409  -> pass !
+	75504 1 409  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 45999 (45999 / 0 events processed so far)
+	75535 1 409  -> pass !
+	246012 1 1333  -> pass !
+	246052 1 1333  -> pass !
+	246056 1 1333  -> pass !
+	246089 1 1333  -> pass !
+	246094 1 1333  -> pass !
+	246112 1 1333  -> pass !
+	246135 1 1333  -> pass !
+	246188 1 1334  -> pass !
+	246216 1 1334  -> pass !
+	246243 1 1334  -> pass !
+	246244 1 1334  -> pass !
+	246264 1 1334  -> pass !
+	246298 1 1334  -> pass !
+	246301 1 1334  -> pass !
+	246430 1 1335  -> pass !
+	246442 1 1335  -> pass !
+	246456 1 1335  -> pass !
+	246459 1 1335  -> pass !
+	246473 1 1335  -> pass !
+	254863 1 1381  -> pass !
+	254910 1 1381  -> pass !
+	254971 1 1381  -> pass !
+	254999 1 1381  -> pass !
+	255055 1 1382  -> pass !
+	255064 1 1382  -> pass !
+	255067 1 1382  -> pass !
+	255094 1 1382  -> pass !
+	255130 1 1382  -> pass !
+	255164 1 1382  -> pass !
+	255171 1 1382  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 46999 (46999 / 0 events processed so far)
+	284810 1 1543  -> pass !
+	284833 1 1543  -> pass !
+	284862 1 1543  -> pass !
+	284877 1 1543  -> pass !
+	284923 1 1543  -> pass !
+	284927 1 1543  -> pass !
+	284940 1 1543  -> pass !
+	285025 1 1544  -> pass !
+	285038 1 1544  -> pass !
+	285044 1 1544  -> pass !
+	285047 1 1544  -> pass !
+	285168 1 1545  -> pass !
+	285200 1 1545  -> pass !
+	285205 1 1545  -> pass !
+	285207 1 1545  -> pass !
+	285222 1 1545  -> pass !
+	285225 1 1545  -> pass !
+	355125 1 1924  -> pass !
+	355135 1 1924  -> pass !
+	355154 1 1924  -> pass !
+	355240 1 1924  -> pass !
+	355270 1 1924  -> pass !
+	355275 1 1924  -> pass !
+	355294 1 1924  -> pass !
+	355300 1 1924  -> pass !
+	355338 1 1925  -> pass !
+	355341 1 1925  -> pass !
+	355352 1 1925  -> pass !
+	355384 1 1925  -> pass !
+	355413 1 1925  -> pass !
+	355430 1 1925  -> pass !
+	355460 1 1925  -> pass !
+	355473 1 1925  -> pass !
+	300838 1 1630  -> pass !
+	300870 1 1630  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 47999 (47999 / 0 events processed so far)
+	300954 1 1630  -> pass !
+	300971 1 1630  -> pass !
+	301003 1 1630  -> pass !
+	301056 1 1631  -> pass !
+	301077 1 1631  -> pass !
+	301101 1 1631  -> pass !
+	301204 1 1631  -> pass !
+	301206 1 1631  -> pass !
+	301211 1 1631  -> pass !
+	301249 1 1632  -> pass !
+	301261 1 1632  -> pass !
+	301309 1 1632  -> pass !
+	301356 1 1632  -> pass !
+	301361 1 1632  -> pass !
+	301364 1 1632  -> pass !
+	306382 1 1660  -> pass !
+	306384 1 1660  -> pass !
+	306398 1 1660  -> pass !
+	306450 1 1660  -> pass !
+	306462 1 1660  -> pass !
+	306468 1 1660  -> pass !
+	306480 1 1660  -> pass !
+	306489 1 1660  -> pass !
+	306491 1 1660  -> pass !
+	306493 1 1660  -> pass !
+	306500 1 1660  -> pass !
+	306514 1 1660  -> pass !
+	306534 1 1660  -> pass !
+	306641 1 1661  -> pass !
+	306728 1 1661  -> pass !
+	306756 1 1661  -> pass !
+	306760 1 1661  -> pass !
+	311393 1 1687  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 48999 (48999 / 0 events processed so far)
+	311486 1 1687  -> pass !
+	311507 1 1687  -> pass !
+	311568 1 1688  -> pass !
+	311579 1 1688  -> pass !
+	311584 1 1688  -> pass !
+	311614 1 1688  -> pass !
+	311631 1 1688  -> pass !
+	311643 1 1688  -> pass !
+	311693 1 1688  -> pass !
+	311699 1 1688  -> pass !
+	311770 1 1689  -> pass !
+	311815 1 1689  -> pass !
+	311827 1 1689  -> pass !
+	311847 1 1689  -> pass !
+	311900 1 1689  -> pass !
+	312474 1 1693  -> pass !
+	312482 1 1693  -> pass !
+	312525 1 1693  -> pass !
+	312528 1 1693  -> pass !
+	312565 1 1693  -> pass !
+	312584 1 1693  -> pass !
+	312672 1 1694  -> pass !
+	312703 1 1694  -> pass !
+	312722 1 1694  -> pass !
+	312743 1 1694  -> pass !
+	312745 1 1694  -> pass !
+	312777 1 1694  -> pass !
+	312845 1 1694  -> pass !
+	87948 1 477  -> pass !
+	87954 1 477  -> pass !
+	87969 1 477  -> pass !
+	87978 1 477  -> pass !
+	88002 1 477  -> pass !
+	88027 1 477  -> pass !
+	88065 1 477  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 49999 (49999 / 0 events processed so far)
+	94188 1 511  -> pass !
+	94212 1 511  -> pass !
+	94214 1 511  -> pass !
+	94225 1 511  -> pass !
+	94226 1 511  -> pass !
+	94249 1 511  -> pass !
+	94263 1 511  -> pass !
+	94268 1 511  -> pass !
+	94277 1 511  -> pass !
+	94282 1 511  -> pass !
+	94330 1 511  -> pass !
+	94346 1 511  -> pass !
+	94399 1 512  -> pass !
+	94418 1 512  -> pass !
+	94454 1 512  -> pass !
+	94547 1 512  -> pass !
+	94606 1 513  -> pass !
+	94625 1 513  -> pass !
+	94659 1 513  -> pass !
+	94708 1 513  -> pass !
+	96980 1 526  -> pass !
+	96991 1 526  -> pass !
+	97034 1 526  -> pass !
+	97081 1 526  -> pass !
+	97093 1 526  -> pass !
+	97103 1 526  -> pass !
+	97124 1 526  -> pass !
+	97139 1 526  -> pass !
+	97172 1 527  -> pass !
+	97178 1 527  -> pass !
+	97225 1 527  -> pass !
+	97258 1 527  -> pass !
+	97291 1 527  -> pass !
+	97326 1 527  -> pass !
+	97358 1 528  -> pass !
+	97376 1 528  -> pass !
+	97377 1 528  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 50999 (50999 / 0 events processed so far)
+	97410 1 528  -> pass !
+	97436 1 528  -> pass !
+	97451 1 528  -> pass !
+	97481 1 528  -> pass !
+	475376 1 2575  -> pass !
+	475380 1 2575  -> pass !
+	475387 1 2575  -> pass !
+	475405 1 2575  -> pass !
+	475429 1 2575  -> pass !
+	475512 1 2575  -> pass !
+	475526 1 2575  -> pass !
+	475571 1 2576  -> pass !
+	475619 1 2576  -> pass !
+	475654 1 2576  -> pass !
+	475724 1 2576  -> pass !
+	116009 1 629  -> pass !
+	116012 1 629  -> pass !
+	116029 1 629  -> pass !
+	116067 1 629  -> pass !
+	116077 1 629  -> pass !
+	116152 1 629  -> pass !
+	116224 1 630  -> pass !
+	116258 1 630  -> pass !
+	116260 1 630  -> pass !
+	116290 1 630  -> pass !
+	116328 1 630  -> pass !
+	116331 1 630  -> pass !
+	164403 1 891  -> pass !
+	164436 1 891  -> pass !
+	164443 1 891  -> pass !
+	164456 1 891  -> pass !
+	164513 1 891  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 51999 (51999 / 0 events processed so far)
+	164530 1 891  -> pass !
+	164569 1 892  -> pass !
+	164601 1 892  -> pass !
+	164617 1 892  -> pass !
+	164626 1 892  -> pass !
+	164630 1 892  -> pass !
+	164632 1 892  -> pass !
+	164691 1 892  -> pass !
+	164738 1 892  -> pass !
+	164760 1 893  -> pass !
+	164776 1 893  -> pass !
+	164801 1 893  -> pass !
+	164806 1 893  -> pass !
+	164832 1 893  -> pass !
+	164843 1 893  -> pass !
+	164899 1 893  -> pass !
+	164920 1 893  -> pass !
+	164930 1 893  -> pass !
+	164954 1 894  -> pass !
+	164981 1 894  -> pass !
+	164984 1 894  -> pass !
+	164990 1 894  -> pass !
+	165030 1 894  -> pass !
+	165086 1 894  -> pass !
+	165089 1 894  -> pass !
+	196127 1 1063  -> pass !
+	196177 1 1063  -> pass !
+	196246 1 1063  -> pass !
+	189320 1 1026  -> pass !
+	189326 1 1026  -> pass !
+	189371 1 1026  -> pass !
+	189399 1 1026  -> pass !
+	189402 1 1026  -> pass !
+	189446 1 1026  -> pass !
+	231603 1 1255  -> pass !
+	231628 1 1255  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 52999 (52999 / 0 events processed so far)
+	231700 1 1255  -> pass !
+	231738 1 1255  -> pass !
+	231753 1 1255  -> pass !
+	231760 1 1255  -> pass !
+	231783 1 1256  -> pass !
+	231794 1 1256  -> pass !
+	231799 1 1256  -> pass !
+	231808 1 1256  -> pass !
+	231813 1 1256  -> pass !
+	231816 1 1256  -> pass !
+	231837 1 1256  -> pass !
+	231857 1 1256  -> pass !
+	231870 1 1256  -> pass !
+	231893 1 1256  -> pass !
+	231908 1 1256  -> pass !
+	231928 1 1256  -> pass !
+	231963 1 1256  -> pass !
+	231982 1 1257  -> pass !
+	231995 1 1257  -> pass !
+	232003 1 1257  -> pass !
+	232056 1 1257  -> pass !
+	232083 1 1257  -> pass !
+	232099 1 1257  -> pass !
+	232120 1 1257  -> pass !
+	237678 1 1288  -> pass !
+	237715 1 1288  -> pass !
+	237760 1 1288  -> pass !
+	237786 1 1288  -> pass !
+	237799 1 1288  -> pass !
+	237834 1 1288  -> pass !
+	237837 1 1288  -> pass !
+	237843 1 1288  -> pass !
+	245079 1 1328  -> pass !
+	245080 1 1328  -> pass !
+	245088 1 1328  -> pass !
+	245107 1 1328  -> pass !
+	245159 1 1328  -> pass !
+	245179 1 1328  -> pass !
+	245183 1 1328  -> pass !
+	245196 1 1328  -> pass !
+	245204 1 1328  -> pass !
+	245217 1 1328  -> pass !
+	245231 1 1328  -> pass !
+	245251 1 1328  -> pass !
+	245263 1 1328  -> pass !
+	245266 1 1328  -> pass !
+	245290 1 1329  -> pass !
+	245330 1 1329  -> pass !
+	245358 1 1329  -> pass !
+	245362 1 1329  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 53999 (53999 / 0 events processed so far)
+	443060 1 2400  -> pass !
+	443079 1 2400  -> pass !
+	443084 1 2400  -> pass !
+	443098 1 2400  -> pass !
+	443145 1 2400  -> pass !
+	443149 1 2400  -> pass !
+	443151 1 2400  -> pass !
+	443175 1 2400  -> pass !
+	443176 1 2400  -> pass !
+	445423 1 2413  -> pass !
+	445425 1 2413  -> pass !
+	445446 1 2413  -> pass !
+	445449 1 2413  -> pass !
+	445452 1 2413  -> pass !
+	445476 1 2413  -> pass !
+	445516 1 2413  -> pass !
+	445533 1 2413  -> pass !
+	445548 1 2413  -> pass !
+	445551 1 2413  -> pass !
+	445606 1 2413  -> pass !
+	445626 1 2414  -> pass !
+	445652 1 2414  -> pass !
+	445678 1 2414  -> pass !
+	445766 1 2414  -> pass !
+	445788 1 2414  -> pass !
+	445799 1 2414  -> pass !
+	445842 1 2415  -> pass !
+	445881 1 2415  -> pass !
+	445914 1 2415  -> pass !
+	445946 1 2415  -> pass !
+	445960 1 2415  -> pass !
+	445963 1 2415  -> pass !
+	459472 1 2489  -> pass !
+	459484 1 2489  -> pass !
+	459547 1 2489  -> pass !
+	459593 1 2489  -> pass !
+	459613 1 2489  -> pass !
+	459653 1 2489  -> pass !
+	459671 1 2490  -> pass !
+	459684 1 2490  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 54999 (54999 / 0 events processed so far)
+	459732 1 2490  -> pass !
+	459743 1 2490  -> pass !
+	459759 1 2490  -> pass !
+	459773 1 2490  -> pass !
+	459777 1 2490  -> pass !
+	253746 1 1375  -> pass !
+	253851 1 1375  -> pass !
+	253855 1 1375  -> pass !
+	253886 1 1375  -> pass !
+	253981 1 1376  -> pass !
+	253994 1 1376  -> pass !
+	254056 1 1376  -> pass !
+	254086 1 1376  -> pass !
+	254157 1 1377  -> pass !
+	254250 1 1377  -> pass !
+	254256 1 1377  -> pass !
+	254259 1 1377  -> pass !
+	270357 1 1465  -> pass !
+	270363 1 1465  -> pass !
+	270401 1 1465  -> pass !
+	270415 1 1465  -> pass !
+	270443 1 1465  -> pass !
+	270456 1 1465  -> pass !
+	270462 1 1465  -> pass !
+	270495 1 1465  -> pass !
+	270502 1 1465  -> pass !
+	270525 1 1465  -> pass !
+	270540 1 1465  -> pass !
+	270553 1 1466  -> pass !
+	270589 1 1466  -> pass !
+	270599 1 1466  -> pass !
+	270610 1 1466  -> pass !
+	270629 1 1466  -> pass !
+	270640 1 1466  -> pass !
+	270700 1 1466  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 55999 (55999 / 0 events processed so far)
+	270708 1 1466  -> pass !
+	284619 1 1542  -> pass !
+	284696 1 1542  -> pass !
+	284723 1 1542  -> pass !
+	284730 1 1542  -> pass !
+	284739 1 1542  -> pass !
+	284748 1 1542  -> pass !
+	284751 1 1542  -> pass !
+	285323 1 1546  -> pass !
+	285342 1 1546  -> pass !
+	285349 1 1546  -> pass !
+	285363 1 1546  -> pass !
+	285417 1 1546  -> pass !
+	285421 1 1546  -> pass !
+	285433 1 1546  -> pass !
+	285459 1 1546  -> pass !
+	285470 1 1546  -> pass !
+	285498 1 1546  -> pass !
+	285528 1 1547  -> pass !
+	285536 1 1547  -> pass !
+	285601 1 1547  -> pass !
+	285607 1 1547  -> pass !
+	285656 1 1547  -> pass !
+	285719 1 1548  -> pass !
+	285730 1 1548  -> pass !
+	285733 1 1548  -> pass !
+	285764 1 1548  -> pass !
+	285770 1 1548  -> pass !
+	285786 1 1548  -> pass !
+	285813 1 1548  -> pass !
+	285816 1 1548  -> pass !
+	285831 1 1548  -> pass !
+	296404 1 1606  -> pass !
+	296481 1 1606  -> pass !
+	296510 1 1606  -> pass !
+	296536 1 1606  -> pass !
+	296580 1 1606  -> pass !
+	338695 1 1835  -> pass !
+	338715 1 1835  -> pass !
+	338723 1 1835  -> pass !
+	338738 1 1835  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 56999 (56999 / 0 events processed so far)
+	338750 1 1835  -> pass !
+	338751 1 1835  -> pass !
+	338798 1 1835  -> pass !
+	338803 1 1835  -> pass !
+	338815 1 1835  -> pass !
+	338822 1 1835  -> pass !
+	338844 1 1835  -> pass !
+	338869 1 1835  -> pass !
+	338870 1 1835  -> pass !
+	339002 1 1836  -> pass !
+	339011 1 1836  -> pass !
+	339027 1 1836  -> pass !
+	339044 1 1836  -> pass !
+	340191 1 1843  -> pass !
+	340204 1 1843  -> pass !
+	340251 1 1843  -> pass !
+	340259 1 1843  -> pass !
+	340305 1 1843  -> pass !
+	340359 1 1844  -> pass !
+	340413 1 1844  -> pass !
+	340475 1 1844  -> pass !
+	340510 1 1844  -> pass !
+	340522 1 1844  -> pass !
+	340540 1 1844  -> pass !
+	340545 1 1844  -> pass !
+	340563 1 1845  -> pass !
+	340569 1 1845  -> pass !
+	340588 1 1845  -> pass !
+	340601 1 1845  -> pass !
+	340628 1 1845  -> pass !
+	340700 1 1845  -> pass !
+	354962 1 1923  -> pass !
+	354970 1 1923  -> pass !
+	354985 1 1923  -> pass !
+	355032 1 1923  -> pass !
+	355061 1 1923  -> pass !
+	355087 1 1923  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 57999 (57999 / 0 events processed so far)
+	365656 1 1981  -> pass !
+	365664 1 1981  -> pass !
+	365717 1 1981  -> pass !
+	365733 1 1981  -> pass !
+	365747 1 1981  -> pass !
+	365755 1 1981  -> pass !
+	365758 1 1981  -> pass !
+	365809 1 1981  -> pass !
+	365821 1 1981  -> pass !
+	365854 1 1982  -> pass !
+	365877 1 1982  -> pass !
+	365884 1 1982  -> pass !
+	365959 1 1982  -> pass !
+	365975 1 1982  -> pass !
+	366035 1 1982  -> pass !
+	366065 1 1983  -> pass !
+	366089 1 1983  -> pass !
+	366118 1 1983  -> pass !
+	366124 1 1983  -> pass !
+	366137 1 1983  -> pass !
+	366139 1 1983  -> pass !
+	366165 1 1983  -> pass !
+	366169 1 1983  -> pass !
+	366187 1 1983  -> pass !
+	375140 1 2032  -> pass !
+	375173 1 2032  -> pass !
+	375184 1 2032  -> pass !
+	375217 1 2032  -> pass !
+	375232 1 2032  -> pass !
+	375234 1 2032  -> pass !
+	375244 1 2032  -> pass !
+	86088 1 467  -> pass !
+	86096 1 467  -> pass !
+	86105 1 467  -> pass !
+	86134 1 467  -> pass !
+	86142 1 467  -> pass !
+	86163 1 467  -> pass !
+	86220 1 467  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 58999 (58999 / 0 events processed so far)
+	86337 1 468  -> pass !
+	86389 1 468  -> pass !
+	92535 1 502  -> pass !
+	92548 1 502  -> pass !
+	92579 1 502  -> pass !
+	92584 1 502  -> pass !
+	92585 1 502  -> pass !
+	92597 1 502  -> pass !
+	92599 1 502  -> pass !
+	92627 1 502  -> pass !
+	92644 1 502  -> pass !
+	92683 1 502  -> pass !
+	92747 1 503  -> pass !
+	92774 1 503  -> pass !
+	92843 1 503  -> pass !
+	92849 1 503  -> pass !
+	92859 1 503  -> pass !
+	92886 1 503  -> pass !
+	92888 1 503  -> pass !
+	92892 1 503  -> pass !
+	92914 1 503  -> pass !
+	92925 1 504  -> pass !
+	92973 1 504  -> pass !
+	92979 1 504  -> pass !
+	92998 1 504  -> pass !
+	93017 1 504  -> pass !
+	93069 1 504  -> pass !
+	93071 1 504  -> pass !
+	124305 1 674  -> pass !
+	124306 1 674  -> pass !
+	124329 1 674  -> pass !
+	124337 1 674  -> pass !
+	124366 1 674  -> pass !
+	124450 1 674  -> pass !
+	124469 1 674  -> pass !
+	124500 1 675  -> pass !
+	124501 1 675  -> pass !
+	124533 1 675  -> pass !
+	124565 1 675  -> pass !
+	124604 1 675  -> pass !
+	124615 1 675  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 59999 (59999 / 0 events processed so far)
+	124634 1 675  -> pass !
+	124636 1 675  -> pass !
+	478105 1 2590  -> pass !
+	478138 1 2590  -> pass !
+	478145 1 2590  -> pass !
+	478154 1 2590  -> pass !
+	478250 1 2590  -> pass !
+	478355 1 2591  -> pass !
+	478475 1 2591  -> pass !
+	478478 1 2591  -> pass !
+	478496 1 2591  -> pass !
+	478500 1 2591  -> pass !
+	478521 1 2592  -> pass !
+	478523 1 2592  -> pass !
+	478539 1 2592  -> pass !
+	478558 1 2592  -> pass !
+	478615 1 2592  -> pass !
+	478639 1 2592  -> pass !
+	478640 1 2592  -> pass !
+	204455 1 1108  -> pass !
+	204458 1 1108  -> pass !
+	204477 1 1108  -> pass !
+	204489 1 1108  -> pass !
+	204492 1 1108  -> pass !
+	204605 1 1108  -> pass !
+	204619 1 1108  -> pass !
+	204655 1 1109  -> pass !
+	204664 1 1109  -> pass !
+	204669 1 1109  -> pass !
+	204777 1 1109  -> pass !
+	204781 1 1109  -> pass !
+	204810 1 1109  -> pass !
+	204825 1 1109  -> pass !
+	204841 1 1110  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 60999 (60999 / 0 events processed so far)
+	204863 1 1110  -> pass !
+	204866 1 1110  -> pass !
+	204889 1 1110  -> pass !
+	204904 1 1110  -> pass !
+	204910 1 1110  -> pass !
+	204939 1 1110  -> pass !
+	204940 1 1110  -> pass !
+	204958 1 1110  -> pass !
+	221602 1 1201  -> pass !
+	221606 1 1201  -> pass !
+	221647 1 1201  -> pass !
+	221653 1 1201  -> pass !
+	221661 1 1201  -> pass !
+	221704 1 1201  -> pass !
+	221705 1 1201  -> pass !
+	221709 1 1201  -> pass !
+	221722 1 1201  -> pass !
+	221723 1 1201  -> pass !
+	221751 1 1201  -> pass !
+	221752 1 1201  -> pass !
+	221788 1 1201  -> pass !
+	221822 1 1202  -> pass !
+	221835 1 1202  -> pass !
+	221875 1 1202  -> pass !
+	221899 1 1202  -> pass !
+	221910 1 1202  -> pass !
+	221940 1 1202  -> pass !
+	221965 1 1202  -> pass !
+	221996 1 1202  -> pass !
+	301384 1 1633  -> pass !
+	301412 1 1633  -> pass !
+	301423 1 1633  -> pass !
+	301441 1 1633  -> pass !
+	301452 1 1633  -> pass !
+	301460 1 1633  -> pass !
+	301520 1 1633  -> pass !
+	301530 1 1633  -> pass !
+	301547 1 1633  -> pass !
+	301548 1 1633  -> pass !
+	301639 1 1634  -> pass !
+	301644 1 1634  -> pass !
+	301648 1 1634  -> pass !
+	301652 1 1634  -> pass !
+	301670 1 1634  -> pass !
+	301672 1 1634  -> pass !
+	301681 1 1634  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 61999 (61999 / 0 events processed so far)
+	301864 1 1635  -> pass !
+	301867 1 1635  -> pass !
+	301880 1 1635  -> pass !
+	301901 1 1635  -> pass !
+	301904 1 1635  -> pass !
+	301920 1 1635  -> pass !
+	331158 1 1794  -> pass !
+	331196 1 1794  -> pass !
+	331265 1 1794  -> pass !
+	331273 1 1794  -> pass !
+	372333 1 2017  -> pass !
+	372339 1 2017  -> pass !
+	372343 1 2017  -> pass !
+	372370 1 2017  -> pass !
+	372389 1 2017  -> pass !
+	372420 1 2017  -> pass !
+	372423 1 2017  -> pass !
+	372613 1 2018  -> pass !
+	372629 1 2018  -> pass !
+	372724 1 2019  -> pass !
+	372744 1 2019  -> pass !
+	372777 1 2019  -> pass !
+	372792 1 2019  -> pass !
+	372810 1 2019  -> pass !
+	376929 1 2042  -> pass !
+	376931 1 2042  -> pass !
+	377040 1 2042  -> pass !
+	377074 1 2042  -> pass !
+	377102 1 2042  -> pass !
+	377106 1 2042  -> pass !
+	377112 1 2042  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 62999 (62999 / 0 events processed so far)
+	377122 1 2043  -> pass !
+	377126 1 2043  -> pass !
+	377162 1 2043  -> pass !
+	377233 1 2043  -> pass !
+	413294 1 2239  -> pass !
+	413338 1 2239  -> pass !
+	413339 1 2239  -> pass !
+	413342 1 2239  -> pass !
+	413369 1 2239  -> pass !
+	413390 1 2239  -> pass !
+	413407 1 2239  -> pass !
+	413438 1 2239  -> pass !
+	413460 1 2239  -> pass !
+	413478 1 2239  -> pass !
+	413496 1 2240  -> pass !
+	413511 1 2240  -> pass !
+	413526 1 2240  -> pass !
+	413532 1 2240  -> pass !
+	413539 1 2240  -> pass !
+	413543 1 2240  -> pass !
+	413552 1 2240  -> pass !
+	413553 1 2240  -> pass !
+	413559 1 2240  -> pass !
+	413575 1 2240  -> pass !
+	413587 1 2240  -> pass !
+	413590 1 2240  -> pass !
+	413637 1 2240  -> pass !
+	413648 1 2240  -> pass !
+	413655 1 2240  -> pass !
+	413660 1 2240  -> pass !
+	413693 1 2241  -> pass !
+	413733 1 2241  -> pass !
+	413739 1 2241  -> pass !
+	413746 1 2241  -> pass !
+	413751 1 2241  -> pass !
+	413793 1 2241  -> pass !
+	413808 1 2241  -> pass !
+	413827 1 2241  -> pass !
+	117147 1 635  -> pass !
+	117172 1 635  -> pass !
+	117182 1 635  -> pass !
+	117232 1 635  -> pass !
+	117241 1 635  -> pass !
+	117247 1 635  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 63999 (63999 / 0 events processed so far)
+	117435 1 636  -> pass !
+	467025 1 2530  -> pass !
+	467058 1 2530  -> pass !
+	467076 1 2530  -> pass !
+	467079 1 2530  -> pass !
+	467103 1 2530  -> pass !
+	467123 1 2530  -> pass !
+	467126 1 2530  -> pass !
+	467145 1 2530  -> pass !
+	467154 1 2530  -> pass !
+	467158 1 2530  -> pass !
+	467165 1 2530  -> pass !
+	467216 1 2530  -> pass !
+	467225 1 2531  -> pass !
+	467235 1 2531  -> pass !
+	467325 1 2531  -> pass !
+	467328 1 2531  -> pass !
+	467366 1 2531  -> pass !
+	467468 1 2532  -> pass !
+	467479 1 2532  -> pass !
+	467493 1 2532  -> pass !
+	467510 1 2532  -> pass !
+	467573 1 2532  -> pass !
+	141933 1 769  -> pass !
+	141966 1 769  -> pass !
+	141979 1 769  -> pass !
+	142009 1 769  -> pass !
+	142037 1 770  -> pass !
+	142045 1 770  -> pass !
+	142063 1 770  -> pass !
+	142113 1 770  -> pass !
+	142155 1 770  -> pass !
+	142185 1 770  -> pass !
+	142193 1 770  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 64999 (64999 / 0 events processed so far)
+	142304 1 771  -> pass !
+	142307 1 771  -> pass !
+	142325 1 771  -> pass !
+	142327 1 771  -> pass !
+	159055 1 862  -> pass !
+	159072 1 862  -> pass !
+	159106 1 862  -> pass !
+	159124 1 862  -> pass !
+	159205 1 863  -> pass !
+	159225 1 863  -> pass !
+	159298 1 863  -> pass !
+	159304 1 863  -> pass !
+	159307 1 863  -> pass !
+	159361 1 863  -> pass !
+	159365 1 863  -> pass !
+	173409 1 940  -> pass !
+	173425 1 940  -> pass !
+	173473 1 940  -> pass !
+	173483 1 940  -> pass !
+	173484 1 940  -> pass !
+	173485 1 940  -> pass !
+	173509 1 940  -> pass !
+	173533 1 940  -> pass !
+	173536 1 940  -> pass !
+	173556 1 940  -> pass !
+	173583 1 940  -> pass !
+	173595 1 940  -> pass !
+	173608 1 941  -> pass !
+	173646 1 941  -> pass !
+	173652 1 941  -> pass !
+	173685 1 941  -> pass !
+	173738 1 941  -> pass !
+	173753 1 941  -> pass !
+	173775 1 941  -> pass !
+	173790 1 941  -> pass !
+	173804 1 942  -> pass !
+	173806 1 942  -> pass !
+	173820 1 942  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 65999 (65999 / 0 events processed so far)
+	173849 1 942  -> pass !
+	173935 1 942  -> pass !
+	173950 1 942  -> pass !
+	185626 1 1006  -> pass !
+	185645 1 1006  -> pass !
+	185701 1 1006  -> pass !
+	185719 1 1006  -> pass !
+	185726 1 1006  -> pass !
+	185733 1 1006  -> pass !
+	185741 1 1006  -> pass !
+	185838 1 1007  -> pass !
+	185886 1 1007  -> pass !
+	185905 1 1007  -> pass !
+	185965 1 1007  -> pass !
+	185967 1 1007  -> pass !
+	215376 1 1167  -> pass !
+	215380 1 1167  -> pass !
+	215391 1 1167  -> pass !
+	215393 1 1167  -> pass !
+	215453 1 1167  -> pass !
+	215494 1 1167  -> pass !
+	215499 1 1167  -> pass !
+	223264 1 1210  -> pass !
+	223265 1 1210  -> pass !
+	223276 1 1210  -> pass !
+	223277 1 1210  -> pass !
+	223308 1 1210  -> pass !
+	223338 1 1210  -> pass !
+	223399 1 1210  -> pass !
+	223472 1 1211  -> pass !
+	223491 1 1211  -> pass !
+	223518 1 1211  -> pass !
+	223563 1 1211  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 66999 (66999 / 0 events processed so far)
+	223590 1 1211  -> pass !
+	223609 1 1211  -> pass !
+	223629 1 1211  -> pass !
+	223637 1 1211  -> pass !
+	223663 1 1212  -> pass !
+	223763 1 1212  -> pass !
+	223778 1 1212  -> pass !
+	223789 1 1212  -> pass !
+	223792 1 1212  -> pass !
+	223799 1 1212  -> pass !
+	257063 1 1393  -> pass !
+	257109 1 1393  -> pass !
+	257152 1 1393  -> pass !
+	257180 1 1393  -> pass !
+	257215 1 1393  -> pass !
+	257218 1 1393  -> pass !
+	292525 1 1585  -> pass !
+	292544 1 1585  -> pass !
+	292545 1 1585  -> pass !
+	292558 1 1585  -> pass !
+	292609 1 1585  -> pass !
+	292623 1 1585  -> pass !
+	292656 1 1585  -> pass !
+	292662 1 1585  -> pass !
+	292675 1 1585  -> pass !
+	292683 1 1585  -> pass !
+	292699 1 1585  -> pass !
+	292724 1 1586  -> pass !
+	292733 1 1586  -> pass !
+	292746 1 1586  -> pass !
+	292781 1 1586  -> pass !
+	292819 1 1586  -> pass !
+	292824 1 1586  -> pass !
+	292835 1 1586  -> pass !
+	292955 1 1587  -> pass !
+	293029 1 1587  -> pass !
+	293048 1 1587  -> pass !
+	293061 1 1587  -> pass !
+	293066 1 1587  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 67999 (67999 / 0 events processed so far)
+	297542 1 1612  -> pass !
+	297561 1 1612  -> pass !
+	297574 1 1612  -> pass !
+	297597 1 1612  -> pass !
+	297634 1 1612  -> pass !
+	297638 1 1612  -> pass !
+	297648 1 1612  -> pass !
+	297651 1 1612  -> pass !
+	297723 1 1613  -> pass !
+	297750 1 1613  -> pass !
+	297754 1 1613  -> pass !
+	297761 1 1613  -> pass !
+	297822 1 1613  -> pass !
+	297826 1 1613  -> pass !
+	297836 1 1613  -> pass !
+	297851 1 1613  -> pass !
+	297868 1 1613  -> pass !
+	297873 1 1613  -> pass !
+	150199 1 814  -> pass !
+	150208 1 814  -> pass !
+	150209 1 814  -> pass !
+	150348 1 815  -> pass !
+	150349 1 815  -> pass !
+	150453 1 815  -> pass !
+	150460 1 815  -> pass !
+	150511 1 815  -> pass !
+	150526 1 815  -> pass !
+	150533 1 815  -> pass !
+	150554 1 816  -> pass !
+	150576 1 816  -> pass !
+	150582 1 816  -> pass !
+	150585 1 816  -> pass !
+	150603 1 816  -> pass !
+	150627 1 816  -> pass !
+	150673 1 816  -> pass !
+	203319 1 1102  -> pass !
+	203321 1 1102  -> pass !
+	203329 1 1102  -> pass !
+	203341 1 1102  -> pass !
+	203360 1 1102  -> pass !
+	203376 1 1102  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 68999 (68999 / 0 events processed so far)
+	203416 1 1102  -> pass !
+	203428 1 1102  -> pass !
+	203463 1 1102  -> pass !
+	203476 1 1102  -> pass !
+	203480 1 1102  -> pass !
+	203504 1 1102  -> pass !
+	203506 1 1102  -> pass !
+	203553 1 1103  -> pass !
+	203629 1 1103  -> pass !
+	203688 1 1103  -> pass !
+	203720 1 1104  -> pass !
+	203771 1 1104  -> pass !
+	203775 1 1104  -> pass !
+	203871 1 1104  -> pass !
+	211634 1 1147  -> pass !
+	211637 1 1147  -> pass !
+	211640 1 1147  -> pass !
+	211665 1 1147  -> pass !
+	211679 1 1147  -> pass !
+	211699 1 1147  -> pass !
+	211707 1 1147  -> pass !
+	211726 1 1147  -> pass !
+	211741 1 1147  -> pass !
+	211750 1 1147  -> pass !
+	211787 1 1147  -> pass !
+	211791 1 1147  -> pass !
+	211853 1 1148  -> pass !
+	211856 1 1148  -> pass !
+	211873 1 1148  -> pass !
+	211896 1 1148  -> pass !
+	211948 1 1148  -> pass !
+	211974 1 1148  -> pass !
+	212024 1 1148  -> pass !
+	212045 1 1149  -> pass !
+	212091 1 1149  -> pass !
+	212100 1 1149  -> pass !
+	212130 1 1149  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 69999 (69999 / 0 events processed so far)
+	212159 1 1149  -> pass !
+	212170 1 1149  -> pass !
+	244877 1 1327  -> pass !
+	244929 1 1327  -> pass !
+	244935 1 1327  -> pass !
+	244936 1 1327  -> pass !
+	245002 1 1327  -> pass !
+	245046 1 1327  -> pass !
+	245067 1 1327  -> pass !
+	329500 1 1785  -> pass !
+	329512 1 1785  -> pass !
+	329528 1 1785  -> pass !
+	329565 1 1785  -> pass !
+	329580 1 1785  -> pass !
+	344616 1 1867  -> pass !
+	344619 1 1867  -> pass !
+	344629 1 1867  -> pass !
+	344745 1 1867  -> pass !
+	344756 1 1867  -> pass !
+	344757 1 1867  -> pass !
+	344817 1 1868  -> pass !
+	344835 1 1868  -> pass !
+	344836 1 1868  -> pass !
+	344844 1 1868  -> pass !
+	344850 1 1868  -> pass !
+	344862 1 1868  -> pass !
+	344904 1 1868  -> pass !
+	344912 1 1868  -> pass !
+	344918 1 1868  -> pass !
+	344925 1 1868  -> pass !
+	344988 1 1868  -> pass !
+	345001 1 1869  -> pass !
+	345083 1 1869  -> pass !
+	345089 1 1869  -> pass !
+	345092 1 1869  -> pass !
+	345116 1 1869  -> pass !
+	345117 1 1869  -> pass !
+	345133 1 1869  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 70999 (70999 / 0 events processed so far)
+	447703 1 2425  -> pass !
+	447707 1 2425  -> pass !
+	447709 1 2425  -> pass !
+	447748 1 2425  -> pass !
+	447812 1 2425  -> pass !
+	447819 1 2425  -> pass !
+	447862 1 2426  -> pass !
+	447873 1 2426  -> pass !
+	447895 1 2426  -> pass !
+	447924 1 2426  -> pass !
+	447936 1 2426  -> pass !
+	447941 1 2426  -> pass !
+	447954 1 2426  -> pass !
+	447963 1 2426  -> pass !
+	447978 1 2426  -> pass !
+	447986 1 2426  -> pass !
+	448063 1 2427  -> pass !
+	448066 1 2427  -> pass !
+	448096 1 2427  -> pass !
+	448102 1 2427  -> pass !
+	448136 1 2427  -> pass !
+	448144 1 2427  -> pass !
+	448216 1 2428  -> pass !
+	448222 1 2428  -> pass !
+	448333 1 2428  -> pass !
+	448337 1 2428  -> pass !
+	448351 1 2428  -> pass !
+	448453 1 2429  -> pass !
+	448464 1 2429  -> pass !
+	448488 1 2429  -> pass !
+	448520 1 2429  -> pass !
+	448531 1 2429  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 71999 (71999 / 0 events processed so far)
+	461221 1 2498  -> pass !
+	461223 1 2498  -> pass !
+	461236 1 2498  -> pass !
+	461256 1 2498  -> pass !
+	461271 1 2498  -> pass !
+	461292 1 2498  -> pass !
+	461308 1 2498  -> pass !
+	461340 1 2499  -> pass !
+	461343 1 2499  -> pass !
+	461345 1 2499  -> pass !
+	461396 1 2499  -> pass !
+	461410 1 2499  -> pass !
+	461427 1 2499  -> pass !
+	461477 1 2499  -> pass !
+	480881 1 2605  -> pass !
+	480898 1 2605  -> pass !
+	480914 1 2605  -> pass !
+	480950 1 2605  -> pass !
+	480966 1 2605  -> pass !
+	480969 1 2605  -> pass !
+	481034 1 2605  -> pass !
+	481035 1 2605  -> pass !
+	481036 1 2605  -> pass !
+	481060 1 2605  -> pass !
+	481064 1 2605  -> pass !
+	481088 1 2606  -> pass !
+	481192 1 2606  -> pass !
+	481212 1 2606  -> pass !
+	481227 1 2606  -> pass !
+	481238 1 2606  -> pass !
+	481297 1 2607  -> pass !
+	481304 1 2607  -> pass !
+	481324 1 2607  -> pass !
+	481356 1 2607  -> pass !
+	481365 1 2607  -> pass !
+	489812 1 2653  -> pass !
+	489852 1 2653  -> pass !
+	489893 1 2653  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 72999 (72999 / 0 events processed so far)
+	489919 1 2653  -> pass !
+	489938 1 2654  -> pass !
+	489957 1 2654  -> pass !
+	489965 1 2654  -> pass !
+	490100 1 2654  -> pass !
+	159400 1 864  -> pass !
+	159427 1 864  -> pass !
+	159456 1 864  -> pass !
+	159479 1 864  -> pass !
+	159497 1 864  -> pass !
+	159500 1 864  -> pass !
+	159522 1 864  -> pass !
+	159544 1 864  -> pass !
+	167915 1 910  -> pass !
+	167923 1 910  -> pass !
+	167928 1 910  -> pass !
+	167930 1 910  -> pass !
+	167933 1 910  -> pass !
+	167962 1 910  -> pass !
+	167973 1 910  -> pass !
+	167995 1 910  -> pass !
+	168050 1 910  -> pass !
+	168092 1 911  -> pass !
+	168114 1 911  -> pass !
+	168140 1 911  -> pass !
+	168165 1 911  -> pass !
+	168173 1 911  -> pass !
+	168174 1 911  -> pass !
+	168182 1 911  -> pass !
+	168184 1 911  -> pass !
+	168219 1 911  -> pass !
+	168230 1 911  -> pass !
+	168292 1 912  -> pass !
+	168306 1 912  -> pass !
+	168307 1 912  -> pass !
+	168322 1 912  -> pass !
+	168358 1 912  -> pass !
+	168371 1 912  -> pass !
+	168402 1 912  -> pass !
+	168403 1 912  -> pass !
+	188373 1 1021  -> pass !
+	188378 1 1021  -> pass !
+	188383 1 1021  -> pass !
+	188422 1 1021  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 73999 (73999 / 0 events processed so far)
+	188444 1 1021  -> pass !
+	188519 1 1021  -> pass !
+	188526 1 1021  -> pass !
+	169380 1 918  -> pass !
+	169402 1 918  -> pass !
+	169432 1 918  -> pass !
+	169461 1 918  -> pass !
+	169485 1 918  -> pass !
+	169488 1 918  -> pass !
+	169489 1 918  -> pass !
+	169505 1 918  -> pass !
+	169520 1 918  -> pass !
+	180634 1 979  -> pass !
+	180663 1 979  -> pass !
+	180695 1 979  -> pass !
+	180722 1 979  -> pass !
+	180728 1 979  -> pass !
+	180829 1 980  -> pass !
+	180836 1 980  -> pass !
+	180861 1 980  -> pass !
+	180925 1 980  -> pass !
+	180985 1 980  -> pass !
+	180993 1 980  -> pass !
+	181021 1 981  -> pass !
+	181026 1 981  -> pass !
+	181061 1 981  -> pass !
+	181104 1 981  -> pass !
+	181110 1 981  -> pass !
+	181122 1 981  -> pass !
+	183935 1 997  -> pass !
+	183943 1 997  -> pass !
+	183944 1 997  -> pass !
+	183969 1 997  -> pass !
+	183978 1 997  -> pass !
+	183992 1 997  -> pass !
+	184001 1 997  -> pass !
+	184048 1 997  -> pass !
+	184063 1 997  -> pass !
+	184079 1 997  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 74999 (74999 / 0 events processed so far)
+	184101 1 997  -> pass !
+	198189 1 1074  -> pass !
+	198283 1 1074  -> pass !
+	198302 1 1074  -> pass !
+	198318 1 1074  -> pass !
+	198319 1 1074  -> pass !
+	198321 1 1074  -> pass !
+	198322 1 1074  -> pass !
+	203873 1 1105  -> pass !
+	203883 1 1105  -> pass !
+	203897 1 1105  -> pass !
+	203899 1 1105  -> pass !
+	203911 1 1105  -> pass !
+	203957 1 1105  -> pass !
+	203967 1 1105  -> pass !
+	204021 1 1105  -> pass !
+	204075 1 1106  -> pass !
+	204085 1 1106  -> pass !
+	204133 1 1106  -> pass !
+	204154 1 1106  -> pass !
+	204178 1 1106  -> pass !
+	204200 1 1106  -> pass !
+	204289 1 1107  -> pass !
+	204344 1 1107  -> pass !
+	204355 1 1107  -> pass !
+	204377 1 1107  -> pass !
+	204379 1 1107  -> pass !
+	204380 1 1107  -> pass !
+	204393 1 1107  -> pass !
+	204402 1 1107  -> pass !
+	204412 1 1107  -> pass !
+	294731 1 1597  -> pass !
+	294741 1 1597  -> pass !
+	294749 1 1597  -> pass !
+	294760 1 1597  -> pass !
+	294765 1 1597  -> pass !
+	294775 1 1597  -> pass !
+	294833 1 1597  -> pass !
+	294865 1 1597  -> pass !
+	294896 1 1597  -> pass !
+	294901 1 1597  -> pass !
+	294913 1 1597  -> pass !
+	294943 1 1598  -> pass !
+	294962 1 1598  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 75999 (75999 / 0 events processed so far)
+	295015 1 1598  -> pass !
+	295016 1 1598  -> pass !
+	295036 1 1598  -> pass !
+	295072 1 1598  -> pass !
+	295087 1 1598  -> pass !
+	295104 1 1598  -> pass !
+	295120 1 1598  -> pass !
+	295162 1 1599  -> pass !
+	295177 1 1599  -> pass !
+	295182 1 1599  -> pass !
+	295184 1 1599  -> pass !
+	295189 1 1599  -> pass !
+	295200 1 1599  -> pass !
+	295221 1 1599  -> pass !
+	295239 1 1599  -> pass !
+	295249 1 1599  -> pass !
+	295260 1 1599  -> pass !
+	295278 1 1599  -> pass !
+	321887 1 1744  -> pass !
+	321988 1 1744  -> pass !
+	321992 1 1744  -> pass !
+	322001 1 1744  -> pass !
+	322061 1 1744  -> pass !
+	322105 1 1745  -> pass !
+	322137 1 1745  -> pass !
+	322144 1 1745  -> pass !
+	322196 1 1745  -> pass !
+	322226 1 1745  -> pass !
+	322307 1 1746  -> pass !
+	322332 1 1746  -> pass !
+	322343 1 1746  -> pass !
+	322347 1 1746  -> pass !
+	322369 1 1746  -> pass !
+	348472 1 1888  -> pass !
+	348483 1 1888  -> pass !
+	348569 1 1888  -> pass !
+	348579 1 1888  -> pass !
+	348590 1 1888  -> pass !
+	348600 1 1888  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 76999 (76999 / 0 events processed so far)
+	348633 1 1888  -> pass !
+	348668 1 1889  -> pass !
+	348694 1 1889  -> pass !
+	348703 1 1889  -> pass !
+	348720 1 1889  -> pass !
+	348730 1 1889  -> pass !
+	348758 1 1889  -> pass !
+	348760 1 1889  -> pass !
+	348789 1 1889  -> pass !
+	348794 1 1889  -> pass !
+	348798 1 1889  -> pass !
+	348802 1 1889  -> pass !
+	348851 1 1889  -> pass !
+	339262 1 1838  -> pass !
+	339351 1 1838  -> pass !
+	339413 1 1838  -> pass !
+	339464 1 1839  -> pass !
+	339496 1 1839  -> pass !
+	339514 1 1839  -> pass !
+	339578 1 1839  -> pass !
+	345697 1 1873  -> pass !
+	345713 1 1873  -> pass !
+	345730 1 1873  -> pass !
+	345733 1 1873  -> pass !
+	345738 1 1873  -> pass !
+	345742 1 1873  -> pass !
+	345750 1 1873  -> pass !
+	345768 1 1873  -> pass !
+	345855 1 1873  -> pass !
+	345886 1 1873  -> pass !
+	345915 1 1874  -> pass !
+	345943 1 1874  -> pass !
+	345944 1 1874  -> pass !
+	345956 1 1874  -> pass !
+	345971 1 1874  -> pass !
+	346002 1 1874  -> pass !
+	346038 1 1874  -> pass !
+	346062 1 1874  -> pass !
+	346073 1 1874  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 77999 (77999 / 0 events processed so far)
+	346097 1 1875  -> pass !
+	346104 1 1875  -> pass !
+	346107 1 1875  -> pass !
+	346118 1 1875  -> pass !
+	346127 1 1875  -> pass !
+	346150 1 1875  -> pass !
+	346155 1 1875  -> pass !
+	346179 1 1875  -> pass !
+	346194 1 1875  -> pass !
+	289751 1 1570  -> pass !
+	289829 1 1570  -> pass !
+	289844 1 1570  -> pass !
+	289893 1 1570  -> pass !
+	289930 1 1570  -> pass !
+	289958 1 1571  -> pass !
+	289976 1 1571  -> pass !
+	290033 1 1571  -> pass !
+	290039 1 1571  -> pass !
+	290052 1 1571  -> pass !
+	290089 1 1571  -> pass !
+	290107 1 1571  -> pass !
+	290145 1 1572  -> pass !
+	290174 1 1572  -> pass !
+	290205 1 1572  -> pass !
+	290212 1 1572  -> pass !
+	290217 1 1572  -> pass !
+	290245 1 1572  -> pass !
+	290271 1 1572  -> pass !
+	290313 1 1573  -> pass !
+	290392 1 1573  -> pass !
+	290421 1 1573  -> pass !
+	290438 1 1573  -> pass !
+	290506 1 1574  -> pass !
+	290526 1 1574  -> pass !
+	290556 1 1574  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 78999 (78999 / 0 events processed so far)
+	290595 1 1574  -> pass !
+	290606 1 1574  -> pass !
+	290671 1 1574  -> pass !
+	290688 1 1574  -> pass !
+	315156 1 1707  -> pass !
+	315175 1 1707  -> pass !
+	315221 1 1707  -> pass !
+	363459 1 1969  -> pass !
+	363487 1 1969  -> pass !
+	363498 1 1969  -> pass !
+	363507 1 1969  -> pass !
+	363512 1 1969  -> pass !
+	363546 1 1969  -> pass !
+	363547 1 1969  -> pass !
+	363554 1 1969  -> pass !
+	363559 1 1969  -> pass !
+	363642 1 1970  -> pass !
+	363703 1 1970  -> pass !
+	363802 1 1970  -> pass !
+	363805 1 1970  -> pass !
+	363868 1 1971  -> pass !
+	363916 1 1971  -> pass !
+	363928 1 1971  -> pass !
+	363957 1 1971  -> pass !
+	363977 1 1971  -> pass !
+	386189 1 2092  -> pass !
+	386195 1 2092  -> pass !
+	386273 1 2092  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 79999 (79999 / 0 events processed so far)
+	386326 1 2092  -> pass !
+	392795 1 2128  -> pass !
+	392861 1 2128  -> pass !
+	392874 1 2128  -> pass !
+	392883 1 2128  -> pass !
+	393029 1 2129  -> pass !
+	393056 1 2129  -> pass !
+	393057 1 2129  -> pass !
+	393147 1 2129  -> pass !
+	393149 1 2129  -> pass !
+	393239 1 2130  -> pass !
+	393246 1 2130  -> pass !
+	393285 1 2130  -> pass !
+	393286 1 2130  -> pass !
+	393310 1 2130  -> pass !
+	393315 1 2130  -> pass !
+	404979 1 2194  -> pass !
+	404985 1 2194  -> pass !
+	405005 1 2194  -> pass !
+	405009 1 2194  -> pass !
+	405037 1 2194  -> pass !
+	405093 1 2194  -> pass !
+	405113 1 2194  -> pass !
+	405123 1 2194  -> pass !
+	405140 1 2194  -> pass !
+	405142 1 2194  -> pass !
+	405171 1 2194  -> pass !
+	405184 1 2195  -> pass !
+	405185 1 2195  -> pass !
+	405202 1 2195  -> pass !
+	405204 1 2195  -> pass !
+	405207 1 2195  -> pass !
+	405209 1 2195  -> pass !
+	405233 1 2195  -> pass !
+	405245 1 2195  -> pass !
+	405257 1 2195  -> pass !
+	405288 1 2195  -> pass !
+	405289 1 2195  -> pass !
+	405305 1 2195  -> pass !
+	405343 1 2195  -> pass !
+	405360 1 2195  -> pass !
+	405363 1 2195  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 80999 (80999 / 0 events processed so far)
+	399375 1 2163  -> pass !
+	399392 1 2163  -> pass !
+	414464 1 2245  -> pass !
+	414478 1 2245  -> pass !
+	414497 1 2245  -> pass !
+	414505 1 2245  -> pass !
+	414533 1 2245  -> pass !
+	414546 1 2245  -> pass !
+	414555 1 2245  -> pass !
+	414564 1 2245  -> pass !
+	414612 1 2246  -> pass !
+	414622 1 2246  -> pass !
+	414665 1 2246  -> pass !
+	414704 1 2246  -> pass !
+	414707 1 2246  -> pass !
+	414715 1 2246  -> pass !
+	414719 1 2246  -> pass !
+	414829 1 2247  -> pass !
+	414840 1 2247  -> pass !
+	414901 1 2247  -> pass !
+	414936 1 2247  -> pass !
+	414943 1 2247  -> pass !
+	434186 1 2352  -> pass !
+	434201 1 2352  -> pass !
+	434221 1 2352  -> pass !
+	434260 1 2352  -> pass !
+	434267 1 2352  -> pass !
+	434282 1 2352  -> pass !
+	434321 1 2352  -> pass !
+	436565 1 2365  -> pass !
+	436576 1 2365  -> pass !
+	436597 1 2365  -> pass !
+	436637 1 2365  -> pass !
+	436638 1 2365  -> pass !
+	436666 1 2365  -> pass !
+	436685 1 2365  -> pass !
+	436694 1 2365  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 81999 (81999 / 0 events processed so far)
+	436736 1 2365  -> pass !
+	436739 1 2365  -> pass !
+	436760 1 2366  -> pass !
+	436767 1 2366  -> pass !
+	436790 1 2366  -> pass !
+	436814 1 2366  -> pass !
+	436839 1 2366  -> pass !
+	436869 1 2366  -> pass !
+	436885 1 2366  -> pass !
+	436889 1 2366  -> pass !
+	436928 1 2366  -> pass !
+	436972 1 2367  -> pass !
+	437074 1 2367  -> pass !
+	437131 1 2368  -> pass !
+	437147 1 2368  -> pass !
+	437187 1 2368  -> pass !
+	437188 1 2368  -> pass !
+	437205 1 2368  -> pass !
+	437242 1 2368  -> pass !
+	437281 1 2368  -> pass !
+	437290 1 2368  -> pass !
+	332419 1 1801  -> pass !
+	332442 1 1801  -> pass !
+	332444 1 1801  -> pass !
+	332485 1 1801  -> pass !
+	332492 1 1801  -> pass !
+	332538 1 1801  -> pass !
+	332546 1 1801  -> pass !
+	332602 1 1802  -> pass !
+	332611 1 1802  -> pass !
+	332613 1 1802  -> pass !
+	332615 1 1802  -> pass !
+	332753 1 1802  -> pass !
+	332788 1 1802  -> pass !
+	332802 1 1803  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 82999 (82999 / 0 events processed so far)
+	332831 1 1803  -> pass !
+	332855 1 1803  -> pass !
+	332863 1 1803  -> pass !
+	332870 1 1803  -> pass !
+	332873 1 1803  -> pass !
+	332894 1 1803  -> pass !
+	332930 1 1803  -> pass !
+	356811 1 1933  -> pass !
+	356835 1 1933  -> pass !
+	356844 1 1933  -> pass !
+	356901 1 1933  -> pass !
+	356906 1 1933  -> pass !
+	356924 1 1933  -> pass !
+	356939 1 1933  -> pass !
+	356958 1 1933  -> pass !
+	356991 1 1934  -> pass !
+	357015 1 1934  -> pass !
+	357065 1 1934  -> pass !
+	357067 1 1934  -> pass !
+	357090 1 1934  -> pass !
+	357161 1 1934  -> pass !
+	357170 1 1934  -> pass !
+	384706 1 2084  -> pass !
+	384712 1 2084  -> pass !
+	384743 1 2084  -> pass !
+	384858 1 2084  -> pass !
+	384961 1 2085  -> pass !
+	384984 1 2085  -> pass !
+	384986 1 2085  -> pass !
+	385019 1 2085  -> pass !
+	385022 1 2085  -> pass !
+	391165 1 2119  -> pass !
+	391170 1 2119  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 83999 (83999 / 0 events processed so far)
+	391298 1 2119  -> pass !
+	391312 1 2119  -> pass !
+	391356 1 2120  -> pass !
+	391419 1 2120  -> pass !
+	391421 1 2120  -> pass !
+	391462 1 2120  -> pass !
+	391521 1 2120  -> pass !
+	391543 1 2121  -> pass !
+	391557 1 2121  -> pass !
+	391581 1 2121  -> pass !
+	391588 1 2121  -> pass !
+	391652 1 2121  -> pass !
+	402242 1 2179  -> pass !
+	402270 1 2179  -> pass !
+	402320 1 2179  -> pass !
+	402326 1 2179  -> pass !
+	402342 1 2179  -> pass !
+	402351 1 2179  -> pass !
+	402397 1 2179  -> pass !
+	402429 1 2180  -> pass !
+	402437 1 2180  -> pass !
+	402439 1 2180  -> pass !
+	402472 1 2180  -> pass !
+	402517 1 2180  -> pass !
+	402535 1 2180  -> pass !
+	402565 1 2180  -> pass !
+	402586 1 2180  -> pass !
+	402598 1 2180  -> pass !
+	402616 1 2181  -> pass !
+	402628 1 2181  -> pass !
+	402702 1 2181  -> pass !
+	402737 1 2181  -> pass !
+ ( INFO  )  TauTauAnalysis     : Processing entry: 84999 (84999 / 0 events processed so far)
+	406499 1 2202  -> pass !
+	406518 1 2202  -> pass !
+	406533 1 2202  -> pass !
+	406588 1 2202  -> pass !
+	406605 1 2202  -> pass !
+	406635 1 2202  -> pass !
+	411632 1 2230  -> pass !
+	411691 1 2230  -> pass !
+	411721 1 2230  -> pass !
+	411724 1 2230  -> pass !
+	411736 1 2230  -> pass !
+	411743 1 2230  -> pass !
+	411788 1 2230  -> pass !
+	411848 1 2231  -> pass !
+	411859 1 2231  -> pass !
+	411876 1 2231  -> pass !
+	411892 1 2231  -> pass !
+	411902 1 2231  -> pass !
+	411928 1 2231  -> pass !
+	411935 1 2231  -> pass !
+	411945 1 2231  -> pass !
+	411983 1 2231  -> pass !
+	412002 1 2231  -> pass !
+	412013 1 2231  -> pass !
+	412045 1 2232  -> pass !
+	412063 1 2232  -> pass !
+	412088 1 2232  -> pass !
+	412143 1 2232  -> pass !
+	412148 1 2232  -> pass !
+	412168 1 2232  -> pass !
+	412181 1 2233  -> pass !
+	412231 1 2233  -> pass !
+	412272 1 2233  -> pass !
+	412285 1 2233  -> pass !
+	412286 1 2233  -> pass !
+	412358 1 2233  -> pass !
+ ( INFO  )  TauTauAnalysis     : cut flow for mutau
+ ( INFO  )  TauTauAnalysis     : Cut	                     Name	Events	RelEff	AbsEff
+ ( INFO  )  TauTauAnalysis     : 	                    start	 85915
+ ( INFO  )  TauTauAnalysis     : C0	                     JSON	 85915	100.00	100.00
+ ( INFO  )  TauTauAnalysis     : C1	                  Trigger	 19267	 22.43	 22.43
+ ( INFO  )  TauTauAnalysis     : C2	               MetFilters	 19120	 99.24	 22.25
+ ( INFO  )  TauTauAnalysis     : C3	                   Lepton	  8727	 45.64	 10.16
+ ( INFO  )  TauTauAnalysis     : C4	                      Tau	  2097	 24.03	  2.44
+ ( INFO  )  TauTauAnalysis     : C5	                 LeptonDR	  2091	 99.71	  2.43
+
+ ( INFO  )  TauTauAnalysis     : cut flow for eletau
+ ( INFO  )  TauTauAnalysis     : Cut	                     Name	Events	RelEff	AbsEff
+ ( INFO  )  TauTauAnalysis     : 	                    start	 85915
+ ( INFO  )  TauTauAnalysis     : C0	                     JSON	 85915	100.00	100.00
+ ( INFO  )  TauTauAnalysis     : C1	                  Trigger	 19267	 22.43	 22.43
+ ( INFO  )  TauTauAnalysis     : C2	               MetFilters	 19120	 99.24	 22.25
+ ( INFO  )  TauTauAnalysis     : C3	                   Lepton	  5154	 26.96	  6.00
+ ( INFO  )  TauTauAnalysis     : C4	                      Tau	  1045	 20.28	  1.22
+ ( INFO  )  TauTauAnalysis     : C5	                 LeptonDR	  1044	 99.90	  1.22
+
+ ( INFO  )  TauTauAnalysis     : Terminated InputData "SUSYGluGluToHToTauTau_M-160" (Version:SUSYGluGluToHToTauTau_M-160_TuneCUETP8M1_13TeV-pythia8) on worker node
+ ( INFO  )  SCycleController   : Writing output of "TauTauAnalysis" to: ./TauTauAnalysis.SUSYGluGluToHToTauTau_M-160.SUSYGluGluToHToTauTau_M-160_TuneCUETP8M1_13TeV-pythia8.root
+[TFile::Cp] Total 0.22 MB	|>...................| 0.00 % [0.0 MB/s][TFile::Cp] Total 0.22 MB	|====================| 100.00 % [467.9 MB/s]
+events in mu_tau 2091
+events in ele_tau 1044
+ ( INFO  )  SCycleController   : Overall cycle statistics:
+ ( INFO  )  SCycleController   :      85915 Events - Real time  13.64 s  -  6301 Hz | CPU time  13.07 s  -  6573 Hz
+ ( INFO  )  TauTauAnalysis     : Tschoe!
+	Command being timed: "sframe_main TauTauAnalysis.SUSYGluGluToHToTauTau_M-160.SUSYGluGluToHToTauTau_M-160_TuneCUETP8M1_13TeV-pythia8subjob1.xml"
+	User time (seconds): 13.36
+	System time (seconds): 0.48
+	Percent of CPU this job got: 91%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:15.16
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 1257056
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 1838
+	Minor (reclaiming a frame) page faults: 73197
+	Voluntary context switches: 14570
+	Involuntary context switches: 1574
+	Swaps: 0
+	File system inputs: 407768
+	File system outputs: 1720
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0
+Sun Aug 28 10:04:37 CEST 2016
+##################################################
+/scratch/tmpdir-3323802.1.all.q
+total 240K
+-rw-r--r-- 1 ytakahas uniz-higgs 233K Aug 28 10:04 TauTauAnalysis.SUSYGluGluToHToTauTau_M-160.SUSYGluGluToHToTauTau_M-160_TuneCUETP8M1_13TeV-pythia8.root
+-rw-r--r-- 1 ytakahas uniz-higgs 1.7K Aug 28 10:04 TauTauAnalysis.SUSYGluGluToHToTauTau_M-160.SUSYGluGluToHToTauTau_M-160_TuneCUETP8M1_13TeV-pythia8subjob1.xml
+##################################################
+cp -f TauTauAnalysis.SUSYGluGluToHToTauTau_M-160.SUSYGluGluToHToTauTau_M-160_TuneCUETP8M1_13TeV-pythia8.root /shome/ytakahas/work/TauTau/SFrameAnalysis/SFrame/../AnalysisTemp/sframe_PzDzri/TauTauAnalysis.SUSYGluGluToHToTauTau_M-160.SUSYGluGluToHToTauTau_M-160_TuneCUETP8M1_13TeV-pythia8subjob1.root
+# ================================================================
+# JOB Live Resources USAGE for job 3323802: ( don't consider mem values, they are wrong )
+# usage    1:                 cpu=00:00:00, mem=0.00000 GBs, io=0.00000, vmem=N/A, maxvmem=N/A
+# 
+# JOB Historical Resources USAGE for job 3323802: you have to manually run
+# qacct -j 3323802 2&> /dev/null || qacct -f /gridware/sge/default/common/accounting.complete -j 3323802
+# 
+# JOB ran over queue@host = all.q@t3wn51.psi.ch
+# 
+# JOBs executed on t3wn[30-40] should run ~1.13 faster than t3wn[10-29]
+#
+# removing TMPDIR: /scratch/tmpdir-3323802.1.all.q

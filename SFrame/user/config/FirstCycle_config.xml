@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<!DOCTYPE JobConfiguration PUBLIC "" "JobConfig.dtd">
+
+<!-- ======================================================================= -->
+<!-- @Project: SFrame - ROOT-based analysis framework for ATLAS              -->
+<!-- @Package: User                                                          -->
+<!--                                                                         -->
+<!-- @author Stefan Ask       <Stefan.Ask@cern.ch>           - Manchester    -->
+<!-- @author David Berge      <David.Berge@cern.ch>          - CERN          -->
+<!-- @author Johannes Haller  <Johannes.Haller@cern.ch>      - Hamburg       -->
+<!-- @author A. Krasznahorkay <Attila.Krasznahorkay@cern.ch> - CERN/Debrecen -->
+<!--                                                                         -->
+<!-- ======================================================================= -->
+
+<!--OutputLevel: Possibilities: VERBOSE, DEBUG, INFO, WARNING, ERROR, FATAL, ALWAYS -->
+<JobConfiguration JobName="TestJob" OutputLevel="DEBUG">
+
+  <!-- List of libraries to be loaded for the analysis.             -->
+  <!-- Note the MathCore is needed to import the dictionary for the -->
+  <!-- SParticle base class when using ROOT < 5.20.                 -->
+  <!-- On ROOT 5.20 and newer versions you should load libGenVector -->
+  <!-- for this purpose instead!                                    -->
+  <!-- <Library Name="libMathCore" /> -->
+  <Library Name="libGenVector" />
+  <Library Name="libGraf" />
+  <Library Name="libSFramePlugIns" />
+  <Library Name="libSFrameUser" />
+
+  <!-- Packages that have to be uploaded and enabled on the PROOF cluster. -->
+  <!-- The standard SFrame libraries all create such a PAR package under   -->
+  <!-- SFRAME_LIB_DIR. For each custom library that is loaded in the       -->
+  <!-- configuration, a package also has to be defined...                  -->
+  <Package Name="SFrameCore.par" />
+  <Package Name="SFramePlugIns.par" />
+  <Package Name="SFrameUser.par" />
+
+  <!-- Enable the following lines if you have to use the ATLAS offline software -->
+  <!-- environment with SFrame. The SFrameCintex library makes sure that the    -->
+  <!-- code can use the offline Reflex dictionaries when reading the ntuples.   -->
+  <!--
+  <Library Name="libCintex" />
+  <Library Name="libSFrameCintex" />
+  <Package Name="SFrameCintex.par" />
+  -->
+
+  <!-- List of cycles to be executed.                                       -->
+  <!-- Name: specifies the class name to be executed in this cycle          -->
+  <!-- name of Output-File: automically give by Name+Type+PostFix+".root"   -->
+  <!-- OutputDirectory: directory to which output is written                -->
+  <!--                  must finish with a "/"                              -->
+  <!-- PostFix: A string that should be added to the output file name.      -->
+  <!--          Can be useful for differentiating differently configured    -->
+  <!--          instances of the same cycle class.                          -->
+  <!-- RunMode: Can be "LOCAL" or "PROOF", depending on how you want to run -->
+  <!--          your analysis.                                              -->
+  <!-- ProofServer: Name of the PROOF server that you want to connect to.   -->
+  <!--              Set it to "" or "lite" to run PROOF-Lite on your local  -->
+  <!--              machine.                                                -->
+  <!-- ProofWorkDir: When working on a "real" PROOF cluster, the worker     -->
+  <!--               nodes write their output ntuple(s) into a local temp.  -->
+  <!--               file. These files are merged into a single file in a   -->
+  <!--               location accessible to all the nodes and the client    -->
+  <!--               machine (running SFrame) as well. Such a location can  -->
+  <!--               be specified here.                                     -->
+  <!-- ProofNodes: Maximum number of nodes to use from the PROOF farm. (Or  -->
+  <!--             the maximum number of cores to use in PROOF-Lite mode.)  -->
+  <!--             When set to "-1" (default setting) all available workers -->
+  <!--             are used.                                                -->
+  <!-- TargetLumi: luminosity value the output of this cycle is weighted to -->
+  <!-- UseTreeCache: Boolean flag that accepts "True" or "False". Controls  -->
+  <!--               whether TTreeCache usage is enabled in the job.        -->
+  <!--               Beware that some ntuples don't "like" TTreeCache!      -->
+  <!-- TreeCacheSize: Size of the TTreeCache in bytes.                      -->
+  <!-- TreeCacheLearnEntries: Number of entries used to learn the access    -->
+  <!--                        pattern of the analysis, and select which     -->
+  <!--                        branches should be cached.                    -->
+  <!--                        Set to a negative number to "blindly" cache   -->
+  <!--                        all branches of the primary input TTree.      -->
+  <!--                        Set to 0 if you want to select the branches   -->
+  <!--                        to be cached in BeginInputFile(...).          -->
+  <Cycle Name="FirstCycle" TargetLumi="1." RunMode="PROOF" ProofServer="lite://"
+         ProofWorkDir="" ProofNodes="-1" OutputDirectory="./" PostFix=""
+         UseTreeCache="True" TreeCacheSize="30000000" TreeCacheLearnEntries="10" >
+
+    <!-- list of input data for given data type                                   -->
+    <!-- Type, Version: Type of the events. They have pretty free formats.        -->
+    <!--       Exception is only for real data: for that use Type="data"!         -->
+    <!--       If two InputData nodes are declared with the same Type and Version -->
+    <!--       parameters, then their contents will end up in the same output     -->
+    <!--       file. (Care is taken to calculate the event weights correctly in   -->
+    <!--       case...                                                            -->
+    <!-- Lumi: either specify it in InputData (ie. the luminosity sum of all <In> -->
+    <!--       or specify it in each <In> separately                              -->
+    <!--       In case both are filled the sum in <InputData> is used.            -->
+    <!--       The values in <In> are ignored                                     -->
+    <!--       units: [pb^-1]                                                     -->
+    <!-- NEventsMax: optional, specifies the number of events that are looped     -->
+    <!--             over.                                                        -->
+    <!--             If not existant: all events of this InputData set are used   -->
+    <!--             Please Note: NEventsMax is a mean to shorten the event loop  -->
+    <!--                          for test runs;                                  -->
+    <!--             the weights of the events are adapted.                       -->
+    <!--             For final plots, i.e. maximum statistics, NEventsMax         -->
+    <!--             shouldn't be used.                                           -->
+    <!-- NEventsSkip: optional, specifies the number of events that should be     -->
+    <!--              disregarded at the beginning of the InputData.              -->
+    <!-- Cacheable: When set to "True" (the default value is "False"), SFrame     -->
+    <!--            creates a small "cache file" describing the files in the      -->
+    <!--            InputData. This cache is then used in consecutive runs to     -->
+    <!--            "validate" the files before starting the execution. It can    -->
+    <!--            speed up the startup of a job considerably when processing    -->
+    <!--            a large number of files.                                      -->
+    <!-- SkipValid: When set to "True" (default being "False"), the code doesn't  -->
+    <!--            execute the regular validation of the input files at the job  -->
+    <!--            start. It just assumes that all the specified files are there,-->
+    <!--            and they all contain all the necessary input trees. Can only  -->
+    <!--            be used when NEventsMax="-1" and NEventsSkip="0".             -->
+    <!-- SkipLookup: When set to "True" (the default is "False"), the code will   -->
+    <!--             not try to look up the physical location of the specified    -->
+    <!--             files. This is most useful with XRootD storage systems, most -->
+    <!--             notably EOS. Here you have to force SFrame/PROOF to use the  -->
+    <!--             file names exactly as specified in the configuration file.   -->
+    <!--                                                                          -->
+    <!-- Some run-time checking is done on these parameters that they would make  -->
+    <!-- sense, but in general be careful when using them.                        -->
+
+    <InputData Type="MC" Version="Zee_1" Lumi="0." NEventsMax="2000" NEventsSkip="3000"
+               Cacheable="True" SkipValid="False" SkipLookup="True" >
+
+      <!-- List of cuts that have been applied on generator level, needed for -->
+      <!-- the weighting.                                                     -->
+      <!-- For proper weighting the variable that was cut on must be stored,  -->
+      <!-- in each event.                                                     -->
+      <!-- We assume that it is stored directly in a "Tree"                   -->
+      <!-- Formula: String formula of the cut that has been applied           -->
+      <!--<GeneratorCut Tree="FullRec0" Formula="MissingEt>10000" />-->
+
+      <!-- List of input files                -->
+      <!-- Lumi: optional, see comments above -->
+      <In FileName="/afs/cern.ch/atlas/maxidisk/d181/SFrame/StacoTau1p3p__dcache-pythiazeeSUSYView_1.AAN.root" Lumi="209.8" />
+
+      <!-- Specification of the input and output trees. -->
+      <!-- Name: Name of the tree in the ROOT file      -->
+      <InputTree Name="FullRec0" />
+      <InputTree Name="CollectionTree" />
+      <OutputTree Name="FirstCycleTree" />
+      <MetadataOutputTree Name="Electrons" />
+
+    </InputData>
+    <InputData Type="MC" Version="Zee_2" Lumi="0." NEventsMax="-1" SkipValid="True" >
+
+      <!-- List of cuts that have been applied on generator level, needed for -->
+      <!-- the weighting                                                      -->
+      <!--<GeneratorCut Tree="FullRec0" Formula="MissingEt>5000" />
+      <GeneratorCut Tree="FullRec0" Formula="SumEt>200000" />-->
+
+      <!-- list of input files -->
+      <In FileName="/afs/cern.ch/atlas/maxidisk/d181/SFrame/StacoTau1p3p__dcache-pythiazeeSUSYView_1.AAN.root" Lumi="209.8" />
+
+      <!-- Specification of the input and output trees. -->
+      <InputTree Name="FullRec0" />
+      <InputTree Name="CollectionTree" />
+      <OutputTree Name="FirstCycleTree" />
+      <MetadataOutputTree Name="Electrons" />
+
+    </InputData>
+
+    <!-- User configuration: properties                                -->
+    <!--  The user can assign various types of C++ objects to property -->
+    <!--  names in the constructor of the cycle. The properties are    -->
+    <!--  then set automatically in the C++ code according to the      -->
+    <!--  configuration in the XML file.                               -->
+    <!--  Note that you can put environment variables into the values  -->
+    <!--  which get replaced by the value of the environment variable, -->
+    <!--  if you begin the string with ":exp:". (This is removed from  -->
+    <!--  the value given to your cycle in C++.)                       -->
+    <!-- Name: Name of the property (as set in C++)                    -->
+    <!-- Value: String representation of the value                     -->
+    <UserConfig>
+      <Item Name="TestString" Value="It works!" />
+      <Item Name="TestInt" Value="666" />
+      <Item Name="TestDouble" Value="3.141592" />
+      <Item Name="TestBool" Value="True" />
+      <Item Name="TestIntVector" Value="5 4 3 2 1" />
+      <Item Name="TestDoubleVector" Value="3.141592 2.718281" />
+      <Item Name="TestStringVector" Value="one two three" />
+      <Item Name="TestBoolVector" Value="True False 1 0" />
+      <Item Name="RecoTreeString" Value="FullRec0" />
+      <Item Name="MetaTreeName" Value="Electrons" />
+    </UserConfig>
+
+  </Cycle>
+
+</JobConfiguration>

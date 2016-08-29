@@ -1,0 +1,62 @@
+// Dear emacs, this is -*- c++ -*-
+// $Id: SParticle.icc 344 2012-12-13 13:10:53Z krasznaa $
+/***************************************************************************
+ * @Project: SFrame - ROOT-based analysis framework for ATLAS
+ * @Package: Plug-ins
+ *
+ * @author Stefan Ask       <Stefan.Ask@cern.ch>           - Manchester
+ * @author David Berge      <David.Berge@cern.ch>          - CERN
+ * @author Johannes Haller  <Johannes.Haller@cern.ch>      - Hamburg
+ * @author A. Krasznahorkay <Attila.Krasznahorkay@cern.ch> - NYU/Debrecen
+ *
+ ***************************************************************************/
+
+#ifndef SFRAME_PLUGINS_SParticle_ICC
+#define SFRAME_PLUGINS_SParticle_ICC
+
+/**
+ * This copy constructor can basically copy any kind of LorentzVector.
+ * It doesn't matter if the parent has been declared in another geometry.
+ * The constructor allows statements like:
+ *
+ * <code>
+ *  SParticle p( p1 + p2 );
+ * </code>
+ *
+ * @param parent Any kind of LorentzVector that we want to copy
+ */
+template< class Geom >
+SParticle::SParticle( const ROOT::Math::LorentzVector< Geom >& parent )
+   : ROOT::Math::LorentzVector< ROOT::Math::PtEtaPhiE4D< Double32_t > >(),
+     TObject() {
+
+   this->SetPt( parent.Pt() );
+   this->SetEta( parent.Eta() );
+   this->SetPhi( parent.Phi() );
+   this->SetE( parent.E() );
+}
+
+/**
+ * This operator is needed to allow arithmetic expressions that are defined
+ * for the LorentzVector class, to work on SParticle objects. It allows
+ * statements like:
+ *
+ * <code>
+ *  SParticle p = p1 + p2;
+ * </code>
+ *
+ * @param rh The LorentzVector on the right-hand side of the equation sign
+ */
+template< class Geom > 
+SParticle&
+SParticle::operator= ( const ROOT::Math::LorentzVector< Geom >& rh ) {
+
+   this->SetPt( rh.Pt() );
+   this->SetEta( rh.Eta() );
+   this->SetPhi( rh.Phi() );
+   this->SetE( rh.E() );
+
+   return *this;
+}
+
+#endif // SFRAME_PLUGINS_SParticle_ICC

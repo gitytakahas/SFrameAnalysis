@@ -1,0 +1,120 @@
+2014.05.23 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Hiding the auto-generated .pcm file from SVN.
+
+2013.12.02 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+   * Making the PROOF files aware of the ROOTPROOFLIBDIR environment variable,
+     which can be used to specify a common library directory that should be
+     searched for libraries on a PROOF cluster with a shared filesystem.
+
+2013.11.26 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Fixing SSummedVar after the changes made in ISCycleBaseHist.
+
+2012.12.13 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+   * Updated the documentation of practically all the files.
+   * Modified the source text formatting a bit for it to fit into 80 column
+     editors.
+
+2012.12.03 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+   * Added the new extra "inFile" option to SToolBase::Book(...). It was just
+     an oversight now to put the option in so far.
+
+2012.06.07 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+   * "Stole" a header from the ATLAS offline code, and added it under
+     plug-ins/include/FPCompare.h. It holds function and functors that can be
+     used to implement safe floating point comparisons. (Sidestepping an x87
+     "bug".)
+
+2012.04.21 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+   * Updated SH1.icc not to use <cmath> anymore. There is no good reason for
+     this, just that Xcode seems to go crazy over <cmath>, so my IDE is happier
+     if I use TMath.h instead.
+
+2012.04.12 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+   * Updated BUILD.sh not to compile the code when running on PROOF-Lite
+
+2011.10.11 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Modified SToolBase to make it possible to generate
+	  dictionaries for tools inheriting from it. The modifications
+	  came from Massimiliano.
+
+2011.06.27 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Added the missing virtual destructor to SToolBaseT.
+	  (Didn't get a complaint on MacOS X... :-P)
+
+2011.06.27 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Followed the developments of SCycleBaseHist with
+	  SToolBaseT.
+	* Added some functions to SToolBaseT that were missing so
+	  far. (Coming from SCycleBaseNTuple.)
+
+2010.12.01 Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Extended the documentation for SSummedVar a bit, stating that
+	  users should always mark such variables as transient when
+	  using new ROOT versions.
+
+2010.08.06. Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Modified SToolBase to be much more flexible than it was.
+	  This will make it possible to extend it much more
+	  easily in SFrameARA.
+
+2010.08.04. Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Added a non-const version of the Write(...) function to
+	  SH1. This shouldn't change the functioning of the code at
+	  all, but it should make GCC happier.
+
+2010.08.02. Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Created the new SOutputVariables class, which works in an
+	  analogous way to SInputVariables.
+	* Fixed the friend relations of SToolBase to make it possible
+	  to use SInputVariable and SOutputVariable classes with such
+	  a parent as well.
+
+2010.06.30. Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* The helper classes are now using the message macros from
+	  SLogger.h.
+
+2010.05.05. Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Changed the SH1::Fill(...) function to throw an exception
+	  when it receives a NaN value. (Instead of plainly crashing.)
+	  This should make debugging a little easier, as the code now
+	  reports which histogram received the NaN value.
+
+2010.04.08. Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Created the SToolBase class: This class could be used to
+	  create "smart classes" easily. These tool classes can use
+	  much of the same convenience functionality as their parent
+	  cycles can. But of course they have to be attached to a
+	  parent cycle, to make it possible to run them.
+	* Created the SInputVariables class: This base class should make
+	  it simpler to create classes that serve the only purpose to
+	  collect input data variables. This design makes it simple
+	  to pass around input variables between different parts of the
+	  analysis code. (After a long circle we came back to the
+	  original design of SFrame...)
+
+2009.11.20. Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Added the possibility to use various std::map types with
+	  SSummedVar. These can be very handy when calculating
+	  event selection efficiencies for instance.
+
+2009.09.15. Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Added a new class: SH1
+	  It's a light-weight 1-dimensional histogram class. It
+	  can be used to speed up analysis cycles a little.
+
+2009.01.21. Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Added a new class: SSummedVar
+	  It can be used to wrap different kinds of integer numbers,
+	  making it possible to "count things" when running in
+	  PROOF mode. For an example see the FirstCycle class.
+
+2008.02.01. Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Added a lot of Doxygen documentation to the code, as
+	  it is now also parsed.
+
+2007.11.13. Attila Krasznahorkay <Attila.Krasznahorkay@cern.ch>
+	* Created first version of the "SFramePlugIns" library.
+	* The package should be a collection of useful tools
+	  built on top of SFrame/ROOT.
+	* As a placekeeper, I added the good old SParticle class
+	  to the library.

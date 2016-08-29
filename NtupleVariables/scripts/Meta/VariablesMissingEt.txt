@@ -1,0 +1,18 @@
+# Variable definition file for jets
+#
+# expected format:
+# detail_level  C++_type  name  [default]
+#
+# Do not add variables here which are defined in Particle.h.
+#
+
+Basic	floatingnumber*	et
+Basic	floatingnumber*	phi
+Basic	floatingnumber*	sumEt
+
+Analysis	floatingnumber*	corrPx
+Analysis	floatingnumber*	corrPy
+Analysis	floatingnumber*	significance
+Analysis	floatingnumber*	cov00
+Analysis	floatingnumber*	cov10
+Analysis	floatingnumber*	cov11

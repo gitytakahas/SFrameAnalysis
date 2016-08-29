@@ -1,0 +1,468 @@
+// Dear emacs, this is -*- c++ -*-
+// $Id: SCycleBaseNTuple.icc 370 2013-11-13 08:10:18Z krasznaa $
+/***************************************************************************
+ * @Project: SFrame - ROOT-based analysis framework for ATLAS
+ * @Package: Core
+ *
+ * @author Stefan Ask       <Stefan.Ask@cern.ch>           - Manchester
+ * @author David Berge      <David.Berge@cern.ch>          - CERN
+ * @author Johannes Haller  <Johannes.Haller@cern.ch>      - Hamburg
+ * @author A. Krasznahorkay <Attila.Krasznahorkay@cern.ch> - NYU/Debrecen
+ *
+ ***************************************************************************/
+
+#ifndef SFRAME_CORE_SCycleBaseNTuple_ICC
+#define SFRAME_CORE_SCycleBaseNTuple_ICC
+
+// System include(s):
+#include <string.h>
+
+// STL include(s):
+#include <sstream>
+#include <typeinfo>
+
+// ROOT include(s):
+#include <TTree.h>
+#include <TBranch.h>
+#include <TLeaf.h>
+#include <TString.h>
+
+// Local include(s):
+#include "SPointer.h"
+
+/**
+ * To connect to "primitive" types in the input TTree
+ * (ints, doubles, etc.) you have to define the variable itself, then give this
+ * variable to this function. So this function is only supposed to handle
+ * primitive types. More complex types are are handled by the specialised
+ * functions.
+ *
+ * For STL objects (vectors, maps, you name it) you have to define a pointer to
+ * such an object, and give this pointer to the function. You don't need to
+ * initialise the pointer to anything, the function will take care about that.
+ *
+ * The function checks if the variable given to the function is of the right
+ * type. Unfortunately ROOT is not able to do this itself.
+ *
+ * See the example cycles for some details.
+ *
+ * @param treeName Name of the TTree in the input file
+ * @param branchName Name of the branch in the TTree
+ * @param variable The variable that should be connected to the branch
+ * @returns <code>true</code> if the connection was made successfully,
+ *          <code>false</code> otherwise
+ */
+template< typename T >
+bool SCycleBaseNTuple::ConnectVariable( const char* treeName,
+                                        const char* branchName,
+                                        T& variable ) throw ( SError ) {
+
+   REPORT_VERBOSE( "Called with treeName = \"" << treeName
+                   << "\", branchName = \"" << branchName << "\"" );
+
+   // Access the TTree. The function will throw an exception if unsuccessful
+   TTree* tree = GetInputTree( treeName );
+   TBranch* br = 0;
+
+   // Check if the branch actually exists:
+   TBranch* branch_info;
+   if( ! ( branch_info = tree->GetBranch( branchName ) ) ) {
+      REPORT_ERROR( "Branch \"" << branchName << "\" doesn't exist in TTree \""
+                    << treeName << "\"" );
+      return false;
+   }
+
+   //
+   // Detect what kind of variable we're dealing with:
+   //
+   const char* type_name = typeid( variable ).name();
+   REPORT_VERBOSE( "Type ID: " << type_name );
+   if( strlen( type_name ) == 1 ) {
+
+      // Check whether the branch matches the type of the variable given to this
+      // function:
+      REPORT_VERBOSE( "Type of the variable held by the branch: "
+                      << branch_info->GetTitle() );
+
+      // Try to determine if the user is trying to connect a variable of the
+      // correct type to the branch. Let's first assume that there is only one
+      // leaf, which is called the same as the branch. This is the ATLAS
+      // convention.
+      TLeaf* leaf = branch_info->GetLeaf( branchName );
+      Bool_t simple_branch = kFALSE;
+      if( ! leaf ) {
+         // If there isn't a leaf with the name of the branch, try to look for
+         // all the leaves. It could be that there is a single leaf with some
+         // other name, or that there are a number of leaves.
+         std::vector< TLeaf* > leaves;
+         TObjArray* tleaves = branch_info->GetListOfLeaves();
+         for( Int_t i = 0; i < tleaves->GetSize(); ++i ) {
+            // In my experience not all objects in the array are actual TLeaf
+            // objects...
+            TLeaf* local_leaf = dynamic_cast< TLeaf* >( tleaves->At( i ) );
+            if( local_leaf ) {
+               leaves.push_back( local_leaf );
+            }
+         }
+         // If there is a single leaf, then the type checking can continue:
+         if( leaves.size() == 1 ) {
+            leaf = leaves[ 0 ];
+            simple_branch = kTRUE;
+         }
+         // If there are multiple leaves, then we'll have to skip the type
+         // checking:
+         else if( leaves.size() > 1 ) {
+            simple_branch = kFALSE;
+         }
+         // If we didn't find any leaves, then something is definitely wrong:
+         else {
+            REPORT_ERROR( "Couldn't interrogate branch: " << branchName );
+            REPORT_ERROR( "Are you trying to connect a primitive to a branch "
+                          "describing an object?" );
+            throw SError( "Couldn't interrogate branch: " +
+                          TString( branchName ), SError::SkipFile );
+         }
+      } else {
+         simple_branch = kTRUE;
+      }
+      //
+      // Only do the type checking if there is a single leaf:
+      //
+      if( simple_branch ) {
+         REPORT_VERBOSE( "Leaf type: " << leaf->GetTypeName() );
+
+         // Now check if the leaf has the correct type:
+         if( strcmp( type_name, TypeidType( leaf->GetTypeName() ) ) ) {
+            REPORT_ERROR( "Trying to connect a wrong type of primitive to the "
+                          << "branch: " << branchName );
+            REPORT_ERROR( "  Use variable of type: " << leaf->GetTypeName() );
+            throw SError( "Wrong variable type given for branch: " +
+                          TString( branchName ), SError::SkipCycle );
+         } else {
+            REPORT_VERBOSE( "The branch and variable types seem to match" );
+         }
+      } else {
+         // Let the user know that we can't do any type checking...
+         m_logger << INFO << "Connecting to a branch with multiple leaves."
+                  << "Type correctness can't be checked!" << SLogger::endmsg;
+      }
+
+      // For primitive types nothing fancy needs to be done
+      REPORT_VERBOSE( "The supplied variable is a \"primitive\"" );
+      tree->SetBranchStatus( branchName, 1 );
+      tree->SetBranchAddress( branchName, &variable, &br );
+
+   } else {
+      throw SError( "ConnectVariable(...) called with an unknown variable type",
+                    SError::SkipCycle );
+   }
+
+#if ROOT_VERSION_CODE >= ROOT_VERSION( 5, 26, 0 )
+   tree->AddBranchToCache( br, kTRUE );
+#endif // ROOT_VERSION...
+   this->RegisterInputBranch( br );
+   m_logger << ::DEBUG << "Connected branch \"" << branchName << "\" in tree \""
+            << treeName << "\"" << SLogger::endmsg;
+
+   return true;
+}
+
+/**
+ * This is a tricky specialisation of the base function...
+ *
+ * Although it's not too common these days, but older ROOT ntuples often
+ * contained simple C style arrays instead of STL collections. Unfortunately the
+ * standard version of this function can't work if you give it your array
+ * variable. Luckily C++ allows us to use a special function for array type
+ * arguments.
+ *
+ * If one of the branches that you'd like to read is an array, you should write
+ * something like this in your code:
+ *
+ *   In the header:
+ *   <code>
+ *       Int_t m_my_variable[ MAX_SIZE ];
+ *   </code>
+ *
+ *   In the source file:
+ *   <code>
+ *       ConnectVariable( "MyTree", "MyVariable", m_my_variable );
+ *   </code>
+ *
+ * Note, that the arrays always have to have a fixed size. (This is the size
+ * that was specified when the TTree was written.) It's important that the array
+ * would have memory allocated for it (as in this example), because ROOT doesn't
+ * do this automatically!
+ *
+ * @param treeName Name of the TTree in the input file
+ * @param branchName Name of the branch in the TTree
+ * @param variable The variable that should be connected to the branch
+ * @returns <code>true</code> if the connection was made successfully,
+ *          <code>false</code> otherwise
+ */
+template< typename T, size_t size >
+bool SCycleBaseNTuple::
+ConnectVariable( const char* treeName, const char* branchName,
+                 T ( &variable )[ size ] ) throw( SError ) {
+
+   // Access the TTree. The function will throw an exception if unsuccessful
+   TTree* tree = GetInputTree( treeName );
+   TBranch* br = 0;
+
+   // Check if the branch actually exists:
+   if( ! tree->GetBranch( branchName ) ) {
+      REPORT_ERROR( "Branch \"" << branchName << "\" doesn't exist in TTree \""
+                    << treeName << "\"" );
+      return false;
+   }
+
+   //
+   // Print what kind of variable we're dealing with:
+   //
+   const char* type_name = typeid( variable ).name();
+   REPORT_VERBOSE( "Type ID: " << type_name );
+
+   REPORT_VERBOSE( "The supplied variable is a \"primitive array\"" );
+   tree->SetBranchStatus( branchName, 1 );
+   tree->SetBranchAddress( branchName, variable, &br );
+
+#if ROOT_VERSION_CODE >= ROOT_VERSION( 5, 26, 0 )
+   tree->AddBranchToCache( br, kTRUE );
+#endif // ROOT_VERSION...
+   this->RegisterInputBranch( br );
+   m_logger << ::DEBUG << "Connected branch \"" << branchName << "\" in tree \""
+            << treeName << "\"" << SLogger::endmsg;
+
+   return true;
+}
+
+/**
+ * This is a specialisation of the base function for object pointers.
+ * If the input ntuple contains an object (like an std::vector of something),
+ * then the user should connect an object pointer to this branch. Something
+ * like this:
+ *
+ *   In the header:
+ *   <code>
+ *      std::vector< double >* m_electron_p_T;
+ *   </code>
+ *
+ *   In the source file:
+ *   <code>
+ *      ConnectVariable( "MyTree", "Electron_p_T", m_electron_p_T );
+ *   </code>
+ *
+ * Note that you don't get ownership of the object created by this function! It
+ * will be deleted automatically! At the same time, you shouldn't create a new
+ * object before calling this function, as that will lead to a memory leak.
+ *
+ * Note also that the code doesn't need to check the type of the pointer given
+ * to the function. ROOT does this for us.
+ *
+ * @param treeName Name of the TTree in the input file
+ * @param branchName Name of the branch in the TTree
+ * @param variable The variable that should be connected to the branch
+ * @returns <code>true</code> if the connection was made successfully,
+ *          <code>false</code> otherwise
+ */
+template< typename T >
+bool SCycleBaseNTuple::ConnectVariable( const char* treeName,
+                                        const char* branchName,
+                                        T*& variable ) throw ( SError ) {
+
+   // Access the TTree. The function will throw an exception if unsuccessful
+   TTree* tree = GetInputTree( treeName );
+   TBranch* br = 0;
+
+   // Check if the branch actually exists:
+   if( ! tree->GetBranch( branchName ) ) {
+      REPORT_ERROR( "Branch \"" << branchName << "\" doesn't exist in TTree \""
+                    << treeName << "\"" );
+      return false;
+   }
+
+   // To make sure that typeid(...) will succeed. All classes that can be
+   // written out by ROOT have to have a default constructor anyway...
+   variable = new T();
+
+   //
+   // Detect what kind of variable we're dealing with:
+   //
+   const char* type_name = typeid( *variable ).name();
+   REPORT_VERBOSE( "Type ID: " << type_name );
+   delete variable; // now let's dispose of the object
+   if( strlen( type_name ) == 1 ) {
+      throw SError( "ConnectVariable(...) specialised for object pointers "
+                    "called with a simple variable.", SError::SkipCycle );
+   } else {
+
+      // The object pointers have to be initialised to zero before
+      // connecting them to the branches
+      REPORT_VERBOSE( "The supplied variable is an object pointer" );
+      variable = 0;
+      tree->SetBranchStatus( TString( branchName ) + "*", 1 );
+      tree->SetBranchAddress( branchName, &variable, &br );
+      // Take ownership of this new object:
+      m_inputVarPointers.push_back( new SPointer< T >( variable ) );
+
+   }
+
+#if ROOT_VERSION_CODE >= ROOT_VERSION( 5, 26, 0 )
+   tree->AddBranchToCache( br, kTRUE );
+#endif // ROOT_VERSION...
+   this->RegisterInputBranch( br );
+   m_logger << ::DEBUG << "Connected branch \"" << branchName << "\" in tree \""
+            << treeName << "\"" << SLogger::endmsg;
+
+   return true;
+}
+
+/**
+ * Function putting an output variable in (one of) the output tree(s). The
+ * function is quite complicated, but it is for the reason for making it very
+ * easy to use. The user just has to give a reference to the output object, a
+ * name under which it should appear in the output tree, and the tree name if
+ * multiple output trees have been defined.
+ *
+ * The function detects the type of the user supplied variable, and puts it in
+ * the output tree in a way depending on the object's type.
+ *
+ * Example:
+ *
+ * <code>
+ *   Double_t m_var1;<br/>
+ *   DeclareVariable( m_var1, "var1" );<br/>
+ *   ...<br/>
+ *   std::vector< int > m_var2;<br/>
+ *   DeclareVariable( m_var2, "var2", "MyTree" );<br/>
+ * </code>
+ *
+ * @param obj The object to write to the output ntuple
+ * @param name The name of the branch to create from the object
+ * @param treeName Optional TTree name, needed if multiple output trees are used
+ * @returns The branch that was just created
+ */
+template < class T >
+TBranch* SCycleBaseNTuple::
+DeclareVariable( T& obj, const char* name,
+                 const char* treeName ) throw( SError ) {
+
+   TTree*   tree = 0;
+   TBranch* branch = 0;
+
+   //
+   // Find the pointer to the output tree:
+   //
+   if( treeName ) {
+
+      // Consider both "normal" and metadata trees:
+      try {
+         tree = GetOutputTree( treeName );
+      } catch( const SError& error ) {
+         if( error.request() <= SError::SkipFile ) {
+            // Try to find a metadata tree if a regular tree is not found
+            // with this name:
+            REPORT_VERBOSE( "Output tree with name \"" << name
+                            << "\" not found. Trying to find a metadata tree "
+                            << "instead." );
+            tree = GetOutputMetadataTree( treeName );
+         } else {
+            REPORT_ERROR( "Exception message caught with message: "
+                          << error.what() );
+            throw;
+         }
+      }
+
+   } else {
+
+      if( m_outputTrees.size() != 1 ) {
+         SError error( SError::SkipInputData );
+         error << "There can't be other than 1 output tree defined in order "
+               << "not to\n"
+               << "define a tree name in "
+               << "SCycleBaseNTuple::DeclareVariable(...)!";
+         throw error;
+      }
+
+      tree = m_outputTrees.front();
+   }
+
+   //
+   // Check if the tree has been found:
+   //
+   if( ! tree ) {
+      SError error( SError::SkipInputData );
+      if( treeName ) {
+         error << "Couldn't find output tree with name: " << treeName;
+      } else {
+         error << "Couldn't find default output tree";
+      }
+      throw error;
+   }
+
+   REPORT_VERBOSE( "Found output tree with name: " << tree->GetName() );
+
+   // Check if the branch exists already:
+   branch = tree->GetBranch( name );
+   if( ! branch ) {
+
+      //
+      // This branch doesn't exist yet. We have to (try to) create it.
+      //
+      m_logger << ::DEBUG << "Creating new output branch with name: " << name
+               << SLogger::endmsg;
+
+      // First of all, lets figure out what kind of object we're dealing with
+      const char* type_name = typeid( obj ).name();
+
+      if( strlen( type_name ) == 1 ) {
+
+         //
+         // This is a simple variable:
+         //
+         REPORT_VERBOSE( "The supplied variable is a \"primitive\"" );
+
+         std::ostringstream leaflist;
+         leaflist << name << "/" << RootType( type_name );
+         branch = tree->Branch( name, &obj, leaflist.str().c_str() );
+
+      } else {
+
+         //
+         // This is an object:
+         //
+         REPORT_VERBOSE( "The supplied variable is an object" );
+
+         //
+         // Then try to add the object to the TTree. We have to do it in such a
+         // weird way, since the "pointer" variable is going to disappear at the
+         // end of this function so giving "&pointer" to TTree::Bronch would
+         // cause quite a crash when you're writing out the event. (Trust me,
+         // I *know*... :-)) I'm storing the pointers in an std::list, since
+         // lists don't move their elements around. (vectors are allowed to do
+         // that. This one I've just read... :-))
+         //
+         m_outputVarPointers.push_back( &obj );
+         T** pointer = reinterpret_cast< T** >( &m_outputVarPointers.back() );
+         branch = tree->Branch( name, pointer );
+      }
+
+      if( ! branch ) {
+         SError error( SError::SkipInputData );
+         error << "Couldn't create branch with name: " << name;
+         throw error;
+      }
+
+      REPORT_VERBOSE( "Successfully added branch" );
+
+   } else {
+      m_logger << ::WARNING << "A branch with the name \"" << name
+               << "\" already exists" << SLogger::endmsg;
+      m_logger << ::WARNING << "New object not added to tree!"
+               << SLogger::endmsg;
+   }
+
+   return branch;
+}
+
+#endif // SFRAME_CORE_SCycleBaseNTuple_ICC
