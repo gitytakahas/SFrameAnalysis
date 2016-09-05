@@ -18,8 +18,7 @@ const std::string TauTauAnalysis::kCutName[ TauTauAnalysis::kNumCuts ] = {
   "Trigger",               // C2
   "MetFilters",            // C3
   "Lepton",                // C4
-  "Tau",                   // C5
-  "LeptonDR",              // C6
+  "LepTau",              // C6
 };
 
 TauTauAnalysis::TauTauAnalysis()
@@ -43,7 +42,7 @@ TauTauAnalysis::TauTauAnalysis()
 
    // channels
    channels_.push_back("mutau");
-   //   channels_.push_back("eletau");
+   channels_.push_back("eletau");
 
 
    DeclareProperty( "JetAK4Name",               m_jetAK4Name               = "jetAK4" );
@@ -59,19 +58,19 @@ TauTauAnalysis::TauTauAnalysis()
    DeclareProperty( "AK4JetPtCut",              m_AK4jetPtCut           = 20.);
    DeclareProperty( "AK4JetEtaCut",             m_AK4jetEtaCut          = 4.7);
 
-   DeclareProperty( "ElectronPtCut",                 m_electronPtCut              = 24. );
+   DeclareProperty( "ElectronPtCut",                 m_electronPtCut              = 26. );
    DeclareProperty( "ElectronEtaCut",                m_electronEtaCut             = 2.1 );
    DeclareProperty( "ElectronD0Cut",                m_electronD0Cut             = 0.045 );
    DeclareProperty( "ElectronDzCut",                m_electronDzCut             = 0.2 );
    DeclareProperty( "ElectronIsoCut",                m_electronIsoCut             = 0.1 );
    
-   DeclareProperty( "MuonPtCut",                 m_muonPtCut              = 19. );
+   DeclareProperty( "MuonPtCut",                 m_muonPtCut              = 20. );
    DeclareProperty( "MuonEtaCut",                m_muonEtaCut             = 2.1 );
    DeclareProperty( "MuonD0Cut",                m_muonD0Cut             = 0.045 );
    DeclareProperty( "MuonDzCut",                m_muonDzCut             = 0.2 );
    DeclareProperty( "MuonIsoCut",                m_muonIsoCut             = 0.15 );
 
-   DeclareProperty( "TauPtCut",                 m_tauPtCut           = 20 );
+   DeclareProperty( "TauPtCut",                 m_tauPtCut           = 30 );
    DeclareProperty( "TauEtaCut",                m_tauEtaCut          = 2.3  );
    DeclareProperty( "TauDzCut",                m_tauDzCut          = 0.2  );
    
@@ -165,7 +164,7 @@ void TauTauAnalysis::BeginCycle() throw( SError ) {
 
 struct ltau_pair
 {
-  Int_t imuon;
+  Int_t ilepton;
   Float_t lep_iso;
   Float_t lep_pt;
   Int_t itau;
@@ -182,7 +181,7 @@ struct ltau_pair
       return tau_iso > another.tau_iso; // note that tau isolation is better if we have higher value ! 
     if (tau_pt != another.tau_pt)
       return tau_pt > another.tau_pt;
-    return imuon < another.imuon;
+    return ilepton < another.ilepton;
   }
 
 };
@@ -339,11 +338,13 @@ void TauTauAnalysis::BeginInputFile( const SInputData& ) throw( SError ) {
   m_logger << INFO << "Connecting input variables" << SLogger::endmsg;
   if (m_isData) {
     m_jetAK4.ConnectVariables(       m_recoTreeName.c_str(), Ntuple::JetBasic|Ntuple::JetAnalysis, (m_jetAK4Name + "_").c_str() );
-    m_eventInfo.ConnectVariables(    m_recoTreeName.c_str(), Ntuple::EventInfoTrigger|Ntuple::EventInfoMETFilters, "" );
+    //    m_eventInfo.ConnectVariables(    m_recoTreeName.c_str(), Ntuple::EventInfoTrigger|Ntuple::EventInfoMETFilters, "" );
+    m_eventInfo.ConnectVariables(    m_recoTreeName.c_str(), Ntuple::EventInfoMETFilters, "" );
   }
   else {
     m_jetAK4.ConnectVariables(       m_recoTreeName.c_str(), Ntuple::JetBasic|Ntuple::JetAnalysis|Ntuple::JetTruth, (m_jetAK4Name + "_").c_str() );
-    m_eventInfo.ConnectVariables(    m_recoTreeName.c_str(), Ntuple::EventInfoBasic|Ntuple::EventInfoTrigger|Ntuple::EventInfoMETFilters|Ntuple::EventInfoTruth, "" );
+    //    m_eventInfo.ConnectVariables(    m_recoTreeName.c_str(), Ntuple::EventInfoBasic|Ntuple::EventInfoTrigger|Ntuple::EventInfoMETFilters|Ntuple::EventInfoTruth, "" );
+    m_eventInfo.ConnectVariables(    m_recoTreeName.c_str(), Ntuple::EventInfoBasic|Ntuple::EventInfoMETFilters|Ntuple::EventInfoTruth, "" );
     m_genParticle.ConnectVariables(  m_recoTreeName.c_str(), Ntuple::GenParticleBasic, (m_genParticleName + "_").c_str() );
   }
   m_electron.ConnectVariables(     m_recoTreeName.c_str(), Ntuple::ElectronBasic|Ntuple::ElectronID|Ntuple::ElectronAdvancedID|Ntuple::ElectronBoostedIsolation, (m_electronName + "_").c_str() );
@@ -372,8 +373,7 @@ void TauTauAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError )
     fillCutflow("cutflow_" + ch, "histogram_" + ch, kBeforeCuts, 1);
   }
 
-
-  if(b_eventNumber_ == 409902 || b_eventNumber_ == 409946 || b_eventNumber_ == 409959 || b_eventNumber_ == 415440 || b_eventNumber_ == 431019 || b_eventNumber_ == 431082 ||  b_eventNumber_ == 431237 || b_eventNumber_ == 431450) std::cout << b_eventNumber_ << " check 1" << std::endl;
+  
   
   // Cut 1: check for data if run/lumiblock in JSON
   if (m_isData) {
@@ -383,7 +383,6 @@ void TauTauAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError )
     genFilterZtautau();
   }
 
-  if(b_eventNumber_ == 409902 || b_eventNumber_ == 409946 || b_eventNumber_ == 409959 || b_eventNumber_ == 415440 || b_eventNumber_ == 431019 || b_eventNumber_ == 431082 ||  b_eventNumber_ == 431237 || b_eventNumber_ == 431450) std::cout << b_eventNumber_ << " check 2" << std::endl;
 
   for (auto ch: channels_){
     fillCutflow("cutflow_" + ch, "histogram_" + ch, kJSON, 1);
@@ -391,14 +390,13 @@ void TauTauAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError )
   
 
   // Cut 2: pass trigger
-  if(passTrigger()){
-    m_logger << VERBOSE << "Trigger pass" << SLogger::endmsg;
-  }else{
-    throw SError( SError::SkipEvent );
-  }
+//  if(passTrigger()){
+//    m_logger << VERBOSE << "Trigger pass" << SLogger::endmsg;
+//  }else{
+//    throw SError( SError::SkipEvent );
+//  }
 
 
-  if(b_eventNumber_ == 409902 || b_eventNumber_ == 409946 || b_eventNumber_ == 409959 || b_eventNumber_ == 415440 || b_eventNumber_ == 431019 || b_eventNumber_ == 431082 ||  b_eventNumber_ == 431237 || b_eventNumber_ == 431450) std::cout << b_eventNumber_ << " check 3" << std::endl;
 
   for (auto ch: channels_){
     fillCutflow("cutflow_" + ch, "histogram_" + ch, kTrigger, 1);
@@ -416,7 +414,6 @@ void TauTauAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError )
     fillCutflow("cutflow_" + ch, "histogram_" + ch, kMetFilters, 1);
   }
 
-  if(b_eventNumber_ == 409902 || b_eventNumber_ == 409946 || b_eventNumber_ == 409959 || b_eventNumber_ == 415440 || b_eventNumber_ == 431019 || b_eventNumber_ == 431082 ||  b_eventNumber_ == 431237 || b_eventNumber_ == 431450) std::cout << b_eventNumber_ << " check 4" << std::endl;
 
   // Cut 4: muon
 
@@ -427,8 +424,8 @@ void TauTauAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError )
 
     if (mymuon.pt() < m_muonPtCut) continue;
     if (fabs(mymuon.eta()) > m_muonEtaCut) continue;
-    if (fabs(mymuon.d0()) > m_muonD0Cut) continue;
-    if (fabs(mymuon.dz()) > m_muonDzCut) continue;
+    if (fabs(mymuon.d0_allvertices()) > m_muonD0Cut) continue;
+    if (fabs(mymuon.dz_allvertices()) > m_muonDzCut) continue;
     if (mymuon.isMediumMuon() < 0.5) continue;
     //    if (mymuon.SemileptonicPFIso() / mymuon.pt() > m_muonIsoCut) continue;
 
@@ -439,26 +436,58 @@ void TauTauAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError )
 
   // Cut 5: electron
 
-//  std::vector<UZH::Electron> goodElectrons;
-//  
-//  for ( int i = 0; i < m_electron.N; ++i ) {
-//    UZH::Electron myelectron( &m_electron, i );
-//    if (myelectron.pt() < m_electronPtCut) continue;
-//    if (fabs(myelectron.eta()) > m_electronEtaCut) continue;
-//    if (fabs(myelectron.d0()) > m_electronD0Cut) continue;
-//    if (fabs(myelectron.dz()) > m_electronDzCut) continue;
-//    if (myelectron.passConversionVeto()!=1) continue;
-//    if (myelectron.expectedMissingInnerHits()>1) continue;
-//    //    if (myelectron.SemileptonicPFIso() / myelectron.pt() > m_electronIsoCut) continue;
-//    //    if (myelectron.nonTrigMVAID() < 0.5) continue;
-//	  
-//    goodElectrons.push_back(myelectron);
-//      
-//  }
+  std::vector<UZH::Electron> goodElectrons;
+  
+  for ( int i = 0; i < m_electron.N; ++i ) {
+    UZH::Electron myelectron( &m_electron, i );
 
-  if(goodMuons.size()==0) throw SError( SError::SkipEvent );
+    //    std::cout << "electron nonTrigMVA = "<< myelectron.nonTrigMVA() << std::endl;
 
-  if(b_eventNumber_ == 409902 || b_eventNumber_ == 409946 || b_eventNumber_ == 409959 || b_eventNumber_ == 415440 || b_eventNumber_ == 431019 || b_eventNumber_ == 431082 ||  b_eventNumber_ == 431237 || b_eventNumber_ == 431450) std::cout << b_eventNumber_ << " check 5" << std::endl;
+    if(     b_eventNumber_ == 1027000){
+
+
+      std::cout << "electron pT = "<< myelectron.pt() << std::endl;
+      std::cout << "electron eta = "<< myelectron.eta() << std::endl;
+      std::cout << "electron d0 = "<< myelectron.d0() << std::endl;
+      std::cout << "electron dz = "<< myelectron.dz() << std::endl;
+      std::cout << "electron passConvVeto = "<< myelectron.passConversionVeto() << std::endl;
+      std::cout << "electron expMissingHits = "<< myelectron.expectedMissingInnerHits() << std::endl;
+      std::cout << "electron nonTrigMVAID = "<< myelectron.nonTrigMVAID() << std::endl;
+      std::cout << "electron nonTrigMVA = "<< myelectron.nonTrigMVA() << std::endl;
+    }
+
+    if (myelectron.pt() < m_electronPtCut) continue;
+    if (fabs(myelectron.eta()) > m_electronEtaCut) continue;
+    if (fabs(myelectron.d0_allvertices()) > m_electronD0Cut) continue;
+    if (fabs(myelectron.dz_allvertices()) > m_electronDzCut) continue;
+    if (myelectron.passConversionVeto()!=1) continue;
+    if (myelectron.expectedMissingInnerHits()>1) continue;
+    if (myelectron.nonTrigMVAID() < 0.5) continue;
+    //    if (myelectron.SemileptonicPFIso() / myelectron.pt() > m_electronIsoCut) continue;
+
+	  
+    goodElectrons.push_back(myelectron);
+      
+  }
+
+  if(     b_eventNumber_ == 102700)
+    std::cout << b_eventNumber_ << " check 2" << std::endl;
+
+
+
+  if(goodMuons.size()!=0){
+    fillCutflow("cutflow_mutau", "histogram_mutau", kLepton, 1);
+  }else if(goodElectrons.size()!=0){
+    fillCutflow("cutflow_eletau", "histogram_eletau", kLepton, 1);
+  }else{
+    throw SError( SError::SkipEvent );
+  }
+
+
+  if(     b_eventNumber_ == 102700)
+    std::cout << b_eventNumber_ << " check 3" << std::endl;
+
+
 
   // Make sure that there is no events with good muon and good electron at the same time
 
@@ -472,7 +501,6 @@ void TauTauAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError )
 //    throw SError( SError::SkipEvent );
 //  }
 
-  fillCutflow("cutflow_mutau", "histogram_mutau", kLepton, 1);
   
 
   // Cut 6: taus
@@ -504,12 +532,27 @@ void TauTauAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError )
 
   if(goodTaus.size()==0) throw SError( SError::SkipEvent );
 
-  if(b_eventNumber_ == 409902 || b_eventNumber_ == 409946 || b_eventNumber_ == 409959 || b_eventNumber_ == 415440 || b_eventNumber_ == 431019 || b_eventNumber_ == 431082 ||  b_eventNumber_ == 431237 || b_eventNumber_ == 431450) std::cout << b_eventNumber_ << " check 6" << std::endl;
+
+  if(     b_eventNumber_ == 102700)
+    std::cout << b_eventNumber_ << " check 4" << std::endl;
+
 
   //  if(goodTaus.size()!=1) throw SError( SError::SkipEvent );
 
 
-  fillCutflow("cutflow_mutau", "histogram_mutau", kTau, 1);
+
+  UZH::MissingEt goodMet( &m_missingEt, 0 );
+
+  std::vector<UZH::Jet> goodJetsAK4;
+  
+  for ( int i = 0; i < (m_jetAK4.N); ++i ) {
+    UZH::Jet myjetak4( &m_jetAK4, i );
+    if (fabs(myjetak4.eta()) > m_AK4jetEtaCut) continue;
+    if (myjetak4.pt() < m_AK4jetPtCut) continue;
+    if (myjetak4.IDTight()) goodJetsAK4.push_back(myjetak4);
+
+    goodJetsAK4.push_back(myjetak4);
+  }
 
   
   // Cut 7: Pair selection
@@ -542,6 +585,7 @@ void TauTauAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError )
 
   std::vector<ltau_pair> mutau_pair;
 
+  // For mu-tau
   for(int imuon=0; imuon < (int)goodMuons.size(); imuon++){
     for(int itau=0; itau < (int)goodTaus.size(); itau++){
       if(goodMuons[imuon].tlv().DeltaR(goodTaus[itau].tlv()) < 0.5) continue; 
@@ -557,32 +601,62 @@ void TauTauAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError )
     }
   }
 
+  std::vector<ltau_pair> eletau_pair;
 
-  if(b_eventNumber_ == 409902 || b_eventNumber_ == 409946 || b_eventNumber_ == 409959 || b_eventNumber_ == 415440 || b_eventNumber_ == 431019 || b_eventNumber_ == 431082 ||  b_eventNumber_ == 431237 || b_eventNumber_ == 431450){
-    std::cout << b_eventNumber_ << " check 6-2" << std::endl;
-      std::cout << "nmuon = " << goodMuons.size() << " ntau = " << goodTaus.size() << ", npair = " << mutau_pair.size() << std::endl;
-    
-    std::cout << "BEFORE : " << std::endl;
-    
-    for (int i = 0; i < (int)mutau_pair.size(); i++){
-      std::cout << "\t imuon = " <<  mutau_pair[i].imuon 
-		<< " muon pT = " << mutau_pair[i].lep_pt 
-		<< " muon iso = " << mutau_pair[i].lep_iso 
-		<< " itau = " << mutau_pair[i].itau 
-		<< " tau pT = " << mutau_pair[i].tau_pt 
-		<< " tau iso = " << mutau_pair[i].tau_iso << std::endl;
+  // For ele-tau
+  for(int ielectron=0; ielectron < (int)goodElectrons.size(); ielectron++){
+    for(int itau=0; itau < (int)goodTaus.size(); itau++){
+
+      if(     b_eventNumber_ == 102700){
+
+	std::cout << "(ielectron, itau, dR) = " << ielectron << " " << itau << " e pT, eta, phi = " << goodElectrons[ielectron].pt() << " " << goodElectrons[ielectron].eta() << " " << goodElectrons[ielectron].phi() << " tau pT, eta, phi = " << goodTaus[itau].pt() << " " << goodTaus[itau].eta() << " " << goodTaus[itau].phi() << " dR = " << goodElectrons[ielectron].tlv().DeltaR(goodTaus[itau].tlv()) << std::endl;
+      }
+
+      if(goodElectrons[ielectron].tlv().DeltaR(goodTaus[itau].tlv()) < 0.5) continue; 
+
+      // need to include trigger matching here 
+
+
+
+      Float_t elept = goodElectrons[ielectron].pt();
+      Float_t reliso = goodElectrons[ielectron].SemileptonicPFIso() / elept;
+      Float_t taupt = goodTaus[itau].pt();
+      Float_t tauiso = goodTaus[itau].byIsolationMVArun2v1DBoldDMwLTraw();
+      ltau_pair pair = {ielectron, reliso, elept, itau, tauiso, taupt};
+      eletau_pair.push_back(pair);
     }
   }
 
 
-  if(mutau_pair.size()==0) throw SError( SError::SkipEvent );
+  if(     b_eventNumber_ == 102700){
+    std::cout << b_eventNumber_ << " check 5 " << mutau_pair.size() << " " << eletau_pair.size()  << std::endl;
+  }
 
-  if(b_eventNumber_ == 409902 || b_eventNumber_ == 409946 || b_eventNumber_ == 409959 || b_eventNumber_ == 415440 || b_eventNumber_ == 431019 || b_eventNumber_ == 431082 ||  b_eventNumber_ == 431237 || b_eventNumber_ == 431450) std::cout << b_eventNumber_ << " check 7" << std::endl;
 
-  sort(mutau_pair.begin(), mutau_pair.end());
+  if(mutau_pair.size()==0 && eletau_pair.size()==0){
+    throw SError( SError::SkipEvent );
+  }
 
-//  std::cout << "AFTER : " << std::endl;
-//    
+  if(mutau_pair.size()!=0){
+    fillCutflow("cutflow_mutau", "histogram_mutau", kLepTau, 1);
+    sort(mutau_pair.begin(), mutau_pair.end());
+
+    FillBranches( "mutau", goodJetsAK4, goodTaus[mutau_pair[0].itau], goodMuons[mutau_pair[0].ilepton].tlv(), goodMet);
+    mu_tau++;
+
+
+  }
+  if(eletau_pair.size()!=0){
+    fillCutflow("cutflow_eletau", "histogram_eletau", kLepTau, 1);
+    sort(eletau_pair.begin(), eletau_pair.end());
+
+    FillBranches( "eletau", goodJetsAK4, goodTaus[eletau_pair[0].itau], goodElectrons[eletau_pair[0].ilepton].tlv(), goodMet);
+    ele_tau++;
+
+  }
+
+
+
 //  for (int i = 0; i < (int)mutau_pair.size(); i++){
 //
 //    std::cout << "\t imuon = " <<  mutau_pair[i].imuon 
@@ -595,26 +669,12 @@ void TauTauAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError )
 
 
 
-  fillCutflow("cutflow_mutau", "histogram_mutau", kLeptonDR, 1);
-
-
-  UZH::MissingEt goodMet( &m_missingEt, 0 );
-
-  std::vector<UZH::Jet> goodJetsAK4;
-  
-  for ( int i = 0; i < (m_jetAK4.N); ++i ) {
-    UZH::Jet myjetak4( &m_jetAK4, i );
-    if (fabs(myjetak4.eta()) > m_AK4jetEtaCut) continue;
-    if (myjetak4.pt() < m_AK4jetPtCut) continue;
-    if (myjetak4.IDTight()) goodJetsAK4.push_back(myjetak4);
-
-    goodJetsAK4.push_back(myjetak4);
-  }
 
 
 
-  FillBranches( "mutau", goodJetsAK4, goodTaus[mutau_pair[0].itau], goodMuons[mutau_pair[0].imuon].tlv(), goodMet);
-  mu_tau++;
+
+
+
 
   return;
 }
