@@ -29,6 +29,8 @@ Isolation	floatingnumber*	trackIso
 
 Track	floatingnumber*	d0
 Track	floatingnumber*	dz
+Track	floatingnumber*	d0_allvertices
+Track	floatingnumber*	dz_allvertices
 Track	floatingnumber*	bestTrack_pt
 Track	floatingnumber*	bestTrack_ptErr
 Track	int*	trackerHits

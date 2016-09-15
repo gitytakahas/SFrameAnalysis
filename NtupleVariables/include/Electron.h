@@ -61,6 +61,8 @@ namespace UZH {
     int* m_expectedMissingInnerHits;
     floatingnumber* m_d0;
     floatingnumber* m_dz;
+    floatingnumber* m_d0_allvertices;
+    floatingnumber* m_dz_allvertices;
     floatingnumber* m_dr03EcalRecHitSumEt;
     floatingnumber* m_dr03HcalDepth1TowerSumEt;
     floatingnumber* m_rho;
@@ -96,6 +98,7 @@ namespace UZH {
     int* m_isHeep51Electron;
     int* m_isLooseElectron;
     int* m_nonTrigMVAID;
+    floatingnumber* m_nonTrigMVA;
     floatingnumber* m_pfRhoCorrRelIso03;
     floatingnumber* m_pfRhoCorrRelIso04;
     floatingnumber* m_pfDeltaCorrRelIso;
@@ -130,6 +133,8 @@ namespace UZH {
     int expectedMissingInnerHits() const { /*if(!m_ana->getConnectSucceeded(Ntuple::ElectronNtupleObject::kexpectedMissingInnerHits)) std::cout<<"expectedMissingInnerHits not connected!"<<std::endl;*/ return *(m_expectedMissingInnerHits); } 
     floatingnumber d0() const { /*if(!m_ana->getConnectSucceeded(Ntuple::ElectronNtupleObject::kd0)) std::cout<<"d0 not connected!"<<std::endl;*/ return *(m_d0); } 
     floatingnumber dz() const { /*if(!m_ana->getConnectSucceeded(Ntuple::ElectronNtupleObject::kdz)) std::cout<<"dz not connected!"<<std::endl;*/ return *(m_dz); } 
+    floatingnumber d0_allvertices() const { /*if(!m_ana->getConnectSucceeded(Ntuple::ElectronNtupleObject::kd0_allvertices)) std::cout<<"d0_allvertices not connected!"<<std::endl;*/ return *(m_d0_allvertices); } 
+    floatingnumber dz_allvertices() const { /*if(!m_ana->getConnectSucceeded(Ntuple::ElectronNtupleObject::kdz_allvertices)) std::cout<<"dz_allvertices not connected!"<<std::endl;*/ return *(m_dz_allvertices); } 
     floatingnumber dr03EcalRecHitSumEt() const { /*if(!m_ana->getConnectSucceeded(Ntuple::ElectronNtupleObject::kdr03EcalRecHitSumEt)) std::cout<<"dr03EcalRecHitSumEt not connected!"<<std::endl;*/ return *(m_dr03EcalRecHitSumEt); } 
     floatingnumber dr03HcalDepth1TowerSumEt() const { /*if(!m_ana->getConnectSucceeded(Ntuple::ElectronNtupleObject::kdr03HcalDepth1TowerSumEt)) std::cout<<"dr03HcalDepth1TowerSumEt not connected!"<<std::endl;*/ return *(m_dr03HcalDepth1TowerSumEt); } 
     floatingnumber rho() const { /*if(!m_ana->getConnectSucceeded(Ntuple::ElectronNtupleObject::krho)) std::cout<<"rho not connected!"<<std::endl;*/ return *(m_rho); } 
@@ -165,6 +170,7 @@ namespace UZH {
     int isHeep51Electron() const { /*if(!m_ana->getConnectSucceeded(Ntuple::ElectronNtupleObject::kisHeep51Electron)) std::cout<<"isHeep51Electron not connected!"<<std::endl;*/ return *(m_isHeep51Electron); } 
     int isLooseElectron() const { /*if(!m_ana->getConnectSucceeded(Ntuple::ElectronNtupleObject::kisLooseElectron)) std::cout<<"isLooseElectron not connected!"<<std::endl;*/ return *(m_isLooseElectron); } 
     int nonTrigMVAID() const { /*if(!m_ana->getConnectSucceeded(Ntuple::ElectronNtupleObject::knonTrigMVAID)) std::cout<<"nonTrigMVAID not connected!"<<std::endl;*/ return *(m_nonTrigMVAID); } 
+    floatingnumber nonTrigMVA() const { /*if(!m_ana->getConnectSucceeded(Ntuple::ElectronNtupleObject::knonTrigMVA)) std::cout<<"nonTrigMVA not connected!"<<std::endl;*/ return *(m_nonTrigMVA); } 
     floatingnumber pfRhoCorrRelIso03() const { /*if(!m_ana->getConnectSucceeded(Ntuple::ElectronNtupleObject::kpfRhoCorrRelIso03)) std::cout<<"pfRhoCorrRelIso03 not connected!"<<std::endl;*/ return *(m_pfRhoCorrRelIso03); } 
     floatingnumber pfRhoCorrRelIso04() const { /*if(!m_ana->getConnectSucceeded(Ntuple::ElectronNtupleObject::kpfRhoCorrRelIso04)) std::cout<<"pfRhoCorrRelIso04 not connected!"<<std::endl;*/ return *(m_pfRhoCorrRelIso04); } 
     floatingnumber pfDeltaCorrRelIso() const { /*if(!m_ana->getConnectSucceeded(Ntuple::ElectronNtupleObject::kpfDeltaCorrRelIso)) std::cout<<"pfDeltaCorrRelIso not connected!"<<std::endl;*/ return *(m_pfDeltaCorrRelIso); } 
@@ -186,6 +192,8 @@ namespace UZH {
     void expectedMissingInnerHits( const int& val){ *(m_expectedMissingInnerHits)=val; } 
     void d0( const floatingnumber& val){ *(m_d0)=val; } 
     void dz( const floatingnumber& val){ *(m_dz)=val; } 
+    void d0_allvertices( const floatingnumber& val){ *(m_d0_allvertices)=val; } 
+    void dz_allvertices( const floatingnumber& val){ *(m_dz_allvertices)=val; } 
     void dr03EcalRecHitSumEt( const floatingnumber& val){ *(m_dr03EcalRecHitSumEt)=val; } 
     void dr03HcalDepth1TowerSumEt( const floatingnumber& val){ *(m_dr03HcalDepth1TowerSumEt)=val; } 
     void rho( const floatingnumber& val){ *(m_rho)=val; } 
@@ -221,6 +229,7 @@ namespace UZH {
     void isHeep51Electron( const int& val){ *(m_isHeep51Electron)=val; } 
     void isLooseElectron( const int& val){ *(m_isLooseElectron)=val; } 
     void nonTrigMVAID( const int& val){ *(m_nonTrigMVAID)=val; } 
+    void nonTrigMVA( const floatingnumber& val){ *(m_nonTrigMVA)=val; } 
     void pfRhoCorrRelIso03( const floatingnumber& val){ *(m_pfRhoCorrRelIso03)=val; } 
     void pfRhoCorrRelIso04( const floatingnumber& val){ *(m_pfRhoCorrRelIso04)=val; } 
     void pfDeltaCorrRelIso( const floatingnumber& val){ *(m_pfDeltaCorrRelIso)=val; } 

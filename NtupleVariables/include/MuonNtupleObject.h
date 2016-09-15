@@ -76,15 +76,15 @@ namespace Ntuple {
     enum ConnectionIndex { 
      kcharge=1, 
      kpdgId=2, 
-     kpfRhoCorrRelIso03Boost=28, 
-     kpfRhoCorrRelIso04Boost=29, 
-     kpfDeltaCorrRelIsoBoost=30, 
-     kpfRelIsoBoost=31, 
-     kphotonIsoBoost=32, 
-     kneutralHadIsoBoost=33, 
-     kchargedHadIsoBoost=34, 
-     kSemileptonicPFIso=35, 
-     kSemileptonicCorrPFIso=36, 
+     kpfRhoCorrRelIso03Boost=30, 
+     kpfRhoCorrRelIso04Boost=31, 
+     kpfDeltaCorrRelIsoBoost=32, 
+     kpfRelIsoBoost=33, 
+     kphotonIsoBoost=34, 
+     kneutralHadIsoBoost=35, 
+     kchargedHadIsoBoost=36, 
+     kSemileptonicPFIso=37, 
+     kSemileptonicCorrPFIso=38, 
      kisHighPtMuon=3, 
      kisLooseMuon=4, 
      kisTightMuon=5, 
@@ -103,13 +103,15 @@ namespace Ntuple {
      ktrackIso=18, 
      kd0=19, 
      kdz=20, 
-     kbestTrack_pt=21, 
-     kbestTrack_ptErr=22, 
-     ktrackerHits=23, 
-     kmatchedStations=24, 
-     kpixelHits=25, 
-     kglobalHits=26, 
-     knormChi2=27, 
+     kd0_allvertices=21, 
+     kdz_allvertices=22, 
+     kbestTrack_pt=23, 
+     kbestTrack_ptErr=24, 
+     ktrackerHits=25, 
+     kmatchedStations=26, 
+     kpixelHits=27, 
+     kglobalHits=28, 
+     knormChi2=29, 
  
       kEnd 
     }; 
@@ -154,6 +156,8 @@ namespace Ntuple {
     std::vector< floatingnumber >  *trackIso;
     std::vector< floatingnumber >  *d0;
     std::vector< floatingnumber >  *dz;
+    std::vector< floatingnumber >  *d0_allvertices;
+    std::vector< floatingnumber >  *dz_allvertices;
     std::vector< floatingnumber >  *bestTrack_pt;
     std::vector< floatingnumber >  *bestTrack_ptErr;
     std::vector< int >  *trackerHits;

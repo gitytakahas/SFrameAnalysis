@@ -36,9 +36,11 @@ namespace Ntuple {
   */
   
   enum MissingEtDetails {
-    MissingEtAnalysis = 1,
-    MissingEtBasic = 2,
-    MissingEtAll = 3,
+    MissingEtCovAnalysis = 1,
+    MissingEtMVAAnalysis = 2,
+    MissingEtAnalysis = 4,
+    MissingEtBasic = 8,
+    MissingEtAll = 15,
 
   };
   
@@ -68,15 +70,20 @@ namespace Ntuple {
 
    
     enum ConnectionIndex { 
+     ksumEt=3, 
      kcorrPx=4, 
      kcorrPy=5, 
      ksignificance=6, 
-     kcov00=7, 
-     kcov10=8, 
-     kcov11=9, 
+     kNmva=7, 
      ket=1, 
      kphi=2, 
-     ksumEt=3, 
+     kcov00=8, 
+     kcov10=9, 
+     kcov11=10, 
+     krecoil_pt=11, 
+     krecoil_eta=12, 
+     krecoil_phi=13, 
+     krecoil_pdgId=14, 
  
       kEnd 
     }; 
@@ -87,15 +94,20 @@ namespace Ntuple {
 
     
     // vectors of object specific variables
+    std::vector< floatingnumber >  *sumEt;
     std::vector< floatingnumber >  *corrPx;
     std::vector< floatingnumber >  *corrPy;
     std::vector< floatingnumber >  *significance;
+    std::vector< int >  *Nmva;
+    std::vector< floatingnumber >  *et;
+    std::vector< floatingnumber >  *phi;
     std::vector< floatingnumber >  *cov00;
     std::vector< floatingnumber >  *cov10;
     std::vector< floatingnumber >  *cov11;
-    std::vector< floatingnumber >  *et;
-    std::vector< floatingnumber >  *phi;
-    std::vector< floatingnumber >  *sumEt;
+    std::vector< std::vector<floatingnumber> >  *recoil_pt;
+    std::vector< std::vector<floatingnumber> >  *recoil_eta;
+    std::vector< std::vector<floatingnumber> >  *recoil_phi;
+    std::vector< std::vector<int> >  *recoil_pdgId;
 
 
     std::vector<int> m_connectsucceeded;

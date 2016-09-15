@@ -66,6 +66,8 @@ namespace UZH {
     floatingnumber* m_neutralIsoPtSumWeight;
     floatingnumber* m_neutralIsoPtSumWeightdR03;
     floatingnumber* m_photonPtSumOutsideSignalConedR03;
+    floatingnumber* m_chargedPionPt;
+    floatingnumber* m_neutralPionPt;
     floatingnumber* m_byIsolationMVArun2v1DBdR03oldDMwLTraw;
     floatingnumber* m_byIsolationMVArun2v1DBnewDMwLTraw;
     floatingnumber* m_byIsolationMVArun2v1DBoldDMwLTraw;
@@ -148,6 +150,8 @@ namespace UZH {
     floatingnumber neutralIsoPtSumWeight() const { /*if(!m_ana->getConnectSucceeded(Ntuple::TauNtupleObject::kneutralIsoPtSumWeight)) std::cout<<"neutralIsoPtSumWeight not connected!"<<std::endl;*/ return *(m_neutralIsoPtSumWeight); } 
     floatingnumber neutralIsoPtSumWeightdR03() const { /*if(!m_ana->getConnectSucceeded(Ntuple::TauNtupleObject::kneutralIsoPtSumWeightdR03)) std::cout<<"neutralIsoPtSumWeightdR03 not connected!"<<std::endl;*/ return *(m_neutralIsoPtSumWeightdR03); } 
     floatingnumber photonPtSumOutsideSignalConedR03() const { /*if(!m_ana->getConnectSucceeded(Ntuple::TauNtupleObject::kphotonPtSumOutsideSignalConedR03)) std::cout<<"photonPtSumOutsideSignalConedR03 not connected!"<<std::endl;*/ return *(m_photonPtSumOutsideSignalConedR03); } 
+    floatingnumber chargedPionPt() const { /*if(!m_ana->getConnectSucceeded(Ntuple::TauNtupleObject::kchargedPionPt)) std::cout<<"chargedPionPt not connected!"<<std::endl;*/ return *(m_chargedPionPt); } 
+    floatingnumber neutralPionPt() const { /*if(!m_ana->getConnectSucceeded(Ntuple::TauNtupleObject::kneutralPionPt)) std::cout<<"neutralPionPt not connected!"<<std::endl;*/ return *(m_neutralPionPt); } 
     floatingnumber byIsolationMVArun2v1DBdR03oldDMwLTraw() const { /*if(!m_ana->getConnectSucceeded(Ntuple::TauNtupleObject::kbyIsolationMVArun2v1DBdR03oldDMwLTraw)) std::cout<<"byIsolationMVArun2v1DBdR03oldDMwLTraw not connected!"<<std::endl;*/ return *(m_byIsolationMVArun2v1DBdR03oldDMwLTraw); } 
     floatingnumber byIsolationMVArun2v1DBnewDMwLTraw() const { /*if(!m_ana->getConnectSucceeded(Ntuple::TauNtupleObject::kbyIsolationMVArun2v1DBnewDMwLTraw)) std::cout<<"byIsolationMVArun2v1DBnewDMwLTraw not connected!"<<std::endl;*/ return *(m_byIsolationMVArun2v1DBnewDMwLTraw); } 
     floatingnumber byIsolationMVArun2v1DBoldDMwLTraw() const { /*if(!m_ana->getConnectSucceeded(Ntuple::TauNtupleObject::kbyIsolationMVArun2v1DBoldDMwLTraw)) std::cout<<"byIsolationMVArun2v1DBoldDMwLTraw not connected!"<<std::endl;*/ return *(m_byIsolationMVArun2v1DBoldDMwLTraw); } 
@@ -223,6 +227,8 @@ namespace UZH {
     void neutralIsoPtSumWeight( const floatingnumber& val){ *(m_neutralIsoPtSumWeight)=val; } 
     void neutralIsoPtSumWeightdR03( const floatingnumber& val){ *(m_neutralIsoPtSumWeightdR03)=val; } 
     void photonPtSumOutsideSignalConedR03( const floatingnumber& val){ *(m_photonPtSumOutsideSignalConedR03)=val; } 
+    void chargedPionPt( const floatingnumber& val){ *(m_chargedPionPt)=val; } 
+    void neutralPionPt( const floatingnumber& val){ *(m_neutralPionPt)=val; } 
     void byIsolationMVArun2v1DBdR03oldDMwLTraw( const floatingnumber& val){ *(m_byIsolationMVArun2v1DBdR03oldDMwLTraw)=val; } 
     void byIsolationMVArun2v1DBnewDMwLTraw( const floatingnumber& val){ *(m_byIsolationMVArun2v1DBnewDMwLTraw)=val; } 
     void byIsolationMVArun2v1DBoldDMwLTraw( const floatingnumber& val){ *(m_byIsolationMVArun2v1DBoldDMwLTraw)=val; } 

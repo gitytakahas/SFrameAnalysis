@@ -36,8 +36,9 @@ namespace Ntuple {
   */
   
   enum GenParticleDetails {
-    GenParticleBasic = 1,
-    GenParticleAll = 1,
+    GenParticleTauDecayAnalysis = 1,
+    GenParticleBasic = 2,
+    GenParticleAll = 3,
 
   };
   
@@ -76,6 +77,15 @@ namespace Ntuple {
      knMoth=4, 
      knDau=5, 
      kdau=6, 
+     kisPrompt=7, 
+     kisDirectPromptTauDecayProduct=8, 
+     kfromHardProcessFinalState=9, 
+     kisDirectHardProcessTauDecayProductFinalState=10, 
+     ktaudau_pt=11, 
+     ktaudau_eta=12, 
+     ktaudau_phi=13, 
+     ktaudau_mass=14, 
+     ktaudau_pdgId=15, 
  
       kEnd 
     }; 
@@ -97,6 +107,15 @@ namespace Ntuple {
     std::vector< int >  *nMoth;
     std::vector< int >  *nDau;
     std::vector< std::vector<int> >  *dau;
+    std::vector< int >  *isPrompt;
+    std::vector< int >  *isDirectPromptTauDecayProduct;
+    std::vector< int >  *fromHardProcessFinalState;
+    std::vector< int >  *isDirectHardProcessTauDecayProductFinalState;
+    std::vector< std::vector<floatingnumber> >  *taudau_pt;
+    std::vector< std::vector<floatingnumber> >  *taudau_eta;
+    std::vector< std::vector<floatingnumber> >  *taudau_phi;
+    std::vector< std::vector<floatingnumber> >  *taudau_mass;
+    std::vector< std::vector<int> >  *taudau_pdgId;
 
 
     std::vector<int> m_connectsucceeded;

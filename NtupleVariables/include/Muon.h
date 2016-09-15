@@ -82,6 +82,8 @@ namespace UZH {
     floatingnumber* m_trackIso;
     floatingnumber* m_d0;
     floatingnumber* m_dz;
+    floatingnumber* m_d0_allvertices;
+    floatingnumber* m_dz_allvertices;
     floatingnumber* m_bestTrack_pt;
     floatingnumber* m_bestTrack_ptErr;
     int* m_trackerHits;
@@ -126,6 +128,8 @@ namespace UZH {
     floatingnumber trackIso() const { /*if(!m_ana->getConnectSucceeded(Ntuple::MuonNtupleObject::ktrackIso)) std::cout<<"trackIso not connected!"<<std::endl;*/ return *(m_trackIso); } 
     floatingnumber d0() const { /*if(!m_ana->getConnectSucceeded(Ntuple::MuonNtupleObject::kd0)) std::cout<<"d0 not connected!"<<std::endl;*/ return *(m_d0); } 
     floatingnumber dz() const { /*if(!m_ana->getConnectSucceeded(Ntuple::MuonNtupleObject::kdz)) std::cout<<"dz not connected!"<<std::endl;*/ return *(m_dz); } 
+    floatingnumber d0_allvertices() const { /*if(!m_ana->getConnectSucceeded(Ntuple::MuonNtupleObject::kd0_allvertices)) std::cout<<"d0_allvertices not connected!"<<std::endl;*/ return *(m_d0_allvertices); } 
+    floatingnumber dz_allvertices() const { /*if(!m_ana->getConnectSucceeded(Ntuple::MuonNtupleObject::kdz_allvertices)) std::cout<<"dz_allvertices not connected!"<<std::endl;*/ return *(m_dz_allvertices); } 
     floatingnumber bestTrack_pt() const { /*if(!m_ana->getConnectSucceeded(Ntuple::MuonNtupleObject::kbestTrack_pt)) std::cout<<"bestTrack_pt not connected!"<<std::endl;*/ return *(m_bestTrack_pt); } 
     floatingnumber bestTrack_ptErr() const { /*if(!m_ana->getConnectSucceeded(Ntuple::MuonNtupleObject::kbestTrack_ptErr)) std::cout<<"bestTrack_ptErr not connected!"<<std::endl;*/ return *(m_bestTrack_ptErr); } 
     int trackerHits() const { /*if(!m_ana->getConnectSucceeded(Ntuple::MuonNtupleObject::ktrackerHits)) std::cout<<"trackerHits not connected!"<<std::endl;*/ return *(m_trackerHits); } 
@@ -163,6 +167,8 @@ namespace UZH {
     void trackIso( const floatingnumber& val){ *(m_trackIso)=val; } 
     void d0( const floatingnumber& val){ *(m_d0)=val; } 
     void dz( const floatingnumber& val){ *(m_dz)=val; } 
+    void d0_allvertices( const floatingnumber& val){ *(m_d0_allvertices)=val; } 
+    void dz_allvertices( const floatingnumber& val){ *(m_dz_allvertices)=val; } 
     void bestTrack_pt( const floatingnumber& val){ *(m_bestTrack_pt)=val; } 
     void bestTrack_ptErr( const floatingnumber& val){ *(m_bestTrack_ptErr)=val; } 
     void trackerHits( const int& val){ *(m_trackerHits)=val; } 

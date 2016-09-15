@@ -17,6 +17,7 @@ ID	int*	isHeepElectron
 ID	int*	isHeep51Electron
 ID	int*	isLooseElectron
 ID	int*	nonTrigMVAID
+ID	floatingnumber*	nonTrigMVA
 
 SuperCluster	floatingnumber*	superCluster_eta
 SuperCluster	floatingnumber*	superCluster_e
@@ -40,6 +41,8 @@ AdvancedID	floatingnumber*	ooEmooP
 AdvancedID	int*	expectedMissingInnerHits
 AdvancedID	floatingnumber*	d0
 AdvancedID	floatingnumber*	dz
+AdvancedID	floatingnumber*	d0_allvertices
+AdvancedID	floatingnumber*	dz_allvertices
 AdvancedID	floatingnumber*	dr03EcalRecHitSumEt
 AdvancedID	floatingnumber*	dr03HcalDepth1TowerSumEt
 AdvancedID	floatingnumber*	rho

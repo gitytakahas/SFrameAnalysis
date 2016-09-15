@@ -29,6 +29,8 @@ AdvancedID	floatingnumber*	neutralIsoPtSumdR03
 AdvancedID	floatingnumber*	neutralIsoPtSumWeight
 AdvancedID	floatingnumber*	neutralIsoPtSumWeightdR03
 AdvancedID	floatingnumber*	photonPtSumOutsideSignalConedR03
+AdvancedID	floatingnumber*	chargedPionPt
+AdvancedID	floatingnumber*	neutralPionPt
 
 AdvancedID	floatingnumber*	byIsolationMVArun2v1DBdR03oldDMwLTraw
 AdvancedID	floatingnumber*	byIsolationMVArun2v1DBnewDMwLTraw

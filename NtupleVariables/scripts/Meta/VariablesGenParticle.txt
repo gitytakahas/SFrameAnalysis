@@ -12,7 +12,17 @@ Basic	std::vector<int>*	mother
 Basic	int*	nMoth
 Basic	int*	nDau
 Basic	std::vector<int>*	dau
+Basic	int*	isPrompt
+Basic	int*	isDirectPromptTauDecayProduct
+Basic	int*	fromHardProcessFinalState
+Basic	int*	isDirectHardProcessTauDecayProductFinalState
 
+
+TauDecayAnalysis	std::vector<floatingnumber>*	taudau_pt
+TauDecayAnalysis	std::vector<floatingnumber>*	taudau_eta
+TauDecayAnalysis	std::vector<floatingnumber>*	taudau_phi
+TauDecayAnalysis	std::vector<floatingnumber>*	taudau_mass
+TauDecayAnalysis	std::vector<int>*	taudau_pdgId
 
 # Basic	floatingnumber*	px
 # Basic	floatingnumber*	py

@@ -36,7 +36,7 @@ namespace Ntuple {
     EventInfoTrigger = 2,
     EventInfoTruth = 4,
     EventInfoPDF = 8,
-    EventInfoMETFilters = 16
+    EventInfoMETFilters = 16,
   };
   
   // forward declaration of NtupleObjectNames
@@ -83,6 +83,7 @@ namespace Ntuple {
     std::vector<floatingnumber>* pdf_xPDF;
     std::vector<floatingnumber>* pdf_scale;
 
+
     // EventInfoMETFilters
     bool	passFilter_HBHE;
     bool	passFilter_HBHEIso;
@@ -103,6 +104,11 @@ namespace Ntuple {
     bool        passFilter_globalTightHalo2016;
     bool        passFilter_muonBadTrack;
     bool        passFilter_chargedHadronTrackResolution;
+
+    float lheV_pt;
+    float lheV_mass;
+    float lheHt;
+    int lheNj;
 
     Int_t PV_N;
     // save actual detail_level

@@ -53,6 +53,8 @@ namespace Ntuple {
     m_names["trigDecision"] = "HLT_isFired";
     m_names["averageIntPerXing"] = "nPuVtx";
     m_names["actualIntPerXing"] = "nPuVtxTrue";
+    //    m_names["nPuVtx"] = "nPuVtx";
+    //    m_names["nPuVtxTrue"] = "nPuVtxTrue";
     m_names["PV_N"] = "PV_N";
     m_names["genEventWeight"] = "genWeight";
     m_names["pdf_id"] = "PDF_id";
@@ -88,6 +90,18 @@ namespace Ntuple {
     m_names["nDau"] = "nDau";
     m_names["mother"] = "mother";
     m_names["dau"] = "dau";
+    m_names["taudau_pt"] = "taudau_pt";
+    m_names["taudau_eta"] = "taudau_eta";
+    m_names["taudau_phi"] = "taudau_phi";
+    m_names["taudau_mass"] = "taudau_mass";
+    m_names["isPrompt"] = "isPrompt";
+    m_names["isDirectPromptTauDecayProduct"] = "isDirectPromptTauDecayProduct";
+    m_names["fromHardProcessFinalState"] = "fromHardProcessFinalState";
+    m_names["isDirectHardProcessTauDecayProductFinalState"] = "isDirectHardProcessTauDecayProductFinalState";
+    m_names["lheNj"] = "lheNj";
+    m_names["lheHt"] = "lheHt";
+    m_names["lheV_pt"] = "lheV_pt";
+    m_names["lheV_mass"] = "lheV_mass";
     
     // area
     m_names["rho"] = "rho";
@@ -99,7 +113,14 @@ namespace Ntuple {
     m_names["significance"] = "significance";
     m_names["cov00"] = "cov00";
     m_names["cov10"] = "cov10";
+    m_names["cov01"] = "cov01";
     m_names["cov11"] = "cov11";
+    m_names["recoil_pt"] = "recoil_pt";
+    m_names["recoil_eta"] = "recoil_eta";
+    m_names["recoil_phi"] = "recoil_phi";
+    m_names["recoil_pdgId"] = "recoil_pdgId";
+    m_names["Nmva"] = "Nmva";
+
 
     // jets
     // flavour
@@ -199,6 +220,7 @@ namespace Ntuple {
     m_names["isMediumElectron"] = "isMediumElectron";
     m_names["isTightElectron"] = "isTightElectron";
     m_names["nonTrigMVAID"] = "nonTrigMVAID";
+    m_names["nonTrigMVA"] = "nonTrigMVA";
     m_names["isHeepElectron"] = "isHeepElectron";
     m_names["isHeep51Electron"] = "isHeep51Electron";
     m_names["isLooseElectron"] = "isLooseElectron";
@@ -244,6 +266,8 @@ namespace Ntuple {
     //taus
     m_names["TauType"] = "TauType";
     m_names["decayMode"] = "decayMode";
+    m_names["chargedPionPt"] = "chargedPionPt";
+    m_names["neutralPionPt"] = "neutralPionPt";
 
     m_names["decayModeFindingNewDMs"] = "decayModeFindingNewDMs";
     m_names["decayModeFinding"] = "decayModeFinding"; 
@@ -332,6 +356,8 @@ namespace Ntuple {
     // tracking
     m_names["d0"] = "d0";
     m_names["dz"] = "dz";
+    m_names["d0_allvertices"] = "d0_allvertices";
+    m_names["dz_allvertices"] = "dz_allvertices";
     m_names["bestTrack_pt"] = "bestTrack_pt";
     m_names["bestTrack_ptErr"] = "bestTrack_ptErr";
     m_names["trackerHits"] = "trackerHits";

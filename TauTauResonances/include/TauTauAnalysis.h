@@ -39,6 +39,20 @@
 #include <TTree.h>
 #include <TMath.h>
 
+
+//Float_t deltaPhi(Float_t p1, Float_t p2){
+//  Float_t res = p1 - p2;
+//  while(res > TMath::Pi()){
+//    res -= 2*TMath::Pi();
+//  }
+//  while(res < -TMath::Pi()){
+//    res += 2*TMath::Pi();
+//  }
+//  
+//  return res;
+//}
+
+
 namespace UZH {
   class Jet;
   class Electron;
@@ -67,8 +81,7 @@ public:
     kTrigger,               // C2
     kMetFilters,            // C3
     kLepton,                // C4
-    kTau,                   // C5
-    kLeptonDR,              // C6
+    kLepTau,              // C6
     kNumCuts                // last!
   } SelectionCuts;
   
@@ -100,13 +113,13 @@ public:
    virtual bool isGoodEvent(int runNumber, int lumiSection);
    
    /// Function to check for trigger pass
-   virtual bool passTrigger();
+   virtual TString passTrigger();
    
    /// Function to check for MET filters pass
    virtual bool passMETFilters();
    
    /// Function to obtain event weights for MC
-   virtual double getEventWeight();
+   virtual void getEventWeight();
    
    /// Function to clear/reset all output branches
   //   virtual void clearBranches();
@@ -117,9 +130,18 @@ public:
    
   /// Function GenFilter  to select Z to tautau events
   virtual void genFilterZtautau();
-  
+
+  virtual int genMatch(Float_t lep_eta, Float_t lep_phi);
+
+  virtual Float_t deltaPhi(Float_t p1, Float_t p2);
+
+  virtual Float_t deltaR(Float_t p1, Float_t p2);
   /// Function to book tree branches
-  virtual void FillBranches(const std::string& channel,  const std::vector<UZH::Jet>& Jet, const UZH::Tau& tau, const  TLorentzVector& lepton, const UZH::MissingEt& met );
+  //  virtual void FillBranches(const std::string& channel,  const std::vector<UZH::Jet>& Jet, const UZH::Tau& tau, const  TLorentzVector& lepton, const UZH::MissingEt& met );
+  virtual void FillBranches(const std::string& channel,  const std::vector<UZH::Jet>& Jet, const UZH::Tau& tau, const UZH::Muon& muon, const UZH::Electron& electron, const UZH::MissingEt& met, const UZH::MissingEt& puppimet, const UZH::MissingEt& mvamet);
+
+
+
   
   /// Function to fill histograms
 
@@ -137,7 +159,12 @@ private:
   Ntuple::MuonNtupleObject        m_muon;            ///< muon container
   Ntuple::TauNtupleObject         m_tau;            ///< tau container
   Ntuple::MissingEtNtupleObject   m_missingEt;            ///< missing E_T container
+  Ntuple::MissingEtNtupleObject   m_puppimissingEt;            ///< missing E_T container
+  Ntuple::MissingEtNtupleObject   m_mvamissingEt;            ///< missing E_T container
   Ntuple::GenParticleNtupleObject m_genParticle;            ///< gen particle container
+
+  //  UZH::MissingEt *Met;
+  //  UZH::MissingEt *PuppiMet;
   
   
   //
@@ -234,43 +261,110 @@ private:
   //  double b_weightBtag;
   //  double b_weightBtag_veto;
   
-  Float_t b_weight_;
-  Float_t b_weightGen_;
-  Float_t b_weightPU_;
+  Float_t b_weight;
+  Float_t b_genweight;
+  Float_t b_puweight;
   Float_t  b_weightLepID_; 
   Float_t  b_weightLepIso_; 
-  Int_t b_runNumber_;
-  Int_t b_eventNumber_;
-  Int_t b_lumiBlock_;
 
-  Float_t b_tau_pt_;
-  Float_t b_tau_eta_;
-  Float_t b_tau_phi_;
-  Int_t b_tau_iso_;
-  Float_t b_tau_iso_raw_;
-  Int_t b_tau_againstEle_;
-  Int_t b_tau_againstMu_;
+  Int_t b_run;
+  Int_t b_evt;
+  Int_t b_lum;
 
-  Float_t b_l2_pt_;
-  Float_t b_l2_eta_;
-  Float_t b_l2_phi_;
-  Float_t b_met_;
-  Float_t b_met_phi_;
-  Float_t b_vis_mass_ll_;
-  Float_t b_dR_ll_;
+  Float_t b_pt_1;
+  Float_t b_eta_1;
+  Float_t b_phi_1;
+  Float_t b_m_1;
+  Int_t b_q_1;
+  Float_t b_d0_1;
+  Float_t b_dz_1;
+  Float_t b_mt_1;
+  Float_t b_pfmt_1;
+  Float_t b_puppimt_1;
+  Float_t b_iso_1;
+  Float_t b_id_e_mva_nt_loose_1;
+  Int_t b_gen_match_1;
+  Float_t b_trigweight_1;
+  Float_t b_isoweight_1;
+
+  Float_t b_pt_2;
+  Float_t b_eta_2;
+  Float_t b_phi_2;
+  Float_t b_m_2;
+  Int_t b_q_2;
+  Float_t b_d0_2;
+  Float_t b_dz_2;
+  Float_t b_mt_2;
+  Float_t b_pfmt_2;
+  Float_t b_puppimt_2;
+  Float_t b_iso_2;
+  Int_t b_gen_match_2;
+  Float_t b_idisoweight_2;
+  Int_t b_againstElectronVLooseMVA6_2;
+  Int_t b_againstElectronLooseMVA6_2;
+  Int_t b_againstElectronMediumMVA6_2;
+  Int_t b_againstElectronTightMVA6_2;
+  Int_t b_againstElectronVTightMVA6_2;
+  Int_t b_againstMuonLoose3_2;
+  Int_t b_againstMuonTight3_2;
+  Int_t b_byCombinedIsolationDeltaBetaCorrRaw3Hits_2;
+  //  Float_t b_byIsolationMVA3newDMwoLTraw_2;
+  //  Float_t b_byIsolationMVA3oldDMwoLTraw_2;
+  Float_t b_byIsolationMVA3newDMwLTraw_2;
+  Float_t b_byIsolationMVA3oldDMwLTraw_2;
+  Float_t b_chargedIsoPtSum_2;
+  Float_t b_neutralIsoPtSum_2;
+  Float_t b_puCorrPtSum_2;
+  Int_t b_decayModeFindingOldDMs_2;
+
+
+  Float_t b_met;
+  Float_t b_metphi;
+  Float_t b_puppimet;
+  Float_t b_puppimetphi;
+  Float_t b_mvamet;
+  Float_t b_mvametphi;
+  Float_t b_m_vis;
+  Float_t b_dR_ll;
+  Float_t b_pt_tt;
+  Float_t b_mt_tot;
+  Float_t b_metcov00;
+  Float_t b_metcov01;
+  Float_t b_metcov10;
+  Float_t b_metcov11;
+  Float_t b_mvacov00;
+  Float_t b_mvacov01;
+  Float_t b_mvacov10;
+  Float_t b_mvacov11;
 
   Float_t b_H_Mass_SVFit_;
   Float_t b_H_Pt_SVFit_;
   Float_t b_H_Eta_SVFit_;
   Float_t b_H_Phi_SVFit_;
 
-  Int_t b_njets_;
-  Int_t b_npu_; 
+  Float_t b_jpt_1;
+  Float_t b_jeta_1;
+  Float_t b_jphi_1;
+  Float_t b_jpt_2;
+  Float_t b_jeta_2;
+  Float_t b_jphi_2;
+
+  Int_t b_njets;
+  Int_t b_nfjets;
+  Int_t b_ncjets;
+  Int_t b_njetspt20;
+  Int_t b_nbtag;
+  Int_t b_ncbtag;
+  Int_t b_nfbtag;
+  Int_t b_npv;
+  Int_t b_npu; 
+  Int_t b_NUP;
+  Float_t b_rho;
   bool b_GenEvent_Htata_;
   bool b_GenEvent_Ztata_;
   Int_t b_ChannelInt_; //0 mutau; 1 ele; 2 tautau
 
-  Int_t b_isData_;
+  Int_t b_isData;
 
   TTree *tree[2];
   TFile *file[2];

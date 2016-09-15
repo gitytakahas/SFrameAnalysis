@@ -76,44 +76,46 @@ namespace Ntuple {
     Int_t                   N;
    
     enum ConnectionIndex { 
-     kpassConversionVeto=21, 
-     kfull5x5_sigmaIetaIeta=22, 
-     kdEtaIn=23, 
-     kdPhiIn=24, 
-     khOverE=25, 
-     krelIsoWithDBeta=26, 
-     kooEmooP=27, 
-     kexpectedMissingInnerHits=28, 
-     kd0=29, 
-     kdz=30, 
-     kdr03EcalRecHitSumEt=31, 
-     kdr03HcalDepth1TowerSumEt=32, 
-     krho=33, 
-     kecalDriven=34, 
-     kdEtaInSeed=35, 
-     kfull5x5_e2x5Max=36, 
-     kfull5x5_e5x5=37, 
-     kfull5x5_e1x5=38, 
-     kdr03TkSumPt=39, 
-     khadronicOverEm=40, 
+     kpassConversionVeto=22, 
+     kfull5x5_sigmaIetaIeta=23, 
+     kdEtaIn=24, 
+     kdPhiIn=25, 
+     khOverE=26, 
+     krelIsoWithDBeta=27, 
+     kooEmooP=28, 
+     kexpectedMissingInnerHits=29, 
+     kd0=30, 
+     kdz=31, 
+     kd0_allvertices=32, 
+     kdz_allvertices=33, 
+     kdr03EcalRecHitSumEt=34, 
+     kdr03HcalDepth1TowerSumEt=35, 
+     krho=36, 
+     kecalDriven=37, 
+     kdEtaInSeed=38, 
+     kfull5x5_e2x5Max=39, 
+     kfull5x5_e5x5=40, 
+     kfull5x5_e1x5=41, 
+     kdr03TkSumPt=42, 
+     khadronicOverEm=43, 
      kpdgId=1, 
      kcharge=2, 
      ket=3, 
-     kisVetoElectronBoosted=41, 
-     kisMediumElectronBoosted=42, 
-     kisTightElectronBoosted=43, 
-     kisHeepElectronBoosted=44, 
-     kisHeep51ElectronBoosted=45, 
-     kisLooseElectronBoosted=46, 
-     kpfRhoCorrRelIso03Boost=47, 
-     kpfRhoCorrRelIso04Boost=48, 
-     kpfDeltaCorrRelIsoBoost=49, 
-     kpfRelIsoBoost=50, 
-     kphotonIsoBoost=51, 
-     kneutralHadIsoBoost=52, 
-     kchargedHadIsoBoost=53, 
-     kSemileptonicPFIso=54, 
-     kSemileptonicCorrPFIso=55, 
+     kisVetoElectronBoosted=44, 
+     kisMediumElectronBoosted=45, 
+     kisTightElectronBoosted=46, 
+     kisHeepElectronBoosted=47, 
+     kisHeep51ElectronBoosted=48, 
+     kisLooseElectronBoosted=49, 
+     kpfRhoCorrRelIso03Boost=50, 
+     kpfRhoCorrRelIso04Boost=51, 
+     kpfDeltaCorrRelIsoBoost=52, 
+     kpfRelIsoBoost=53, 
+     kphotonIsoBoost=54, 
+     kneutralHadIsoBoost=55, 
+     kchargedHadIsoBoost=56, 
+     kSemileptonicPFIso=57, 
+     kSemileptonicCorrPFIso=58, 
      kisVetoElectron=4, 
      kisMediumElectron=5, 
      kisTightElectron=6, 
@@ -121,16 +123,17 @@ namespace Ntuple {
      kisHeep51Electron=8, 
      kisLooseElectron=9, 
      knonTrigMVAID=10, 
-     kpfRhoCorrRelIso03=13, 
-     kpfRhoCorrRelIso04=14, 
-     kpfDeltaCorrRelIso=15, 
-     kpfRelIso=16, 
-     kphotonIso=17, 
-     kneutralHadIso=18, 
-     kchargedHadIso=19, 
-     ktrackIso=20, 
-     ksuperCluster_eta=11, 
-     ksuperCluster_e=12, 
+     knonTrigMVA=11, 
+     kpfRhoCorrRelIso03=14, 
+     kpfRhoCorrRelIso04=15, 
+     kpfDeltaCorrRelIso=16, 
+     kpfRelIso=17, 
+     kphotonIso=18, 
+     kneutralHadIso=19, 
+     kchargedHadIso=20, 
+     ktrackIso=21, 
+     ksuperCluster_eta=12, 
+     ksuperCluster_e=13, 
  
       kEnd 
     }; 
@@ -156,6 +159,8 @@ namespace Ntuple {
     std::vector< int >  *expectedMissingInnerHits;
     std::vector< floatingnumber >  *d0;
     std::vector< floatingnumber >  *dz;
+    std::vector< floatingnumber >  *d0_allvertices;
+    std::vector< floatingnumber >  *dz_allvertices;
     std::vector< floatingnumber >  *dr03EcalRecHitSumEt;
     std::vector< floatingnumber >  *dr03HcalDepth1TowerSumEt;
     std::vector< floatingnumber >  *rho;
@@ -191,6 +196,7 @@ namespace Ntuple {
     std::vector< int >  *isHeep51Electron;
     std::vector< int >  *isLooseElectron;
     std::vector< int >  *nonTrigMVAID;
+    std::vector< floatingnumber >  *nonTrigMVA;
     std::vector< floatingnumber >  *pfRhoCorrRelIso03;
     std::vector< floatingnumber >  *pfRhoCorrRelIso04;
     std::vector< floatingnumber >  *pfDeltaCorrRelIso;
