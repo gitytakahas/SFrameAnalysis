@@ -1,9 +1,10 @@
 path2xml="$SFRAME_DIR/../BatchSubmission/xmls_15p9"
 path2tmp="$SFRAME_DIR/../AnalysisTemp"
-jobName="test_v4"
+jobName="job"
 outDir="$SFRAME_DIR/../AnalysisOutput/" + jobName
 cycleName="TauTauAnalysis"
 nEventsMax=-1
+#nEventsMax=200
 nProcesses=1
 nFiles=1
 hCPU="03:30:00"
@@ -19,6 +20,7 @@ dataSets=[
 userItems = [
    ["IsData","false"],
    ["IsSignal","true"],
+   ["doSVFit","true"],
   ]
 
 jobOptionsFile2=open("AnalysisOptions.py", 'r')

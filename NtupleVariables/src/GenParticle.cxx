@@ -41,6 +41,18 @@ if(  ((ana->detailLevel & Ntuple::GenParticleBasic) == Ntuple::GenParticleBasic)
     if (ana->m_connectsucceeded[4]) m_nMoth = &((*ana->nMoth)[idx]); else m_nMoth = 0; 
     if (ana->m_connectsucceeded[5]) m_nDau = &((*ana->nDau)[idx]); else m_nDau = 0; 
     if (ana->m_connectsucceeded[6]) m_dau = &((*ana->dau)[idx]); else m_dau = 0; 
+    if (ana->m_connectsucceeded[7]) m_isPrompt = &((*ana->isPrompt)[idx]); else m_isPrompt = 0; 
+    if (ana->m_connectsucceeded[8]) m_isDirectPromptTauDecayProduct = &((*ana->isDirectPromptTauDecayProduct)[idx]); else m_isDirectPromptTauDecayProduct = 0; 
+    if (ana->m_connectsucceeded[9]) m_fromHardProcessFinalState = &((*ana->fromHardProcessFinalState)[idx]); else m_fromHardProcessFinalState = 0; 
+    if (ana->m_connectsucceeded[10]) m_isDirectHardProcessTauDecayProductFinalState = &((*ana->isDirectHardProcessTauDecayProductFinalState)[idx]); else m_isDirectHardProcessTauDecayProductFinalState = 0; 
+} // end of detail level Basic
+
+if(  ((ana->detailLevel & Ntuple::GenParticleTauDecayAnalysis) == Ntuple::GenParticleTauDecayAnalysis)  ) {
+     if (ana->m_connectsucceeded[11]) m_tauvispt = &((*ana->tauvispt)[idx]); else m_tauvispt = 0; 
+    if (ana->m_connectsucceeded[12]) m_tauviseta = &((*ana->tauviseta)[idx]); else m_tauviseta = 0; 
+    if (ana->m_connectsucceeded[13]) m_tauvisphi = &((*ana->tauvisphi)[idx]); else m_tauvisphi = 0; 
+    if (ana->m_connectsucceeded[14]) m_tauvismass = &((*ana->tauvismass)[idx]); else m_tauvismass = 0; 
+    if (ana->m_connectsucceeded[15]) m_taudecay = &((*ana->taudecay)[idx]); else m_taudecay = 0; 
 }
 
 
@@ -71,6 +83,19 @@ if(  ((rhs.getLvl() & Ntuple::GenParticleBasic) == Ntuple::GenParticleBasic)  ) 
   out << " nMoth " << rhs.nMoth();
   out << " nDau " << rhs.nDau();
   try{  out << " dau " << rhs.dau().at(0);} catch(...){std::cout<<"except: no element"<<std::endl;};
+  out << " isPrompt " << rhs.isPrompt();
+  out << " isDirectPromptTauDecayProduct " << rhs.isDirectPromptTauDecayProduct();
+  out << " fromHardProcessFinalState " << rhs.fromHardProcessFinalState();
+  out << " isDirectHardProcessTauDecayProductFinalState " << rhs.isDirectHardProcessTauDecayProductFinalState();
+;
+} // end of detail level Basic
+
+if(  ((rhs.getLvl() & Ntuple::GenParticleTauDecayAnalysis) == Ntuple::GenParticleTauDecayAnalysis)  ) {
+   out << " tauvispt " << rhs.tauvispt();
+  out << " tauviseta " << rhs.tauviseta();
+  out << " tauvisphi " << rhs.tauvisphi();
+  out << " tauvismass " << rhs.tauvismass();
+  out << " taudecay " << rhs.taudecay();
 ;
 }
 

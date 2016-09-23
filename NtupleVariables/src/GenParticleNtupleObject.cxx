@@ -54,6 +54,18 @@ if(  ((detail_level & Ntuple::GenParticleBasic) == Ntuple::GenParticleBasic)  ) 
     setConnectSucceeded(4, ConnectVariable( treeName, prefix + m_objectNames.getName("nMoth"), nMoth)); 
     setConnectSucceeded(5, ConnectVariable( treeName, prefix + m_objectNames.getName("nDau"), nDau)); 
     setConnectSucceeded(6, ConnectVariable( treeName, prefix + m_objectNames.getName("dau"), dau)); 
+    setConnectSucceeded(7, ConnectVariable( treeName, prefix + m_objectNames.getName("isPrompt"), isPrompt)); 
+    setConnectSucceeded(8, ConnectVariable( treeName, prefix + m_objectNames.getName("isDirectPromptTauDecayProduct"), isDirectPromptTauDecayProduct)); 
+    setConnectSucceeded(9, ConnectVariable( treeName, prefix + m_objectNames.getName("fromHardProcessFinalState"), fromHardProcessFinalState)); 
+    setConnectSucceeded(10, ConnectVariable( treeName, prefix + m_objectNames.getName("isDirectHardProcessTauDecayProductFinalState"), isDirectHardProcessTauDecayProductFinalState)); 
+} // end of detail level Basic
+
+if(  ((detail_level & Ntuple::GenParticleTauDecayAnalysis) == Ntuple::GenParticleTauDecayAnalysis)  ) {
+     setConnectSucceeded(11, ConnectVariable( treeName, prefix + m_objectNames.getName("tauvispt"), tauvispt)); 
+    setConnectSucceeded(12, ConnectVariable( treeName, prefix + m_objectNames.getName("tauviseta"), tauviseta)); 
+    setConnectSucceeded(13, ConnectVariable( treeName, prefix + m_objectNames.getName("tauvisphi"), tauvisphi)); 
+    setConnectSucceeded(14, ConnectVariable( treeName, prefix + m_objectNames.getName("tauvismass"), tauvismass)); 
+    setConnectSucceeded(15, ConnectVariable( treeName, prefix + m_objectNames.getName("taudecay"), taudecay)); 
 }
 
 

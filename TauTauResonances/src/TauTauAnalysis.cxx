@@ -5,7 +5,7 @@
 // External include(s):
 #include "../GoodRunsLists/include/TGoodRunsListReader.h"
 
-//#include <TMath.h>
+#include <TMath.h>
 
 ClassImp( TauTauAnalysis );
 
@@ -55,6 +55,7 @@ TauTauAnalysis::TauTauAnalysis()
    DeclareProperty( "GenParticleName",          m_genParticleName          = "genParticle" );
    
    DeclareProperty( "IsData",                   m_isData                   = false );
+   DeclareProperty( "doSVFit",                  m_doSVFit                  = false );
    DeclareProperty( "IsSignal",                 m_isSignal                 = false );
    
    DeclareProperty( "AK4JetPtCut",              m_AK4jetPtCut           = 20.);
@@ -75,7 +76,7 @@ TauTauAnalysis::TauTauAnalysis()
    DeclareProperty( "TauPtCut",                 m_tauPtCut           = 30 );
    DeclareProperty( "TauEtaCut",                m_tauEtaCut          = 2.3  );
    DeclareProperty( "TauDzCut",                m_tauDzCut          = 0.2  );
-   
+
    DeclareProperty( "JSONName",                 m_jsonName             = std::string (std::getenv("SFRAME_DIR")) + "/../GoodRunsLists/JSON/Cert_271036-277148_13TeV_PromptReco_Collisions16_JSON_NoL1T.txt" );
 
    //   DeclareProperty( "TrigSF_muonName",                 m_TrigSF_muonName             = std::string (std::getenv("SFRAME_DIR")) + "/../LepEff2016/data/Muon/SingleMuonTrigger_Z_RunBCD_prompt80X_7p65.root" ); 
@@ -211,7 +212,7 @@ void TauTauAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
   
   m_logger << INFO << "IsData:           " <<                   (m_isData ? "TRUE" : "FALSE") << SLogger::endmsg;
   m_logger << INFO << "IsSignal:           " <<                 (m_isSignal ? "TRUE" : "FALSE") << SLogger::endmsg;
-  
+  m_logger << INFO << "doSVFit:           " <<                   (m_doSVFit ? "TRUE" : "FALSE") << SLogger::endmsg;
   m_logger << INFO << "ElectronPtCut:           " <<                 m_electronPtCut << SLogger::endmsg;
   m_logger << INFO << "ElectronEtaCut:           " <<                m_electronEtaCut << SLogger::endmsg;
   m_logger << INFO << "ElectronD0Cut:           " <<                 m_electronD0Cut << SLogger::endmsg;
@@ -272,6 +273,7 @@ void TauTauAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
 
     tree[channel]->Branch("is_data", &b_isData, "is_data/I");
     tree[channel]->Branch("npv", &b_npv, "npv/I");
+    tree[channel]->Branch("channel", &b_channel, "channel/I");
 
 
     tree[channel]->Branch("pt_1", &b_pt_1, "pt_1/F");
@@ -317,6 +319,7 @@ void TauTauAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
     tree[channel]->Branch("neutralIsoPtSum_2", &b_neutralIsoPtSum_2, "neutralIsoPtSum_2/F");
     tree[channel]->Branch("puCorrPtSum_2", &b_puCorrPtSum_2, "puCorrPtSum_2/F");
     tree[channel]->Branch("decayModeFindingOldDMs_2", &b_decayModeFindingOldDMs_2, "decayModeFindingOldDMs_2/I");
+    tree[channel]->Branch("decayMode_2", &b_decayMode_2, "decayMode_2/I");
 
     tree[channel]->Branch("met", &b_met, "met/F");
     tree[channel]->Branch("metphi", &b_metphi, "metphi/F");
@@ -334,6 +337,9 @@ void TauTauAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
     tree[channel]->Branch("mvametphi", &b_mvametphi, "mvametphi/F");
 
     tree[channel]->Branch("m_vis", &b_m_vis, "m_vis/F");
+    tree[channel]->Branch("m_sv", &b_m_sv, "m_sv/F");
+    tree[channel]->Branch("m_sv_pfmet", &b_m_sv_pfmet, "m_sv_pfmet/F");
+
     tree[channel]->Branch("mt_tot", &b_mt_tot, "mt_tot/F");
     tree[channel]->Branch("dR_ll", &b_dR_ll, "dR_ll/F");
     tree[channel]->Branch("pt_tt", &b_pt_tt, "pt_tt/F");
@@ -452,8 +458,6 @@ void TauTauAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError )
     fillCutflow("cutflow_" + ch, "histogram_" + ch, kBeforeCuts, 1);
   }
 
-  
-  
   // Cut 1: check for data if run/lumiblock in JSON
   if (m_isData) {
     if(!(isGoodEvent(m_eventInfo.runNumber, m_eventInfo.lumiBlock))) throw SError( SError::SkipEvent );
@@ -462,13 +466,10 @@ void TauTauAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError )
     genFilterZtautau();
   }
 
-
-
   for (auto ch: channels_){
     fillCutflow("cutflow_" + ch, "histogram_" + ch, kJSON, 1);
   }
   
-
   // Cut 2: pass trigger
 
   TString trigger_result = passTrigger();
@@ -581,7 +582,6 @@ void TauTauAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError )
   
 
   if(goodTaus.size()==0) throw SError( SError::SkipEvent );
-
   
   // Cut 7: Pair selection
   // First, select muon with highest isolation, and then, highest pT
@@ -740,9 +740,6 @@ void TauTauAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError )
 
 
 
-
-
-
   if(eletau_pair.size()!=0){
     fillCutflow("cutflow_eletau", "histogram_eletau", kLepTau, 1);
     sort(eletau_pair.begin(), eletau_pair.end());
@@ -835,8 +832,6 @@ void TauTauAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError )
 
 
   }
-
-
 
 
   return;
@@ -1055,6 +1050,7 @@ void TauTauAnalysis::FillBranches(const std::string& channel,  const std::vector
   b_puCorrPtSum_2 = tau.puCorrPtSum();
   b_decayModeFindingOldDMs_2 = tau.decayModeFinding();
   b_gen_match_2 = genMatch(b_eta_2, b_phi_2);
+  b_decayMode_2 = tau.decayMode();
 
   TLorentzVector lep_lv;
 
@@ -1069,7 +1065,7 @@ void TauTauAnalysis::FillBranches(const std::string& channel,  const std::vector
     b_iso_1 = muon.SemileptonicPFIso() / muon.pt();
     b_id_e_mva_nt_loose_1 = -1;
     lep_lv.SetPtEtaPhiM(b_pt_1, b_eta_1, b_phi_1, b_m_1);
-    b_ChannelInt_ = 0; 
+    b_channel = 0; 
 
     if (!m_isData) b_weightLepID_= m_ScaleFactorTool.get_ScaleFactor_IDMuIchep(lep_lv.Pt(),fabs(lep_lv.Eta()));
     if (!m_isData) b_weightLepIso_= m_ScaleFactorTool.get_ScaleFactor_IsoMuIchep(lep_lv.Pt(),fabs(lep_lv.Eta()));
@@ -1086,7 +1082,7 @@ void TauTauAnalysis::FillBranches(const std::string& channel,  const std::vector
     b_iso_1 = electron.SemileptonicPFIso() / electron.pt();
     b_id_e_mva_nt_loose_1 = electron.nonTrigMVA();
     lep_lv.SetPtEtaPhiM(b_pt_1, b_eta_1, b_phi_1, b_m_1);
-    b_ChannelInt_ = 1; 
+    b_channel = 1; 
 
     if (!m_isData) b_weightLepID_= m_ScaleFactorTool.get_ScaleFactor_IDEleIchep(lep_lv.Pt(),fabs(lep_lv.Eta()));
   }
@@ -1127,30 +1123,37 @@ void TauTauAnalysis::FillBranches(const std::string& channel,  const std::vector
 
 
   TLorentzVector lmet; 
-  lmet.SetPxPyPzE(met.corrPx(), met.corrPy(), 0, met.et());
+  lmet.SetPxPyPzE(met.et()*TMath::Cos(met.phi()), met.et()*TMath::Sin(met.phi()), 0, met.et());
+
+//  NSVfitStandalone::Vector measuredMET(met *TMath::Cos(met_phi), met *TMath::Sin(met_phi), 0); 
 
   b_pt_tt = (lep_lv + tau.tlv() + lmet).Pt();
 
   
-  bool doSVfit= false;
-  if (doSVfit){
-    TLorentzVector H_ll;
-    H_ll.SetPtEtaPhiM(0,0,0,0);
-  
-    H_ll=applySVFitSemileptonic(met.cov00(),met.cov10(),met.cov11(),met.et(),met.phi(),tau.tlv(),lep_lv);
+  //  bool doSVfit= false;
+  if (m_doSVFit){
+    //  if (true){
+    std::cout << "mvamet" << std::endl;
+    //    TLorentzVector dilepton;
+    //    dilepton.SetPtEtaPhiM(0,0,0,0);
+    //    dilepton = applySVFitSemileptonic(mvamet.cov00(),mvamet.cov10(),mvamet.cov11(),mvamet.et(),mvamet.phi(),tau.tlv(),lep_lv);  
 
-    b_H_Mass_SVFit_=H_ll.M();
-    b_H_Pt_SVFit_=H_ll.Pt();
-    b_H_Eta_SVFit_=H_ll.Eta();
-    b_H_Phi_SVFit_=H_ll.Phi();
+    b_m_sv = applySVFit(mvamet.cov00(),mvamet.cov10(),mvamet.cov11(),mvamet.et(),mvamet.phi(),lep_lv, tau.tlv(), channel);
+
+    //    b_m_sv = dilepton.M();
+    //    b_pt_sv = dilepton.Pt();
+    //    b_eta_sv = dilepton.Eta();
+    //    b_phi_sv = dilepton.Phi();
+
+    std::cout << "pfmet" << std::endl;
+    //    TLorentzVector dilepton_pf;
+    //    dilepton_pf.SetPtEtaPhiM(0,0,0,0);
+
+    //    dilepton_pf = applySVFitSemileptonic(met.cov00(),met.cov10(),met.cov11(),met.et(),met.phi(),tau.tlv(),lep_lv);  
+    b_m_sv_pfmet = applySVFit(met.cov00(),met.cov10(),met.cov11(),met.et(),met.phi(),lep_lv, tau.tlv(), channel);  
+
+    //    b_m_sv_pfmet = dilepton_pf.M();
   }
-
-  if (!m_isData){
-  
-    b_GenEvent_Htata_ = GenEvent_Htata_filter ;
-    b_GenEvent_Ztata_ = GenEvent_Ztata_filter ;
-   }
-
 
   if(channel=="mutau") tree[0]->Fill();
   if(channel=="eletau") tree[1]->Fill();
@@ -1160,61 +1163,166 @@ void TauTauAnalysis::FillBranches(const std::string& channel,  const std::vector
 
 
 
-TLorentzVector TauTauAnalysis::applySVFitSemileptonic(float cov00, float cov10, float cov11,  float met, float met_phi, TLorentzVector lep1 , TLorentzVector lep2){
-  // std::cout<<"inside applySVFitSemileptonic "<<std::endl;
-  
-  TLorentzVector   lBoson4;
-  lBoson4.SetPtEtaPhiE(0,0,0,0);
+//TLorentzVector TauTauAnalysis::applySVFitSemileptonic(float cov00, float cov10, float cov11,  float met, float met_phi, TLorentzVector lep1 , TLorentzVector lep2){
+//
+//  std::cout << cov00 << " " <<  cov10<< " " <<  cov11 << " " << met << " " << met_phi << " " << lep1.Pt() << " " << lep1.Eta() << " " << lep1.Phi() << " " << lep2.Pt() << " " << lep2.Eta() << " " << lep2.Phi() << std::endl;
+//  
+//  TLorentzVector   lBoson4;
+//  lBoson4.SetPtEtaPhiE(0,0,0,0);
+//
+//  TMatrixD covMETraw(2,2);
+//  covMETraw[0][0]=  cov00;
+//  covMETraw[1][0]=  cov10;
+//  covMETraw[0][1]=  cov10;
+//  covMETraw[1][1]=  cov11;
+//
+//  float lcov00 =  cov00;
+//  float lcov10 =  cov10;
+//  float lcov01 =  cov10;
+//  float lcov11 =  cov11;
+//  
+//  
+//  TLorentzVector   nullo;
+//  nullo.SetPtEtaPhiE(0,0,0,0);
+//  if(lcov00*lcov11-lcov01*lcov01 == 0) {
+//    std::cout<<"covMat det null "<<std::endl;
+//    return nullo;
+//  }
+//  
+//
+//  NSVfitStandalone::Vector measuredMET(met *TMath::Cos(met_phi), met *TMath::Sin(met_phi), 0); 
+//  // setup measure tau lepton vectors 
+//  NSVfitStandalone::LorentzVector l1(lep1.Px(), lep1.Py(), lep1.Pz(), TMath::Sqrt(lep1.M()*lep1.M()+lep1.Px()*lep1.Px()+lep1.Py()*lep1.Py()+lep1.Pz()*lep1.Pz()));
+//  NSVfitStandalone::LorentzVector l2(lep2.Px(), lep2.Py(), lep2.Pz(), TMath::Sqrt(lep2.M()*lep2.M()+lep2.Px()*lep2.Px()+lep2.Py()*lep2.Py()+lep2.Pz()*lep2.Pz()));
+//  std::vector<NSVfitStandalone::MeasuredTauLepton> measuredTauLeptons;
+//  measuredTauLeptons.push_back(NSVfitStandalone::MeasuredTauLepton(NSVfitStandalone::kHadDecay, l1));
+//  measuredTauLeptons.push_back(NSVfitStandalone::MeasuredTauLepton(NSVfitStandalone::kLepDecay, l2));
+//
+//  // construct the class object from the minimal necesarry information
+//  NSVfitStandaloneAlgorithm algo(measuredTauLeptons, measuredMET, covMETraw, 0);
+//
+//  // apply customized configurations if wanted (examples are given below)
+//  algo.addLogM(false);
+//
+//  // integration by markov chain MC
+//  algo.integrateMarkovChain();
+//  if(algo.isValidSolution()){
+//   
+//    lBoson4.SetPtEtaPhiM( algo.pt(), algo.eta(), algo.phi(), algo.getMass());
+//  }
+//  else{
+//    std::cout << "sorry -- status of NLL is not valid [" << algo.isValidSolution() << "]" << std::endl;
+//   lBoson4.SetPtEtaPhiM( 0.,0,0,0);
+//  }
+//  
+//  measuredTauLeptons.clear();
+//  return   lBoson4 ;
+//  
+//}
 
-  TMatrixD covMETraw(2,2);
-  covMETraw[0][0]=  cov00;
-  covMETraw[1][0]=  cov10;
-  covMETraw[0][1]=  cov10;
-  covMETraw[1][1]=  cov11;
 
-  float lcov00 =  cov00;
-  float lcov10 =  cov10;
-  float lcov01 =  cov10;
-  float lcov11 =  cov11;
+
+
+//////////////////
+// I HAVE TO WORK FROM HERE TOMORROW !!! 
+//////////////////
+
+float TauTauAnalysis::applySVFit(float cov00, float cov10, float cov11,  float met, float met_phi, TLorentzVector lep1 , TLorentzVector lep2, const std::string& channel){
+
+  std::cout << "enter SVFit calculation : " << cov00 << " " <<  cov10<< " " <<  cov11 << " " << met << " " << met_phi << " " << lep1.Pt() << " " << lep1.Eta() << " " << lep1.Phi() << " " << lep2.Pt() << " " << lep2.Eta() << " " << lep2.Phi() << std::endl;
+  
+  //  TLorentzVector   lBoson4;
+  //  lBoson4.SetPtEtaPhiE(0,0,0,0);
+
+  TMatrixD covMET(2,2);
+  covMET[0][0]=  cov00;
+  covMET[1][0]=  cov10;
+  covMET[0][1]=  cov10;
+  covMET[1][1]=  cov11;
+
+//  float lcov00 =  cov00;
+//  float lcov10 =  cov10;
+//  float lcov01 =  cov10;
+//  float lcov11 =  cov11;
   
   
-  TLorentzVector   nullo;
-  nullo.SetPtEtaPhiE(0,0,0,0);
-  if(lcov00*lcov11-lcov01*lcov01 == 0) {
-    std::cout<<"covMat det null "<<std::endl;
-    return nullo;
-  }
+//  TLorentzVector   nullo;
+//  nullo.SetPtEtaPhiE(0,0,0,0);
+//  if(lcov00*lcov11-lcov01*lcov01 == 0) {
+//    std::cout<<"covMat det null "<<std::endl;
+//    return nullo;
+//  }
   
 
-  NSVfitStandalone::Vector measuredMET(met *TMath::Cos(met_phi), met *TMath::Sin(met_phi), 0); 
+//  NSVfitStandalone::Vector measuredMET(met *TMath::Cos(met_phi), met *TMath::Sin(met_phi), 0); 
   // setup measure tau lepton vectors 
-  NSVfitStandalone::LorentzVector l1(lep1.Px(), lep1.Py(), lep1.Pz(), TMath::Sqrt(lep1.M()*lep1.M()+lep1.Px()*lep1.Px()+lep1.Py()*lep1.Py()+lep1.Pz()*lep1.Pz()));
-  NSVfitStandalone::LorentzVector l2(lep2.Px(), lep2.Py(), lep2.Pz(), TMath::Sqrt(lep2.M()*lep2.M()+lep2.Px()*lep2.Px()+lep2.Py()*lep2.Py()+lep2.Pz()*lep2.Pz()));
-  std::vector<NSVfitStandalone::MeasuredTauLepton> measuredTauLeptons;
-  measuredTauLeptons.push_back(NSVfitStandalone::MeasuredTauLepton(NSVfitStandalone::kHadDecay, l1));
-  measuredTauLeptons.push_back(NSVfitStandalone::MeasuredTauLepton(NSVfitStandalone::kLepDecay, l2));
+  //  NSVfitStandalone::LorentzVector l1(lep1.Px(), lep1.Py(), lep1.Pz(), TMath::Sqrt(lep1.M()*lep1.M()+lep1.Px()*lep1.Px()+lep1.Py()*lep1.Py()+lep1.Pz()*lep1.Pz()));
+  //  NSVfitStandalone::LorentzVector l2(lep2.Px(), lep2.Py(), lep2.Pz(), TMath::Sqrt(lep2.M()*lep2.M()+lep2.Px()*lep2.Px()+lep2.Py()*lep2.Py()+lep2.Pz()*lep2.Pz()));
 
-  // construct the class object from the minimal necesarry information
-  NSVfitStandaloneAlgorithm algo(measuredTauLeptons, measuredMET, covMETraw, 0);
+  std::vector<svFitStandalone::MeasuredTauLepton> measuredTauLeptons;
+  //  std::vector<NSVfitStandalone::MeasuredTauLepton> measuredTauLeptons;
+  //  measuredTauLeptons.push_back(NSVfitStandalone::MeasuredTauLepton(NSVfitStandalone::kHadDecay, l1));
+  //  measuredTauLeptons.push_back(NSVfitStandalone::MeasuredTauLepton(NSVfitStandalone::kLepDecay, l2));
 
-  // apply customized configurations if wanted (examples are given below)
-  algo.addLogM(false);
+  if(channel=="mutau"){
+    measuredTauLeptons.push_back(svFitStandalone::MeasuredTauLepton(svFitStandalone::kTauToMuDecay, lep1.Pt(), lep1.Eta(), lep1.Phi(), lep1.M())); // tau -> electron decay (Pt, eta, phi, mass)
+  }else if(channel=="eletau"){
+    measuredTauLeptons.push_back(svFitStandalone::MeasuredTauLepton(svFitStandalone::kTauToElecDecay, lep1.Pt(), lep1.Eta(), lep1.Phi(), lep1.M())); // tau -> electron decay (Pt, eta, phi, mass)
+  }
 
-  // integration by markov chain MC
+  std::cout << "check1 "<<std::endl;
+
+  measuredTauLeptons.push_back(svFitStandalone::MeasuredTauLepton(svFitStandalone::kTauToHadDecay,  lep2.Pt(), lep2.Eta(), lep2.Phi(), lep2.M(), 0)); 
+
+  std::cout << "check2 "<<std::endl;
+  SVfitStandaloneAlgorithm algo(measuredTauLeptons, met*TMath::Cos(met_phi), met*TMath::Sin(met_phi), covMET, 0);
+
+  std::cout << "check3 "<<std::endl;
+  algo.addLogM(false);  
+
+  std::cout << "check4 "<<std::endl;
   algo.integrateMarkovChain();
-  if(algo.isValidSolution()){
-   
-    lBoson4.SetPtEtaPhiM( algo.pt(), algo.eta(), algo.phi(), algo.getMass());
-  }
-  else{
+
+  std::cout << "check5 "<<std::endl;
+
+  float mass = algo.getMass(); // Full SVFit mass - return value is in units of GeV
+  //  float transverse_mass = algo.getTransverseMass(); // Transverse SVFit mass
+
+  std::cout << "check6 "<<std::endl;
+
+  if ( algo.isValidSolution() ) {
+    std::cout << "found mass = " << mass << std::endl;
+  } else {
     std::cout << "sorry -- status of NLL is not valid [" << algo.isValidSolution() << "]" << std::endl;
-   lBoson4.SetPtEtaPhiM( 0.,0,0,0);
   }
-  
-  measuredTauLeptons.clear();
-  return   lBoson4 ;
+
+  return mass;
+
+//  // construct the class object from the minimal necesarry information
+//  NSVfitStandaloneAlgorithm algo(measuredTauLeptons, measuredMET, covMET, 0);
+//
+//  // apply customized configurations if wanted (examples are given below)
+//  algo.addLogM(false);
+//
+//  // integration by markov chain MC
+//  algo.integrateMarkovChain();
+//  if(algo.isValidSolution()){
+//   
+//    lBoson4.SetPtEtaPhiM( algo.pt(), algo.eta(), algo.phi(), algo.getMass());
+//  }
+//  else{
+//    std::cout << "sorry -- status of NLL is not valid [" << algo.isValidSolution() << "]" << std::endl;
+//   lBoson4.SetPtEtaPhiM( 0.,0,0,0);
+//  }
+//  
+//  measuredTauLeptons.clear();
+//  return   lBoson4 ;
   
 }
+
+
+
+
 
 
 void TauTauAnalysis::genFilterZtautau() {
@@ -1247,53 +1355,74 @@ int TauTauAnalysis::genMatch(Float_t lep_eta, Float_t lep_phi) {
   UZH::GenParticle closestGen;
   int id = 6;
 
+  // check for lepton matching, first
+
   for ( int p = 0; p <   (m_genParticle.N) ; ++p ) {
     UZH::GenParticle mygoodGenPart( &m_genParticle, p );
     
     Float_t pt = mygoodGenPart.pt();
     Float_t eta = mygoodGenPart.eta();
     Float_t phi = mygoodGenPart.phi();
-    Int_t status = mygoodGenPart.status();
     Int_t pdgId = abs(mygoodGenPart.pdgId());
     Int_t isPrompt = mygoodGenPart.isPrompt();
     Int_t isDirectPromptTauDecayProduct = mygoodGenPart.isDirectPromptTauDecayProduct();
 
-    if(pdgId==15){
-      //      std::cout << "TAU : " << status << " " << mygoodGenPart.dau().size() << " " <<  mygoodGenPart.nDau() << std::endl;
-      
-      //      for(int idaughter=0; idaughter < mygoodGenPart.nDau(); idaughter++){
-      for(int idaughter=0; idaughter < (int)mygoodGenPart.taudau_pt().size(); idaughter++){
-	Float_t taupt = mygoodGenPart.taudau_pt().at(idaughter);
-	Float_t taueta = mygoodGenPart.taudau_eta().at(idaughter);
-	Float_t tauphi = mygoodGenPart.taudau_phi().at(idaughter);
-	Float_t taumass = mygoodGenPart.taudau_mass().at(idaughter);
-	Int_t taupdgId = mygoodGenPart.taudau_pdgId().at(idaughter);
 
-	std::cout << "TAU : " <<  taupt << " " << taueta << " " << tauphi << " " << taupdgId << std::endl;
-      }
+    // From here, re-calculate tau visible 4 momentum
+//    if(pdgId==15){
+//      if(isPrompt==0) continue;
+//      if(mygoodGenPart.taudecay()!=4) continue;
+//      //std::cout << "TAU flag " << " " << isPrompt << " " << isDirectPromptTauDecayProduct << std::endl;
+//      
+//      TLorentzVector tau;
+//      tau.SetPtEtaPhiM(mygoodGenPart.tauvispt(), mygoodGenPart.tauviseta(), mygoodGenPart.tauvisphi(), mygoodGenPart.tauvismass());
+//
+//      pt = tau.Pt();
+//      eta = tau.Pt();
+//      phi = tau.Phi();
+//    }
 
-      //      pt = XXX
-    }
+    if(! ((pdgId==11 || pdgId==13) && (isPrompt || isDirectPromptTauDecayProduct) && pt > 8)) continue;
 
-
-    if(! 
-       (((pdgId==11 || pdgId==13) && (isPrompt || isDirectPromptTauDecayProduct) && pt > 8) || ( pdgId==15 && isPrompt && pt > 15))
-       ) continue;
+//    if(! 
+//       ( || ( pdgId==15 && isPrompt && pt > 15))
+//       ) continue;
     
 
     Float_t dr = deltaR(lep_eta - eta, deltaPhi(lep_phi, phi));
     if(dr < min_dR){
       min_dR = dr;
-      closestGen = mygoodGenPart;
+      //      closestGen = mygoodGenPart;
 
       if( pdgId==11 && isPrompt) id = 1;
       if( pdgId==13 && isPrompt) id = 2;
       if( pdgId==11 && isDirectPromptTauDecayProduct) id = 3;
       if( pdgId==13 && isDirectPromptTauDecayProduct) id = 4;
-      if( pdgId==15 && isPrompt) id = 5;
       
     }
   }
+
+
+
+  // check for tau matching
+  for ( int p = 0; p <  (int)m_genParticle.tauvispt->size() ; ++p ) {
+    float taupt = m_genParticle.tauvispt->at(p);
+    float taueta = m_genParticle.tauviseta->at(p);
+    float tauphi = m_genParticle.tauvisphi->at(p);
+    int taudecay = m_genParticle.taudecay->at(p);
+    
+    if(taupt < 15) continue;
+    if(taudecay != 4) continue;
+    
+    Float_t dr = deltaR(lep_eta - taueta, deltaPhi(lep_phi, tauphi));
+    if(dr < min_dR){
+      min_dR = dr;
+      
+      id = 5;
+      
+    }
+  }
+
 
   return id;
 

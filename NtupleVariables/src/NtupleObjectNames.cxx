@@ -90,16 +90,18 @@ namespace Ntuple {
     m_names["nDau"] = "nDau";
     m_names["mother"] = "mother";
     m_names["dau"] = "dau";
-    m_names["taudau_pt"] = "taudau_pt";
-    m_names["taudau_eta"] = "taudau_eta";
-    m_names["taudau_phi"] = "taudau_phi";
-    m_names["taudau_mass"] = "taudau_mass";
+    m_names["tauvispt"] = "tauvispt";
+    m_names["tauviseta"] = "tauviseta";
+    m_names["tauvisphi"] = "tauvisphi";
+    m_names["tauvismass"] = "tauvismass";
+    m_names["taudecay"] = "taudecay";
+
     m_names["isPrompt"] = "isPrompt";
     m_names["isDirectPromptTauDecayProduct"] = "isDirectPromptTauDecayProduct";
     m_names["fromHardProcessFinalState"] = "fromHardProcessFinalState";
     m_names["isDirectHardProcessTauDecayProductFinalState"] = "isDirectHardProcessTauDecayProductFinalState";
     m_names["lheNj"] = "lheNj";
-    m_names["lheHt"] = "lheHt";
+    m_names["lheHT"] = "lheHT";
     m_names["lheV_pt"] = "lheV_pt";
     m_names["lheV_mass"] = "lheV_mass";
     

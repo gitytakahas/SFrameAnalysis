@@ -81,11 +81,11 @@ namespace Ntuple {
      kisDirectPromptTauDecayProduct=8, 
      kfromHardProcessFinalState=9, 
      kisDirectHardProcessTauDecayProductFinalState=10, 
-     ktaudau_pt=11, 
-     ktaudau_eta=12, 
-     ktaudau_phi=13, 
-     ktaudau_mass=14, 
-     ktaudau_pdgId=15, 
+     ktauvispt=11, 
+     ktauviseta=12, 
+     ktauvisphi=13, 
+     ktauvismass=14, 
+     ktaudecay=15, 
  
       kEnd 
     }; 
@@ -111,11 +111,11 @@ namespace Ntuple {
     std::vector< int >  *isDirectPromptTauDecayProduct;
     std::vector< int >  *fromHardProcessFinalState;
     std::vector< int >  *isDirectHardProcessTauDecayProductFinalState;
-    std::vector< std::vector<floatingnumber> >  *taudau_pt;
-    std::vector< std::vector<floatingnumber> >  *taudau_eta;
-    std::vector< std::vector<floatingnumber> >  *taudau_phi;
-    std::vector< std::vector<floatingnumber> >  *taudau_mass;
-    std::vector< std::vector<int> >  *taudau_pdgId;
+    std::vector< floatingnumber >  *tauvispt;
+    std::vector< floatingnumber >  *tauviseta;
+    std::vector< floatingnumber >  *tauvisphi;
+    std::vector< floatingnumber >  *tauvismass;
+    std::vector< int >  *taudecay;
 
 
     std::vector<int> m_connectsucceeded;

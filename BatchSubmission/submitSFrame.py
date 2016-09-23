@@ -249,12 +249,13 @@ def checkCompletion(dataSets, listOfJobs, outDir, cycleName, postFix,keepTemp):
     checkReady=True
     mergeFiles=""
     mergeDebug=""
+    fileBaseName=""
     fileBaseNameRoot=""
     fileToMerge=""
     for l in listOfJobs:
       #print "l[6] %s ,l[1] %s, l[2] %s ,l[3] %s ,d[0] %s = l[0] %s ,l[4] %s , fileBaseNameRoot %s ," %(l[6],l[1],l[2],l[3],d[0], l[0],l[4],fileBaseNameRoot)
       if l[0]==d[0] and not l[4]=="" :
-      
+        fileBaseName=l[6]
         fileBaseNameRoot=l[6]+"/"+l[2]
         fileBaseNameLog=l[7]+"/"+l[2]
         #fileBaseName=l[4]+"/"+(l[2].split("_subjob"))[0]
@@ -287,7 +288,12 @@ def checkCompletion(dataSets, listOfJobs, outDir, cycleName, postFix,keepTemp):
         fileToMerge=fileToMerge.partition("Run2016")[0]+fileToMerge.partition("Run2016")[1]+'*'
         fileToMerge=fileToMerge.partition("madgraph")[0]+fileToMerge.partition("madgraph")[1]+'*'
         mergeCmd='hadd -f %s.root %s.root && rm -rf %s.root'  %(mergeFileBaseName,  fileToMerge,  fileToMerge)
+        mergeCmd_mt = 'hadd -f %s/%s %s/Myroot_mutau*.root && rm -rf %s/Myroot_mutau*.root'  %(outDir, 'mutau.root', fileBaseName, fileBaseName)
+        mergeCmd_et = 'hadd -f %s/%s %s/Myroot_eletau*.root && rm -rf %s/Myroot_eletau*.root'  %(outDir, 'eletau.root', fileBaseName, fileBaseName)
         print "mergeCmd is %s " %mergeCmd
+        print "mergeCmd_private_mt is %s " %mergeCmd_mt
+        print "mergeCmd_private_et is %s " %mergeCmd_et
+
       lock=thread.allocate_lock()
       lock.acquire()
       #subProcess=subprocess.Popen("date; ls -lh %s" %(mergeFiles), stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
@@ -310,6 +316,17 @@ def checkCompletion(dataSets, listOfJobs, outDir, cycleName, postFix,keepTemp):
         #subProcess.wait()
         mergeDebug+=subProcess.stdout.read()
         mergeDebug+=subProcess.stderr.read()
+
+        subProcess_mt = subprocess.Popen(mergeCmd_mt, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+        #subProcess.wait()
+        mergeDebug += subProcess_mt.stdout.read()
+        mergeDebug += subProcess_mt.stderr.read()
+
+        subProcess_et = subprocess.Popen(mergeCmd_et, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+        #subProcess.wait()
+        mergeDebug += subProcess_et.stdout.read()
+        mergeDebug += subProcess_et.stderr.read()
+
       else:
         mergeDebug+="FATAL: Missing root files. No merging!"
       outFile.write(mergeDebug)
@@ -859,6 +876,8 @@ def main():
       batchScript.addLine("echo \"##################################################\"\n")
       batchScript.addLine("echo \"cp -f %s %s/%s\"\n" %(j[2]+".root", tempDirRoot, j[2]+j[3]+".root"))
       batchScript.addLine("cp -f %s %s/%s\n" %(j[2]+".root", tempDirRoot, j[2]+j[3]+".root"))
+      batchScript.addLine("cp -f %s %s/%s\n" %("Myroot_mutau.root", tempDirRoot, "Myroot_mutau_"+j[3]+".root"))
+      batchScript.addLine("cp -f %s %s/%s\n" %("Myroot_eletau.root", tempDirRoot, "Myroot_eletau_"+j[3]+".root"))
 
       batchScript.replace("HCPU", hCPU)
       batchScript.replace("HVMEM", hVMEM)

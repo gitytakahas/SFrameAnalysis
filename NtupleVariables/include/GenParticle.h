@@ -63,11 +63,11 @@ namespace UZH {
     int* m_isDirectPromptTauDecayProduct;
     int* m_fromHardProcessFinalState;
     int* m_isDirectHardProcessTauDecayProductFinalState;
-    std::vector<floatingnumber>* m_taudau_pt;
-    std::vector<floatingnumber>* m_taudau_eta;
-    std::vector<floatingnumber>* m_taudau_phi;
-    std::vector<floatingnumber>* m_taudau_mass;
-    std::vector<int>* m_taudau_pdgId;
+    floatingnumber* m_tauvispt;
+    floatingnumber* m_tauviseta;
+    floatingnumber* m_tauvisphi;
+    floatingnumber* m_tauvismass;
+    int* m_taudecay;
 
 
 
@@ -86,11 +86,11 @@ namespace UZH {
     int isDirectPromptTauDecayProduct() const { /*if(!m_ana->getConnectSucceeded(Ntuple::GenParticleNtupleObject::kisDirectPromptTauDecayProduct)) std::cout<<"isDirectPromptTauDecayProduct not connected!"<<std::endl;*/ return *(m_isDirectPromptTauDecayProduct); } 
     int fromHardProcessFinalState() const { /*if(!m_ana->getConnectSucceeded(Ntuple::GenParticleNtupleObject::kfromHardProcessFinalState)) std::cout<<"fromHardProcessFinalState not connected!"<<std::endl;*/ return *(m_fromHardProcessFinalState); } 
     int isDirectHardProcessTauDecayProductFinalState() const { /*if(!m_ana->getConnectSucceeded(Ntuple::GenParticleNtupleObject::kisDirectHardProcessTauDecayProductFinalState)) std::cout<<"isDirectHardProcessTauDecayProductFinalState not connected!"<<std::endl;*/ return *(m_isDirectHardProcessTauDecayProductFinalState); } 
-    std::vector<floatingnumber> taudau_pt() const { /*if(!m_ana->getConnectSucceeded(Ntuple::GenParticleNtupleObject::ktaudau_pt)) std::cout<<"taudau_pt not connected!"<<std::endl;*/ return *(m_taudau_pt); } 
-    std::vector<floatingnumber> taudau_eta() const { /*if(!m_ana->getConnectSucceeded(Ntuple::GenParticleNtupleObject::ktaudau_eta)) std::cout<<"taudau_eta not connected!"<<std::endl;*/ return *(m_taudau_eta); } 
-    std::vector<floatingnumber> taudau_phi() const { /*if(!m_ana->getConnectSucceeded(Ntuple::GenParticleNtupleObject::ktaudau_phi)) std::cout<<"taudau_phi not connected!"<<std::endl;*/ return *(m_taudau_phi); } 
-    std::vector<floatingnumber> taudau_mass() const { /*if(!m_ana->getConnectSucceeded(Ntuple::GenParticleNtupleObject::ktaudau_mass)) std::cout<<"taudau_mass not connected!"<<std::endl;*/ return *(m_taudau_mass); } 
-    std::vector<int> taudau_pdgId() const { /*if(!m_ana->getConnectSucceeded(Ntuple::GenParticleNtupleObject::ktaudau_pdgId)) std::cout<<"taudau_pdgId not connected!"<<std::endl;*/ return *(m_taudau_pdgId); } 
+    floatingnumber tauvispt() const { /*if(!m_ana->getConnectSucceeded(Ntuple::GenParticleNtupleObject::ktauvispt)) std::cout<<"tauvispt not connected!"<<std::endl;*/ return *(m_tauvispt); } 
+    floatingnumber tauviseta() const { /*if(!m_ana->getConnectSucceeded(Ntuple::GenParticleNtupleObject::ktauviseta)) std::cout<<"tauviseta not connected!"<<std::endl;*/ return *(m_tauviseta); } 
+    floatingnumber tauvisphi() const { /*if(!m_ana->getConnectSucceeded(Ntuple::GenParticleNtupleObject::ktauvisphi)) std::cout<<"tauvisphi not connected!"<<std::endl;*/ return *(m_tauvisphi); } 
+    floatingnumber tauvismass() const { /*if(!m_ana->getConnectSucceeded(Ntuple::GenParticleNtupleObject::ktauvismass)) std::cout<<"tauvismass not connected!"<<std::endl;*/ return *(m_tauvismass); } 
+    int taudecay() const { /*if(!m_ana->getConnectSucceeded(Ntuple::GenParticleNtupleObject::ktaudecay)) std::cout<<"taudecay not connected!"<<std::endl;*/ return *(m_taudecay); } 
     
     void pdgId( const int& val){ *(m_pdgId)=val; } 
     void status( const int& val){ *(m_status)=val; } 
@@ -102,11 +102,11 @@ namespace UZH {
     void isDirectPromptTauDecayProduct( const int& val){ *(m_isDirectPromptTauDecayProduct)=val; } 
     void fromHardProcessFinalState( const int& val){ *(m_fromHardProcessFinalState)=val; } 
     void isDirectHardProcessTauDecayProductFinalState( const int& val){ *(m_isDirectHardProcessTauDecayProductFinalState)=val; } 
-    void taudau_pt( const std::vector<floatingnumber>& val){ *(m_taudau_pt)=val; } 
-    void taudau_eta( const std::vector<floatingnumber>& val){ *(m_taudau_eta)=val; } 
-    void taudau_phi( const std::vector<floatingnumber>& val){ *(m_taudau_phi)=val; } 
-    void taudau_mass( const std::vector<floatingnumber>& val){ *(m_taudau_mass)=val; } 
-    void taudau_pdgId( const std::vector<int>& val){ *(m_taudau_pdgId)=val; } 
+    void tauvispt( const floatingnumber& val){ *(m_tauvispt)=val; } 
+    void tauviseta( const floatingnumber& val){ *(m_tauviseta)=val; } 
+    void tauvisphi( const floatingnumber& val){ *(m_tauvisphi)=val; } 
+    void tauvismass( const floatingnumber& val){ *(m_tauvismass)=val; } 
+    void taudecay( const int& val){ *(m_taudecay)=val; } 
     
 
   private:

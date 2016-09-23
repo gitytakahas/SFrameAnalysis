@@ -26,8 +26,9 @@
 #include "../GoodRunsLists/include/TGoodRunsList.h"
 #include "../PileupReweightingTool/include/PileupReweightingTool.h"
 #include "../BTaggingTools/include/BTaggingScaleTool.h"
-#include "../SVFit/include/NSVfitStandaloneAlgorithm.h"
-//#include "../SVfitStandalone/interface/SVfitStandaloneAlgorithm.h"
+//#include "../SVFit/include/NSVfitStandaloneAlgorithm.h"
+#include "../SVfitStandalone/interface/SVfitStandaloneAlgorithm.h"
+#include "../SVfitStandalone/interface/SVfitStandaloneLikelihood.h"
 #include "../LepEff2016/interface/ScaleFactorTool.h"
 
 //class TH1D;
@@ -175,8 +176,10 @@ private:
   //  BTaggingScaleTool m_bTaggingScaleTool;
   ScaleFactorTool m_ScaleFactorTool;
 
-  TLorentzVector applySVFitSemileptonic    (float cov00, float cov10, float cov11, float met, float met_phi, TLorentzVector lep1 , TLorentzVector lep2);
-  TLorentzVector applySVFitHadronic    (float cov00, float cov10, float cov11, float met, float met_phi, TLorentzVector lep1 , TLorentzVector lep2);
+  //  TLorentzVector applySVFitSemileptonic    (float cov00, float cov10, float cov11, float met, float met_phi, TLorentzVector lep1 , TLorentzVector lep2);
+  //  TLorentzVector applySVFitHadronic    (float cov00, float cov10, float cov11, float met, float met_phi, TLorentzVector lep1 , TLorentzVector lep2);
+  //  TLorentzVector applySVFit    (float cov00, float cov10, float cov11, float met, float met_phi, TLorentzVector lep1 , TLorentzVector lep2);
+  float applySVFit    (float cov00, float cov10, float cov11, float met, float met_phi, TLorentzVector lep1 , TLorentzVector lep2, const std::string& channel);
 
   //
   // XML settings for TauTauAnalysis
@@ -199,8 +202,7 @@ private:
   bool        m_isData;
   bool        m_isSignal;
   bool        m_applyMETFilters;
-  
-  bool m_FillHist;
+  bool        m_doSVFit;
 
   // cuts
   // jets
@@ -282,7 +284,7 @@ private:
   Float_t b_pfmt_1;
   Float_t b_puppimt_1;
   Float_t b_iso_1;
-  Float_t b_id_e_mva_nt_loose_1;
+  Int_t b_id_e_mva_nt_loose_1;
   Int_t b_gen_match_1;
   Float_t b_trigweight_1;
   Float_t b_isoweight_1;
@@ -316,6 +318,7 @@ private:
   Float_t b_neutralIsoPtSum_2;
   Float_t b_puCorrPtSum_2;
   Int_t b_decayModeFindingOldDMs_2;
+  Int_t b_decayMode_2;
 
 
   Float_t b_met;
@@ -337,10 +340,11 @@ private:
   Float_t b_mvacov10;
   Float_t b_mvacov11;
 
-  Float_t b_H_Mass_SVFit_;
-  Float_t b_H_Pt_SVFit_;
-  Float_t b_H_Eta_SVFit_;
-  Float_t b_H_Phi_SVFit_;
+  Float_t b_m_sv; 
+  Float_t b_m_sv_pfmet;
+  //  Float_t b_pt_sv; 
+  //  Float_t b_eta_sv; 
+  //  Float_t b_phi_sv; 
 
   Float_t b_jpt_1;
   Float_t b_jeta_1;
@@ -360,9 +364,7 @@ private:
   Int_t b_npu; 
   Int_t b_NUP;
   Float_t b_rho;
-  bool b_GenEvent_Htata_;
-  bool b_GenEvent_Ztata_;
-  Int_t b_ChannelInt_; //0 mutau; 1 ele; 2 tautau
+  Int_t b_channel; //0 mutau; 1 ele; 2 tautau
 
   Int_t b_isData;
 

@@ -27,12 +27,17 @@ namespace Ntuple {
       ConnectVariable( treeName, m_objectNames.getName("averageIntPerXing"    ), averageIntPerXing    );
       ConnectVariable( treeName, m_objectNames.getName("actualIntPerXing"     ), actualIntPerXing     );
       ConnectVariable( treeName, m_objectNames.getName("bunchCrossing"        ), bunchCrossing        );
+      ConnectVariable( treeName, m_objectNames.getName("rho"        ), rho        );
     }
     if( (detail_level & Ntuple::EventInfoTrigger) == Ntuple::EventInfoTrigger ) {
       ConnectVariable( treeName, m_objectNames.getName("trigDecision"), trigDecision  );
     }
     if( (detail_level & Ntuple::EventInfoTruth) == Ntuple::EventInfoTruth ) {
       ConnectVariable( treeName, m_objectNames.getName("genEventWeight"   ), genEventWeight     );
+      ConnectVariable( treeName, m_objectNames.getName("lheV_pt"   ), lheV_pt     );
+      ConnectVariable( treeName, m_objectNames.getName("lheV_mass"   ), lheV_mass     );
+      ConnectVariable( treeName, m_objectNames.getName("lheHT"   ), lheHT     );
+      ConnectVariable( treeName, m_objectNames.getName("lheNj"   ), lheNj     );
     }
     if( (detail_level & Ntuple::EventInfoPDF) == Ntuple::EventInfoPDF  ) {
       ConnectVariable( treeName, m_objectNames.getName("pdf_id"), pdf_id );

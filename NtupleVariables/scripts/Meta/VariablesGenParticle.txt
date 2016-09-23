@@ -18,11 +18,11 @@ Basic	int*	fromHardProcessFinalState
 Basic	int*	isDirectHardProcessTauDecayProductFinalState
 
 
-TauDecayAnalysis	std::vector<floatingnumber>*	taudau_pt
-TauDecayAnalysis	std::vector<floatingnumber>*	taudau_eta
-TauDecayAnalysis	std::vector<floatingnumber>*	taudau_phi
-TauDecayAnalysis	std::vector<floatingnumber>*	taudau_mass
-TauDecayAnalysis	std::vector<int>*	taudau_pdgId
+TauDecayAnalysis	floatingnumber*	tauvispt
+TauDecayAnalysis	floatingnumber*	tauviseta
+TauDecayAnalysis	floatingnumber*	tauvisphi
+TauDecayAnalysis	floatingnumber*	tauvismass
+TauDecayAnalysis	int*	taudecay
 
 # Basic	floatingnumber*	px
 # Basic	floatingnumber*	py

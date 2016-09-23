@@ -107,7 +107,7 @@ namespace Ntuple {
 
     float lheV_pt;
     float lheV_mass;
-    float lheHt;
+    float lheHT;
     int lheNj;
 
     Int_t PV_N;
