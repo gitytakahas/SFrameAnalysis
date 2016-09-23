@@ -3,6 +3,8 @@
 *.lo
 *.o
 *.d
+*~
+*.pyc
 *.obj
 obj/
 
