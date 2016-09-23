@@ -1,1 +1,0 @@
-git submodule foreach 'make distclean'
