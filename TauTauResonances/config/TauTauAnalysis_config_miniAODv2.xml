@@ -6,7 +6,7 @@
   <Library Name="libPileupReweightingTool" />
   <Library Name="libBTaggingTools" />
   <Library Name="libTauTauResonances" />
-  <Library Name="libSVfitStandalone"/>
+<!--  <Library Name="libSVfitStandalone"/>-->
   <Library Name="libScaleFactorTool"/>
 
   <Package Name="SFrameCore.par" />
@@ -15,7 +15,7 @@
   <Package Name="PileupReweightingTool.par" />
   <Package Name="BTaggingTools.par" />
   <Package Name="TauTauResonances.par" />
-  <Package Name="SVfitStandalone.par" />
+<!--  <Package Name="SVfitStandalone.par" />-->
   <Package Name="ScaleFactorTool.par" />
 
 	<Cycle Name="TauTauAnalysis" OutputDirectory="./" PostFix="" ProofServer="lite" ProofWorkDir="" RunMode="LOCAL" TargetLumi="1.0">
@@ -41,7 +41,7 @@
 		</InputData>
 		<UserConfig>
 			<Item Name="RecoTreeName" Value="tree"/>
-			<Item Name="doSVFit" Value="True"/>
+			<Item Name="doSVFit" Value="False"/>
 
 <!--			<Item Name="OutputTreeName_eletau"    Value="tree_eletau"/> 
 			<Item Name="OutputTreeName_mutau"     Value="tree_mutau"/> -->

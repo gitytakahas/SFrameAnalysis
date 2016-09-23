@@ -20,3 +20,9 @@ git clone https://github.com/gitytakahas/SFrameAnalysis
 git checkout -b my_branch
 source init.sh
 ```
+To execute the analysis and get the final tree, 
+```
+cd TauTauResonances/
+sframe_main config/TauTauAnalysis_config_miniAODv2.xml
+```
+This will give you Myroot_mutau.root and Myroot_eletau.root, which includes all the necessary variables for the analysis
