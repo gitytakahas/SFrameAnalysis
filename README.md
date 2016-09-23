@@ -16,10 +16,7 @@ cd ../..
 ```
 Then get this repository, before fork of it and then:
 ```
-git clone git@github.com:${GITUSER}/SFrameAnalysis.git
-cd SFrameAnalysis
-git remote add Yuta https://github.com/gitytakahas/SFrameAnalysis
-git fetch Yuta
-git checkout -b my_branch Yuta/master
+git clone https://github.com/gitytakahas/SFrameAnalysis
+git checkout -b my_branch
 source init.sh
 ```
