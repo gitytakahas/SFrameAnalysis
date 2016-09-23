@@ -18,6 +18,7 @@ Then get this repository, before fork of it and then:
 ```
 git clone https://github.com/gitytakahas/SFrameAnalysis
 git checkout -b my_branch
+cd SFrameAnalysis
 source init.sh
 ```
 To execute the analysis and get the final tree, 
