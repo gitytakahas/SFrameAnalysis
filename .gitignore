@@ -33,5 +33,6 @@ obj/
 
 # SFrame dictionaries
 *.pcm
+*.par
 *_Dict.cxx
 
