@@ -9,8 +9,8 @@ You need ROOT or CMSSW to get started, here CMSSW will be used, and the installa
 mkdir Analysis
 cd Analysis
 source /cvmfs/cms.cern.ch/cmsset_default.sh
-cmsrel CMSSW_7_4_12_patch2
-cd CMSSW_7_4_12_patch2/src
+cmsrel CMSSW_8_0_20
+cd CMSSW_8_0_20/src
 cmsenv
 cd ../..
 ```
@@ -18,32 +18,8 @@ Then get this repository, before fork of it and then:
 ```
 git clone git@github.com:${GITUSER}/SFrameAnalysis.git
 cd SFrameAnalysis
-git remote  add cgalloni  git@github.com:cgalloni/SFrameAnalysis.git
-git fetch cgalloni
-git checkout -b my_branch cgalloni/80_branch 
+git remote add Yuta https://github.com/gitytakahas/SFrameAnalysis
+git fetch Yuta
+git checkout -b my_branch Yuta/master
 source init.sh
 ```
-
-Setup and compile SFrame:
-```
-cd SFrame
-source setup.sh
-make
-cd ..
-```
-
-## Compilation
-
-To compile all submodules:
-```
-source make.sh
-```
-To ```make distclean``` for all submodules:
-```
-source makedistclean.sh
-```
-Mind that SFrame itself and any other directory, which is not a submodule, will not be touched.
-
-## Further documentation
-
-Please read https://git-scm.com/book/en/v2/Git-Tools-Submodules for information on how to work with submodules.
