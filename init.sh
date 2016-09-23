@@ -9,7 +9,7 @@ source setup.sh
 cd -;
 
 echo "Compiling sub-directories"
-for dir in BTaggingTools NtupleVariables PileupReweightingTool SFrame TauTauResonances GoodRunsLists LepEff2016
+for dir in SFrame BTaggingTools NtupleVariables PileupReweightingTool TauTauResonances GoodRunsLists LepEff2016
 do
     echo
     echo $dir
