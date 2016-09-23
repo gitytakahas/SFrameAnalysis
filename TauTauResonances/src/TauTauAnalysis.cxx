@@ -1234,11 +1234,11 @@ float TauTauAnalysis::applySVFit(float cov00, float cov10, float cov11,  float m
   //  TLorentzVector   lBoson4;
   //  lBoson4.SetPtEtaPhiE(0,0,0,0);
 
-  TMatrixD covMET(2,2);
-  covMET[0][0]=  cov00;
-  covMET[1][0]=  cov10;
-  covMET[0][1]=  cov10;
-  covMET[1][1]=  cov11;
+////  TMatrixD covMET(2,2);
+////  covMET[0][0]=  cov00;
+////  covMET[1][0]=  cov10;
+////  covMET[0][1]=  cov10;
+////  covMET[1][1]=  cov11;
 
 //  float lcov00 =  cov00;
 //  float lcov10 =  cov10;
@@ -1259,44 +1259,45 @@ float TauTauAnalysis::applySVFit(float cov00, float cov10, float cov11,  float m
   //  NSVfitStandalone::LorentzVector l1(lep1.Px(), lep1.Py(), lep1.Pz(), TMath::Sqrt(lep1.M()*lep1.M()+lep1.Px()*lep1.Px()+lep1.Py()*lep1.Py()+lep1.Pz()*lep1.Pz()));
   //  NSVfitStandalone::LorentzVector l2(lep2.Px(), lep2.Py(), lep2.Pz(), TMath::Sqrt(lep2.M()*lep2.M()+lep2.Px()*lep2.Px()+lep2.Py()*lep2.Py()+lep2.Pz()*lep2.Pz()));
 
-  std::vector<svFitStandalone::MeasuredTauLepton> measuredTauLeptons;
-  //  std::vector<NSVfitStandalone::MeasuredTauLepton> measuredTauLeptons;
-  //  measuredTauLeptons.push_back(NSVfitStandalone::MeasuredTauLepton(NSVfitStandalone::kHadDecay, l1));
-  //  measuredTauLeptons.push_back(NSVfitStandalone::MeasuredTauLepton(NSVfitStandalone::kLepDecay, l2));
+////  std::vector<svFitStandalone::MeasuredTauLepton> measuredTauLeptons;
+////  //  std::vector<NSVfitStandalone::MeasuredTauLepton> measuredTauLeptons;
+////  //  measuredTauLeptons.push_back(NSVfitStandalone::MeasuredTauLepton(NSVfitStandalone::kHadDecay, l1));
+////  //  measuredTauLeptons.push_back(NSVfitStandalone::MeasuredTauLepton(NSVfitStandalone::kLepDecay, l2));
+////
+////  if(channel=="mutau"){
+////    measuredTauLeptons.push_back(svFitStandalone::MeasuredTauLepton(svFitStandalone::kTauToMuDecay, lep1.Pt(), lep1.Eta(), lep1.Phi(), lep1.M())); // tau -> electron decay (Pt, eta, phi, mass)
+////  }else if(channel=="eletau"){
+////    measuredTauLeptons.push_back(svFitStandalone::MeasuredTauLepton(svFitStandalone::kTauToElecDecay, lep1.Pt(), lep1.Eta(), lep1.Phi(), lep1.M())); // tau -> electron decay (Pt, eta, phi, mass)
+////  }
+////
+////  std::cout << "check1 "<<std::endl;
+////
+////  measuredTauLeptons.push_back(svFitStandalone::MeasuredTauLepton(svFitStandalone::kTauToHadDecay,  lep2.Pt(), lep2.Eta(), lep2.Phi(), lep2.M(), 0)); 
+////
+////  std::cout << "check2 "<<std::endl;
+////  SVfitStandaloneAlgorithm algo(measuredTauLeptons, met*TMath::Cos(met_phi), met*TMath::Sin(met_phi), covMET, 0);
+////
+////  std::cout << "check3 "<<std::endl;
+////  algo.addLogM(false);  
+////
+////  std::cout << "check4 "<<std::endl;
+////  algo.integrateMarkovChain();
+////
+////  std::cout << "check5 "<<std::endl;
+////
+////  float mass = algo.getMass(); // Full SVFit mass - return value is in units of GeV
+////  //  float transverse_mass = algo.getTransverseMass(); // Transverse SVFit mass
+////
+////  std::cout << "check6 "<<std::endl;
+////
+////  if ( algo.isValidSolution() ) {
+////    std::cout << "found mass = " << mass << std::endl;
+////  } else {
+////    std::cout << "sorry -- status of NLL is not valid [" << algo.isValidSolution() << "]" << std::endl;
+////  }
 
-  if(channel=="mutau"){
-    measuredTauLeptons.push_back(svFitStandalone::MeasuredTauLepton(svFitStandalone::kTauToMuDecay, lep1.Pt(), lep1.Eta(), lep1.Phi(), lep1.M())); // tau -> electron decay (Pt, eta, phi, mass)
-  }else if(channel=="eletau"){
-    measuredTauLeptons.push_back(svFitStandalone::MeasuredTauLepton(svFitStandalone::kTauToElecDecay, lep1.Pt(), lep1.Eta(), lep1.Phi(), lep1.M())); // tau -> electron decay (Pt, eta, phi, mass)
-  }
-
-  std::cout << "check1 "<<std::endl;
-
-  measuredTauLeptons.push_back(svFitStandalone::MeasuredTauLepton(svFitStandalone::kTauToHadDecay,  lep2.Pt(), lep2.Eta(), lep2.Phi(), lep2.M(), 0)); 
-
-  std::cout << "check2 "<<std::endl;
-  SVfitStandaloneAlgorithm algo(measuredTauLeptons, met*TMath::Cos(met_phi), met*TMath::Sin(met_phi), covMET, 0);
-
-  std::cout << "check3 "<<std::endl;
-  algo.addLogM(false);  
-
-  std::cout << "check4 "<<std::endl;
-  algo.integrateMarkovChain();
-
-  std::cout << "check5 "<<std::endl;
-
-  float mass = algo.getMass(); // Full SVFit mass - return value is in units of GeV
-  //  float transverse_mass = algo.getTransverseMass(); // Transverse SVFit mass
-
-  std::cout << "check6 "<<std::endl;
-
-  if ( algo.isValidSolution() ) {
-    std::cout << "found mass = " << mass << std::endl;
-  } else {
-    std::cout << "sorry -- status of NLL is not valid [" << algo.isValidSolution() << "]" << std::endl;
-  }
-
-  return mass;
+////  return mass;
+  return 1;
 
 //  // construct the class object from the minimal necesarry information
 //  NSVfitStandaloneAlgorithm algo(measuredTauLeptons, measuredMET, covMET, 0);
