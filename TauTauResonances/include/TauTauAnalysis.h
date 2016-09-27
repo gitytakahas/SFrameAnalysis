@@ -82,7 +82,7 @@ public:
     kTrigger,               // C2
     kMetFilters,            // C3
     kLepton,                // C4
-    kLepTau,              // C6
+    kLepTau,                // C6
     kNumCuts                // last!
   } SelectionCuts;
   
