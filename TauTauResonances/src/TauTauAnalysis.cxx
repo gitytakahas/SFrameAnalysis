@@ -18,7 +18,7 @@ const std::string TauTauAnalysis::kCutName[ TauTauAnalysis::kNumCuts ] = {
   "Trigger",               // C2
   "MetFilters",            // C3
   "Lepton",                // C4
-  "LepTau",              // C6
+  "LepTau",                // C6
 };
 
 TauTauAnalysis::TauTauAnalysis()
@@ -305,6 +305,17 @@ void TauTauAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
     tree[channel]->Branch("iso_2", &b_iso_2, "iso_2/F");
     tree[channel]->Branch("gen_match_2", &b_gen_match_2, "gen_match_2/I");
     tree[channel]->Branch("idisoweight_2", &b_idisoweight_2, "idisoweight_2/F");
+    
+    tree[channel]->Branch("jpt_1", &b_jpt_1, "jpt_1/F");
+    tree[channel]->Branch("jeta_1", &b_jeta_1, "jeta_1/F");
+    tree[channel]->Branch("jphi_1", &b_jphi_1, "jphi_1/F");
+    tree[channel]->Branch("jm_1", &b_jm_1, "jm_1/F");
+    
+    tree[channel]->Branch("bpt_1", &b_jpt_1, "bpt_1/F");
+    tree[channel]->Branch("beta_1", &b_jeta_1, "beta_1/F");
+    tree[channel]->Branch("bphi_1", &b_jphi_1, "bphi_1/F");
+    tree[channel]->Branch("bm_1", &b_jm_1, "bm_1/F");
+    
     tree[channel]->Branch("againstElectronVLooseMVA6_2", &b_againstElectronVLooseMVA6_2, "againstElectronVLooseMVA6_2/I");
     tree[channel]->Branch("againstElectronLooseMVA6_2", &b_againstElectronLooseMVA6_2, "againstElectronLooseMVA6_2/I");
     tree[channel]->Branch("againstElectronMediumMVA6_2", &b_againstElectronMediumMVA6_2, "againstElectronMediumMVA6_2/I");

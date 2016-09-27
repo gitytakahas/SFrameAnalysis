@@ -1,0 +1,1 @@
+/pnfs/psi.ch/cms/trivcat/store/t3groups/uniz-higgs/Spring16/Ntuple_80_190916/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_reHLT_ext/160919_094929/0000
