@@ -288,8 +288,8 @@ def checkCompletion(dataSets, listOfJobs, outDir, cycleName, postFix,keepTemp):
         fileToMerge=fileToMerge.partition("Run2016")[0]+fileToMerge.partition("Run2016")[1]+'*'
         fileToMerge=fileToMerge.partition("madgraph")[0]+fileToMerge.partition("madgraph")[1]+'*'
         mergeCmd='hadd -f %s.root %s.root && rm -rf %s.root'  %(mergeFileBaseName,  fileToMerge,  fileToMerge)
-        mergeCmd_mt = 'hadd -f %s/%s %s/Myroot_mutau*.root && rm -rf %s/Myroot_mutau*.root'  %(outDir, 'mutau.root', fileBaseName, fileBaseName)
-        mergeCmd_et = 'hadd -f %s/%s %s/Myroot_eletau*.root && rm -rf %s/Myroot_eletau*.root'  %(outDir, 'eletau.root', fileBaseName, fileBaseName)
+        mergeCmd_mt = 'hadd -f %s/%s_mutau.root %s/%s_mutau*.root && rm -rf %s/%s_mutau*.root'  %(outDir, d[0], fileBaseName, d[0], fileBaseName, d[0])
+        mergeCmd_et = 'hadd -f %s/%s_eletau.root %s/%s_eletau*.root && rm -rf %s/%s_eletau*.root'  %(outDir, d[0], fileBaseName, d[0], fileBaseName, d[0])
         print "mergeCmd is %s " %mergeCmd
         print "mergeCmd_private_mt is %s " %mergeCmd_mt
         print "mergeCmd_private_et is %s " %mergeCmd_et
@@ -876,8 +876,8 @@ def main():
       batchScript.addLine("echo \"##################################################\"\n")
       batchScript.addLine("echo \"cp -f %s %s/%s\"\n" %(j[2]+".root", tempDirRoot, j[2]+j[3]+".root"))
       batchScript.addLine("cp -f %s %s/%s\n" %(j[2]+".root", tempDirRoot, j[2]+j[3]+".root"))
-      batchScript.addLine("cp -f %s %s/%s\n" %("Myroot_mutau.root", tempDirRoot, "Myroot_mutau_"+j[3]+".root"))
-      batchScript.addLine("cp -f %s %s/%s\n" %("Myroot_eletau.root", tempDirRoot, "Myroot_eletau_"+j[3]+".root"))
+      batchScript.addLine("cp -f %s %s/%s\n" %("Myroot_mutau.root",  tempDirRoot, j[0]+"_mutau_"+j[3]+".root"))
+      batchScript.addLine("cp -f %s %s/%s\n" %("Myroot_eletau.root", tempDirRoot, j[0]+"_eletau_"+j[3]+".root"))
 
       batchScript.replace("HCPU", hCPU)
       batchScript.replace("HVMEM", hVMEM)
