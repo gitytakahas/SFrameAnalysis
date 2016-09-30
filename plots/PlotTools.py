@@ -11,9 +11,10 @@ CMS_lumi.outOfFrame = True
 tdrstyle.setTDRStyle()
 
 # other
+# https://root.cern.ch/doc/master/classTColor.html
 legendTextSize = 0.04 #0.036
 colors = [kRed+3,kAzure+4,kOrange-6,kMagenta+3,kGreen+3,kYellow+2,kRed-7, kAzure-4, kOrange+6, kMagenta-3, kYellow-2]
-# TColor, gROOT, ...
+fillcolors = [kRed-2,kAzure+5,kOrange-5,kMagenta+3,kGreen-2,kYellow-3,kRed-7, kAzure-4, kOrange+6, kMagenta-3, kYellow-2]
 
 
 
@@ -39,15 +40,23 @@ def makeLatex(title):
     
     
     
-def combineCuts(*cuts):
+def combineCuts(*cuts,**kwargs):
 
     cuts = [ cut for cut in cuts if cut and type(cut) == str ]
+    weight = kwargs.get('weight', False)
     
-    # TODO: take "or" into account
+    # TODO: take "or" into account with parentheses
     for cut in cuts:
-        if "||" in cuts: ">>> be carefull"
-    cuts = " && ".join(cuts)
+        if "||" in cuts: ">>> be carefull with those \"or\" statements!"
+        # [cut.strip() for i in cut.split('||')]
+        
+    if cuts:
+        cuts = " && ".join(cuts)
+        if weight:  cuts = "(%s)*weight" % cuts
+    elif weight:    cuts = "weight"
+    else:           cuts = ""
 
+    print cuts
     return cuts
 
 
@@ -61,16 +70,19 @@ class Sample(object):
         self.file = TFile(file)
         self.label = label
         self.cuts = kwargs.get('cuts', "")
+        self.weight = kwargs.get('weight', False)
         self.scale = kwargs.get('scale', 1)
         self.isData = kwargs.get('data', False)
         self.isBackground = kwargs.get('background', False)
         self.isSignal = kwargs.get('signal', False)
+        self.treeName = kwargs.get('treeName', "tree")
     
 
     
     def hist(self, var, nBins, a, b, scale=1, **kwargs):
-        tree = self.file.Get("tree")
-        cuts = combineCuts(self.cuts, kwargs.get('cuts', ""))
+        tree = self.file.Get(self.treeName)
+        weight = self.weight or kwargs.get('weight', False)
+        cuts = combineCuts(self.cuts, kwargs.get('cuts', ""), weight=weight)
         
         hist = TH1F(self.label, var, nBins, a, b)
         tree.Draw("%s >> %s" % (var,self.label), cuts, "goff")
@@ -114,11 +126,11 @@ class Plot(object):
     """Class to automatically make CMS plot."""
 
     def __init__(self, samples, var, nBins, a, b, **kwargs):
-#         self.hists = hists
         self.histsS = [ ]
         self.histsB = [ ]
         self.histsD = [ ]
         self._hists = [ ]
+        self._histsMC = [ ]
         self.cuts = kwargs.get('cuts', "")
         for sample in samples:
             if sample.isSignal:
@@ -144,6 +156,12 @@ class Plot(object):
     @hists.setter
     def hists(self, value): self._hists = value
 
+    @property
+    def histsMC(self): return ( self.histsB + self.histsS )
+
+    @histsMC.setter
+    def histsMC(self, value): self._histsMC = value
+
 
 
     def plot(self,*args,**kwargs):
@@ -154,26 +172,23 @@ class Plot(object):
         
         if stack:
             stack = THStack("stack","")
-            for hist in self.histsB+self.histsS:
-                stack.Add(hist)
-            self.setFillStyle(*(self.histsB+self.histsS))
-            stack.Draw()
             self.stack = stack
+            for hist in self.histsMC: stack.Add(hist)
+            stack.Draw('hist')
         else:
-            for hist in self.histsB+self.histsS:
-                hist.Draw("same")        
+            for hist in self.histsMC: hist.Draw('same')  
         for hist in self.histsD:
-            hist.Draw("Esame")
+            hist.Draw('Esame')
         
-        self.makeAxes(xlabel=kwargs.get('xlabel', ""), ylabel=kwargs.get('ylabel', ""))
-        self.makeLegend(title=kwargs.get('title', ""), entries=kwargs.get('entries', [ ]), position=kwargs.get('position', ""))
+        if stack:       self.setFillStyle(*self.histsMC)
+        else:           self.setLineStyle(*self.histsMC)
+        if self.histsD: self.setMarkerStyle(*self.histsD);
+        
+        self.makeAxes(xlabel=kwargs.get('xlabel', self.var))
+        if kwargs.get('legend', True):
+            self.makeLegend(title=kwargs.get('title', ""), entries=kwargs.get('entries', ), position=kwargs.get('position', ""))
         CMS_lumi.CMS_lumi(self.canvas,13,0)
-        
-        if not stack:
-            self.setLineStyle(*(self.histsB+self.histsS))
-        self.setMarkerStyle(*self.histsD)
-        
-        #return self.canvas
+
 
 
     def saveAs(self,filename):
@@ -181,6 +196,7 @@ class Plot(object):
         self.canvas.Close()
         for hist in self.hists:
             gDirectory.Delete(hist.GetName())
+
 
 
     def makeCanvas(self,square=False, scaleleftmargin=1, scalerightmargin=1):
@@ -217,16 +233,22 @@ class Plot(object):
         position = kwargs.get('position', "")
         transparent = kwargs.get('transparent', False)
         hists = self.hists
+        histsD = self.histsD
         x1 = self.x1; x2 = self.x2
         y1 = self.y1; y2 = self.y2
         width = self.width
         height = self.height
+        
+        styleD  = 'le'
+        styleMC = 'l'
+        if self.stack: styleMC = 'f'
         
         if position:
             if "LeftLeft" in position:      x1 = 0.15;      x2 =x1 + width
             elif "Left" in position:        x1 = 0.20;      x2 = x1 + width
             elif "RightRight" in position:  x2 = 1 - 0.10;  x1 = x2 - width
             elif "Right" in position:       x2 = 1 - 0.15;  x1 = x2 - width
+            elif "Center" in position:      x1 = 0.55 - width/2;  x2 = 0.55 + width/2
             if "BottomBottom" in position:  y1 = 0.15;      y2 = y2 + height
             elif "Bottom" in position:      y1 = 0.20;      y2 = y2 + height
             elif "TopTop" in position:      y2 = 0.95;      y1 = y2 - height
@@ -237,17 +259,20 @@ class Plot(object):
         else: legend.SetFillColor(kWhite)
         legend.SetBorderSize(0)
         legend.SetTextSize(legendTextSize)
-        
-        style = 'l'
-        if self.stack: style = 'f'
-               
-        if title is None: legend.SetHeader("Default title")
+                       
+        if title is None: legend.SetHeader("Title")
+        else: legend.SetHeader(title)
+
         if hists:
             if entries:
                 for hist, entry in zip( hists, entries ):
-                    legend.AddEntry(hist,entry,style)
+                    style = styleMC
+                    if hist in histsD: style = styleD
+                    legend.AddEntry(hist,entry,styleMC)
             else:
                 for hist in hists:
+                    style = styleMC
+                    if hist in histsD: style = styleD
                     legend.AddEntry(hist,hist.GetName(),style)
 
             self.legend = legend
@@ -260,8 +285,11 @@ class Plot(object):
         frame = None
         if self.stack:
             frame = self.stack
+            maxs = [ self.stack.GetMaximum() ]
+            for hist in self.histsD:
+                maxs.append(hist.GetMaximum())
             frame.SetMinimum(0)
-            frame.SetMaximum(self.stack.GetMaximum()*1.12)
+            frame.SetMaximum(max(maxs)*1.12)
         else:
             frame = self.hists[0]
             mins = [ 0 ]
@@ -294,6 +322,7 @@ class Plot(object):
 
 
     def setLineStyle(self, *hists, **kwargs):
+        #print ">>> setLineStyle"
 
         if len(hists) is 0: hists = self.hists
         gen = kwargs.get('gen', False)
@@ -312,8 +341,18 @@ class Plot(object):
                 hists[i].SetLineWidth(3)
 
 
+    def setFillStyle(self, *hists):
+        #print ">>> setFillStyle"
+        if len(hists) is 0: hists = self.hists
+        for i in range(len(hists)):
+            #hists[i].SetLineColor(colors[i%len(colors)])
+            #hists[i].SetLineStyle(1)
+            hists[i].SetFillColor(fillcolors[i%len(colors)])
+
+
 
     def setLineColor(self, *hists):
+        #print ">>> setLineColor"
         if len(hists) is 0: hists = self.hists
         for i in range(len(hists)):
             hists[i].SetLineColor(colors[i%len(colors)])
@@ -323,18 +362,11 @@ class Plot(object):
 
 
     def setMarkerStyle(self, *hists):
+        #print ">>> setMarkerStyle"
         if len(hists) is 0: hists = self.hists
         for hist in hists:
             hist.SetMarkerStyle(20)
             hist.SetMarkerSize(0.8)
-
-
-    def setFillStyle(self, *hists):
-        if len(hists) is 0: hists = self.hists
-        for i in range(len(hists)):
-#             hists[i].SetLineColor(colors[i%len(colors)])
-#             hists[i].SetLineStyle(1)
-            hists[i].SetFillColor(colors[i%len(colors)])
 
 
     def norm(self,*hists):

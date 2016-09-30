@@ -6,7 +6,7 @@ loadLibs=[
     "libBTaggingTools",
 #    "libVHTausResonances",
     "libTauTauResonances",
-    "libSVFit",
+#    "libSVFit",
     "libScaleFactorTool",
 
   ]
@@ -20,7 +20,7 @@ loadPacks=[
     "BTaggingTools.par",
 #    "VHTausResonances.par",
     "TauTauResonances.par",
-    "SVFit.par",
+#    "SVFit.par",
     "ScaleFactorTool.par",
 	   ]
 
@@ -29,7 +29,7 @@ compilePacks=[
   "../GoodRunsLists",
   "../PileupReweightingTool",
   "../BTaggingTools",
-  "../SVFit",
+#  "../SVFit",
 #  "../VHTausResonances",
   "../TauTauResonances",
   "../LepEff2016",
