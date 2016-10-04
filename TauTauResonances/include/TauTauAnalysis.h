@@ -82,7 +82,7 @@ public:
     kTrigger,               // C2
     kMetFilters,            // C3
     kLepton,                // C4
-    kLepTau,              // C6
+    kLepTau,                // C6
     kNumCuts                // last!
   } SelectionCuts;
   
@@ -352,6 +352,13 @@ private:
   Float_t b_jpt_2;
   Float_t b_jeta_2;
   Float_t b_jphi_2;
+  
+  Float_t b_bpt_1;
+  Float_t b_beta_1;
+  Float_t b_bphi_1;
+  Float_t b_bpt_2;
+  Float_t b_beta_2;
+  Float_t b_bphi_2;
 
   Int_t b_njets;
   Int_t b_nfjets;
