@@ -608,8 +608,9 @@ void TauTauAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError )
     if (fabs(myelectron.dz_allvertices()) > 0.2) continue;
     if (fabs(myelectron.d0_allvertices()) > 0.045) continue;
     if (myelectron.SemileptonicPFIso() / myelectron.pt() > 0.3) continue;
+    if (fabs(myelectron.nonTrigMVAID() < 0.5) continue; // 90% WP ?
     
-    if (myelectron.passConversionVeto()){ // && myelectron.gsfTrack()->hitPattern().numberOfHits(reco::HitPattern::MISSING_INNER_HITS))) <=1
+    if (myelectron.passConversionVeto() && myelectron.expectedMissingInnerHits()<=1){ // && myelectron.gsfTrack()->hitPattern().numberOfHits(reco::HitPattern::MISSING_INNER_HITS))) <=1
       b_extraelec_veto_ = true;
     }
     
