@@ -272,7 +272,7 @@ void TauTauAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
   std::cout << " declaring variables" << std::endl;
   for(int ch = 0; ch < (int)channels_.size(); ch++){
   
-    const char* treeName = m_outputTreeName_ch_[ch].c_str()
+    const char* treeName = m_outputTreeName_ch_[ch].c_str();
     
     DeclareVariable( b_weight[channels_[ch]],         "weight",         treeName);
     DeclareVariable( b_genweight[channels_[ch]],      "genweight",      treeName);
@@ -340,7 +340,7 @@ void TauTauAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
     DeclareVariable( b_neutralIsoPtSum_2[channels_[ch]],            "neutralIsoPtSum_2",            treeName);
     DeclareVariable( b_puCorrPtSum_2[channels_[ch]],                "puCorrPtSum_2",                treeName);
     DeclareVariable( b_decayModeFindingOldDMs_2[channels_[ch]],     "decayModeFindingOldDMs_2",     treeName);
-    DeclareVariable( b_decayMode_2[channels_[ch]],                  "b_decayMode_2",                treeName);
+    DeclareVariable( b_decayMode_2[channels_[ch]],                  "decayMode_2",                treeName);
     
     DeclareVariable( b_weightLepID[channels_[ch]],                  "weightLepID",                  treeName);
     DeclareVariable( b_weightLepIso[channels_[ch]],                 "weightLepIso",                 treeName);
@@ -574,28 +574,30 @@ void TauTauAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError )
   for( int i = 0; i < m_muon.N; ++i ){
     UZH::Muon mymuon( &m_muon, i );
     
+    if (b_extramuon_veto_ && b_dilepton_veto_) break;
+    
     if (mymuon.pt() < 10) continue;
     if (fabs(mymuon.eta()) > 2.4) continue;
     if (fabs(mymuon.dz_allvertices()) > 0.2) continue;
     if (fabs(mymuon.d0_allvertices()) > 0.045) continue;
     if (mymuon.SemileptonicPFIso() / mymuon.pt() > 0.3) continue;
-
+    
     if (mymuon.isMediumMuon() > 0.5){ // "Medium" (HIP safe) ID  
       b_extramuon_veto_ = true;
     }
 
+    if (mymuon.pt() < 15) continue;
     if (!mymuon.isGlobalMuon()) continue;
     if (!mymuon.isTrackerMuon()) continue;
     if (!mymuon.isPFMuon()) continue;
-    if (myelectron.pt() < 15) continue;
+    if (b_dilepton_veto_) continue;
     
     for(int imuon=0; imuon < (int)goodMuons.size(); imuon++){
-      if(mymuon.charge() * imuon.charge() > 0) continue;
-      if(mymuon.tlv().DeltaR(imuon.tlv()) < 0.15) continue;
+      if(mymuon.charge() * goodMuons[imuon].charge() > 0) continue;
+      if(mymuon.tlv().DeltaR(goodMuons[imuon].tlv()) < 0.15) continue;
       b_dilepton_veto_ = true;
       break; //goto break_dilepton_veto;
     }
-    if (b_extramuon_veto_ && b_dilepton_veto_) break;
   }
   
   // extra leptons (electrons)
@@ -603,27 +605,29 @@ void TauTauAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError )
   for( int i = 0; i < m_electron.N; ++i ){
     UZH::Electron myelectron( &m_electron, i );
     
+    if (b_extraelec_veto_ && b_dilepton_veto_) break;
+    
     if (myelectron.pt() < 10) continue;
     if (fabs(myelectron.eta()) > 2.4) continue;
     if (fabs(myelectron.dz_allvertices()) > 0.2) continue;
     if (fabs(myelectron.d0_allvertices()) > 0.045) continue;
     if (myelectron.SemileptonicPFIso() / myelectron.pt() > 0.3) continue;
-    if (fabs(myelectron.nonTrigMVAID() < 0.5) continue; // 90% WP ?
     
-    if (myelectron.passConversionVeto() && myelectron.expectedMissingInnerHits()<=1){ // && myelectron.gsfTrack()->hitPattern().numberOfHits(reco::HitPattern::MISSING_INNER_HITS))) <=1
+    if (myelectron.passConversionVeto() && isNonTrigElectronID(myelectron)
+                                        && myelectron.expectedMissingInnerHits()<=1){
       b_extraelec_veto_ = true;
     }
     
     if (myelectron.pt() < 15) continue;
-    if (fabs(myelectron.nonTrigMVAID() < 0.7) continue; // change to equivalent POG Spring15 25ns cut-based "Veto" ID
+    if (fabs(myelectron.nonTrigMVAID() < 0.6)) continue; // TODO: change to equivalent POG Spring15 25ns cut-based "Veto" ID
+    if (b_dilepton_veto_) continue;
     
     for(int ielectron=0; ielectron < (int)goodElectrons.size(); ielectron++){
-      if(myelectron.charge() * ielectron.charge() > 0) continue;
-      if(myelectron.tlv().DeltaR(ielectron.tlv()) < 0.15) continue;
+      if(myelectron.charge() * goodElectrons[ielectron].charge() > 0) continue;
+      if(myelectron.tlv().DeltaR(goodElectrons[ielectron].tlv()) < 0.15) continue;
       b_dilepton_veto_ = true;
       break; //goto break_dilepton_veto;
     }
-    if (b_extramuon_veto_ && b_dilepton_veto_) break;
   }
   
   
@@ -1104,6 +1108,10 @@ void TauTauAnalysis::FillBranches(const std::string& channel, const std::vector<
   else {b_gen_match_2[ch]               = genMatch(b_eta_2[ch], b_phi_2[ch]);}
   b_decayMode_2[ch]                     = tau.decayMode();
   
+  b_dilepton_veto[ch]                   = (int) b_dilepton_veto_;
+  b_extraelec_veto[ch]                  = (int) b_extraelec_veto_;
+  b_extramuon_veto[ch]                  = (int) b_extramuon_veto_;
+  
   TLorentzVector lep_lv;
   if(channel=="mutau"){
     b_pt_1[ch]      = muon.tlv().Pt();
@@ -1329,6 +1337,38 @@ Float_t TauTauAnalysis::deltaR(Float_t deta, Float_t dphi){
   return TMath::Sqrt(TMath::Power(deta,2) + TMath::Power(dphi,2));
 
 }
+
+
+
+
+
+bool TauTauAnalysis::isNonTrigElectronID(const UZH::Electron& electron)
+{
+// 90% efficiency working point
+// https://twiki.cern.ch/twiki/bin/view/CMS/MultivariateElectronIdentificationRun2#Non_triggering_electron_MVA_deta
+// https://github.com/gitytakahas/EXOVVNtuplizerRunII/blob/80X_ntuplizer/Ntuplizer/plugins/ElectronsNtuplizer.cc#L66-L98
+  Float_t eta = fabs(electron.tlv().Eta());
+  Float_t pt = electron.tlv().Pt();
+  Float_t mva = electron.nonTrigMVAID();
+
+  // assume pt > 5.0 GeV
+  if(pt <= 10.){
+    if(eta < 0.8)           return mva > -0.083313;
+    else if(eta < 1.479)    return mva > -0.235222;
+    else                    return mva > -0.67099;
+  }
+  else if(pt > 10.){
+    if(eta < 0.8)           return mva > 0.913286;
+    else if(eta < 1.479)    return mva > 0.805013;
+    else                    return mva > 0.358969;
+  }else{
+    std::cout << "Does not happen" << std::endl;
+    return false;
+  } 
+}
+
+
+
 
 
 
