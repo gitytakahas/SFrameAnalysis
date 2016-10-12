@@ -12,13 +12,16 @@ tdrstyle.setTDRStyle()
 
 # other
 # https://root.cern.ch/doc/master/classTColor.html
-legendTextSize = 0.038 #0.036
+legendTextSize = 0.03 #0.036
 colors = [kRed+3,kAzure+4,kOrange-6,kMagenta+3,kGreen+3,kYellow+2,kRed-7, kAzure-4, kOrange+6, kMagenta-3, kYellow-2]
 fillcolors = [kRed-2,kAzure+5,kOrange-5,kMagenta-2,kGreen-2,kYellow-3,kRed-7, kAzure-4, kOrange+6, kMagenta-3, kYellow-2]
 list = [ ("jpt_1","jet 1 pt"),   ("jpt_2","jet 2 pt"),
-         ("abs(jeta_1)","jet 1 abs(eta)"), ("abs(jeta_2)","jet 2 abs(eta)"),
-         ("jeta_1","jet 1 eta"), ("jeta_2","jet 2 eta"),
-         ("bpt_1","b jet 1 pt"), ("beta_1","b jet 1 eta"), ]
+         ("bpt_1","b jet 1 pt"), ("bpt_2","b jet 2 pt"),
+         ("abs(jeta_1)",  "jet 1 abs(eta)"), ("abs(jeta_2)",  "jet 2 abs(eta)"),
+         ("abs(beta_1)","b jet 1 abs(eta)"), ("abs(beta_2)","b jet 1 abs(eta)"),
+         ("jeta_1",  "jet 1 eta"), ("jeta_2",  "jet 2 eta"),
+         ("beta_1","b jet 1 eta"), ("beta_2","b jet 2 eta"), ]
+         
 
 
 
@@ -26,9 +29,10 @@ list = [ ("jpt_1","jet 1 pt"),   ("jpt_2","jet 2 pt"),
 
 def makeLatex(title):
 
-#     for a, b in list:
-#         if a in title:
-#             title = title.replace(a,b)
+    for a, b in list:
+        if a in title:
+            title = title.replace(a,b)
+            break
 
     if "p_t" in title or "pt" in title or "Pt" in title:
         if "pt_" in title and "pt_" in title:
@@ -58,10 +62,10 @@ def makeLatex(title):
             title = title.replace("eta_","#eta_{").replace("Eta_","#eta_{") + "}"
         else:
             title = title.replace("eta","#eta").replace("Eta","#eta")
-        
+    
     if "abs(" in title and ")" in title:
         title = title.replace("abs(","|").replace(")","") + "|" # TODO: split at next space
-        
+    
     if "muon" in title or "Muon" in title:
         title = title.replace("muon","#muon").replace("Muon","#muon")
     
@@ -70,8 +74,17 @@ def makeLatex(title):
     
     if "npv" in title:
         title = title.replace("npv","number of vertices")
-
+    
     return title
+    
+    
+    
+    
+    
+def makeHistName(label, var):
+    hist_name = "%s_%s" % (label, var)
+    hist_name = hist_name.replace(".","_").replace(" ","_").replace("(","_").replace(")","_").replace("[","_").replace("]","_")
+    return hist_name
     
     
     
@@ -117,14 +130,14 @@ class Sample(object):
 
     
     def hist(self, var, nBins, a, b, scale=1, **kwargs):
-        tree = self.file.Get(self.treeName)
+        tree   = self.file.Get(self.treeName)
         weight = self.weight or kwargs.get('weight', False)
-        cuts = combineCuts(self.cuts, kwargs.get('cuts', ""), weight=weight)
-        hist_name = "%s_%s" % (self.label, var)
-        hist_name = hist_name.replace(".","_").replace(" ","_").replace("(","_").replace(")","_").replace("[","_").replace("]","_")
+        cuts   = combineCuts(self.cuts, kwargs.get('cuts', ""), weight=weight)
+        name   = kwargs.get('name',  makeHistName(self.label, var))
+        title  = kwargs.get('title', self.label)
         
-        hist = TH1F(hist_name, self.label, nBins, a, b)
-        tree.Draw("%s >> %s" % (var,hist_name), cuts, "goff")
+        hist = TH1F(name, title, nBins, a, b)
+        tree.Draw("%s >> %s" % (var,name), cuts, "goff")
         if self.scale*scale is not 1:
             hist.Scale(self.scale*scale)
         #print hist.GetEntries()
@@ -165,12 +178,18 @@ class Plot(object):
     """Class to automatically make CMS plot."""
 
     def __init__(self, samples, var, nBins, a, b, **kwargs):
+        self.samples = samples
+        self.var = var
+        self.nBins = nBins
+        self.a = a; self.b = b
+        self.cuts = kwargs.get('cuts', "")
+        
         self.histsS = [ ]
         self.histsB = [ ]
         self.histsD = [ ]
         self._hists = [ ]
         self._histsMC = [ ]
-        self.cuts = kwargs.get('cuts', "")
+        
         for sample in samples:
             if sample.isSignal:
                 self.histsS.append(sample.hist(var, nBins, a, b, cuts=self.cuts))
@@ -178,11 +197,13 @@ class Plot(object):
                 self.histsB.append(sample.hist(var, nBins, a, b, cuts=self.cuts))
             elif sample.isData:
                 self.histsD.append(sample.hist(var, nBins, a, b, cuts=self.cuts))
-        self.var = var
-        self.nBins = nBins
-        self.a = a; self.b = b
+        if kwargs.get('QCD', False):
+            histQCD = self.QCD()
+            if histQCD: self.histsB.append(histQCD)
+            
         self.stack = None
         self.canvas = None
+        self.pads = [ ]
         self.frame = None
         self.legend = None
         self.width = 0.26;  self.height = 0.08 + 0.05 * len(self.histsB)
@@ -207,11 +228,13 @@ class Plot(object):
         # https://root.cern.ch/doc/master/classTHStack.html
         # https://root.cern.ch/doc/master/classTHistPainter.html#HP01e
         stack = kwargs.get('stack', False)
+        residue = kwargs.get('residue', False)
         errorbars = kwargs.get('errorbars', False)
         option = 'hist'
         if errorbars: option = 'E0 '+option
         
-        self.makeCanvas(square=kwargs.get('square', False),scaleleftmargin=kwargs.get('scaleleftmargin', 1),scalerightmargin=kwargs.get('scalerightmargin', 1))
+        self.makeCanvas(square=kwargs.get('square', False), residue = residue,
+                        scaleleftmargin=kwargs.get('scaleleftmargin', 1),scalerightmargin=kwargs.get('scalerightmargin', 1))
         
         if stack:
             stack = THStack("stack","")
@@ -246,12 +269,30 @@ class Plot(object):
 
 
 
-    def makeCanvas(self,square=False, scaleleftmargin=1, scalerightmargin=1):
+    def makeCanvas(self,**kwargs):
+        square = kwargs.get('square', False)
+        scaleleftmargin  = kwargs.get('scaleleftmargin', 1)
+        scalerightmargin = kwargs.get('scalerightmargin', 1)
+        residue = kwargs.get('residue', False)
+        
         W = 800; H  = 600
         if square:
             W = 800; H  = 800
             self.width = 0.30
             scalerightmargin = 3.5*scalerightmargin
+        elif residue:
+            W = 800; H  = 600
+            pads = [ TPad("pad1","pad1",0,0.33,1,1),
+                     TPad("pad2","pad2",0,0,1,0.33) ]
+            pad[0].SetBottomMargin(0.00001)
+            pad[0].SetBorderMode(0)
+            pad[1].SetTopMargin(0.00001)
+            pad[1].SetBottomMargin(0.1)
+            pad[1].SetBorderMode(0)
+            pad[0].Draw()
+            pad[1].Draw()
+            self.pads = pads
+        
         T = 0.08*H
         B = 0.12*H
         L = 0.12*W*scaleleftmargin
@@ -435,5 +476,68 @@ class Plot(object):
             if I:
                 hist.Scale(1/I)
 
+
+
+    def substractStackFromHist(self,stack,hist,**kwargs):
+        """Substract stacked MC histograms from a data histogram,
+           bin by bin if the difference is larger than zero."""
+        #Float_t binContent = ((TH1*)(stack->GetStack()->Last()))->GetBinContent(ibin);
+        # TODO: check same bin size
+        
+        name = kwargs.get('name', "diff_"+hist.GetName())
+        title = kwargs.get('title', "difference")
+        N = hist.GetNbinsX()
+        a = hist.GetXaxis().GetXmin()
+        b = hist.GetXaxis().GetXmax()
+        hist_diff = TH1F(name,title,N,a,b)
+        
+        for i in range(1,N+1):
+            hist_diff.SetBinContent(i, max(0,hist.GetBinContent(i)-stack.GetStack().Last().GetBinContent(i));
+            #print ">>> i=%i, diff = %f" % (i, hist.GetBinContent(i)-stack.GetStack().Last().GetBinContent(i))  
+
+        return hist_diff
+
+
+
+    def QCD(self,**kwargs):
+        """Substract MC from data with same sign (SS) selection of a lepton - tau pair
+           and return a histogram of the difference."""
+        
+        cuts = self.cuts
+        var = self.var
+        nBins = self.nBins
+        a = self.a
+        b = self.b
+        samples = self.samples
+        
+        if "q_1 * q_2 < 0" in cuts or "q_1*q_2<0" in cuts or "q_1*q_2 < 0" in cuts:
+            cuts = cuts.replace("q_1 * q_2 < 0","q_1 * q_2 > 0").replace("q_1*q_2 < 0","q_1 * q_2 > 0").replace("q_1*q_2<0","q_1 * q_2 > 0")        
+        elif cuts:
+            cuts = "q_1 * q_2 > 0 && %s" % cuts
+        else:
+            cuts = "q_1 * q_2 > 0"
+            #return None
+        
+        histsMC_SS = [ ]
+        histsD_SS  = [ ]
+        for sample in samples:
+            name = makeHistName(sample.label+"_SS", var)
+            if sample.isBackground or sample.isSignal:
+                histsMC_SS.append(sample.hist(var, nBins, a, b, cuts=cuts, name=name))
+            elif sample.isData:
+                histsD_SS.append(sample.hist(var, nBins, a, b, cuts=cuts, name=name))
+        if not histsD_SS:
+            print ">>> Warning! No data to make data driven QCD!"
+            return None 
+        
+        stack_SS = THStack("stack_SS","stack_SS")
+        for hist in histsMC_SS: stack_SS.Add(hist)
+        histQCD = self.substractStackFromHist(stack_SS,histsD_SS[0],name=makeHistName("QCD",var),title="QCD")
+        
+        for hist in histsMC_SS + histsD_SS: gDirectory.Delete(hist.GetName())
+        return histQCD
+        
+        
+        
 
 
