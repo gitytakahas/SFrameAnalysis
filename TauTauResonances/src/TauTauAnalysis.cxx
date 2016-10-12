@@ -385,6 +385,7 @@ void TauTauAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
     DeclareVariable( b_dR_ll[channels_[ch]],        "dR_ll",            treeName);
     DeclareVariable( b_pt_tt[channels_[ch]],        "pt_tt",            treeName);
     DeclareVariable( b_mt_tot[channels_[ch]],       "mt_tot",           treeName);
+    DeclareVariable( b_ht[channels_[ch]],           "ht",               treeName);
 
   }
   
@@ -564,72 +565,6 @@ void TauTauAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError )
     fillCutflow("cutflow_eletau", "histogram_eletau", kLepton, 1);
   }
   else if(goodMuons.size()==0) throw SError( SError::SkipEvent );
-  
-  
-  // extra leptons (muons)
-  // https://twiki.cern.ch/twiki/bin/view/CMS/HiggsToTauTauWorking2016#Baseline_mu_tau_h
-  b_dilepton_veto_  = false;
-  b_extraelec_veto_ = false;
-  b_extramuon_veto_ = false;
-  for( int i = 0; i < m_muon.N; ++i ){
-    UZH::Muon mymuon( &m_muon, i );
-    
-    if (b_extramuon_veto_ && b_dilepton_veto_) break;
-    
-    if (mymuon.pt() < 10) continue;
-    if (fabs(mymuon.eta()) > 2.4) continue;
-    if (fabs(mymuon.dz_allvertices()) > 0.2) continue;
-    if (fabs(mymuon.d0_allvertices()) > 0.045) continue;
-    if (mymuon.SemileptonicPFIso() / mymuon.pt() > 0.3) continue;
-    
-    if (mymuon.isMediumMuon() > 0.5){ // "Medium" (HIP safe) ID  
-      b_extramuon_veto_ = true;
-    }
-
-    if (mymuon.pt() < 15) continue;
-    if (!mymuon.isGlobalMuon()) continue;
-    if (!mymuon.isTrackerMuon()) continue;
-    if (!mymuon.isPFMuon()) continue;
-    if (b_dilepton_veto_) continue;
-    
-    for(int imuon=0; imuon < (int)goodMuons.size(); imuon++){
-      if(mymuon.charge() * goodMuons[imuon].charge() > 0) continue;
-      if(mymuon.tlv().DeltaR(goodMuons[imuon].tlv()) < 0.15) continue;
-      b_dilepton_veto_ = true;
-      break; //goto break_dilepton_veto;
-    }
-  }
-  
-  // extra leptons (electrons)
-  // https://twiki.cern.ch/twiki/bin/view/CMS/HiggsToTauTauWorking2016#Baseline_e_tau_h
-  for( int i = 0; i < m_electron.N; ++i ){
-    UZH::Electron myelectron( &m_electron, i );
-    
-    if (b_extraelec_veto_ && b_dilepton_veto_) break;
-    
-    if (myelectron.pt() < 10) continue;
-    if (fabs(myelectron.eta()) > 2.4) continue;
-    if (fabs(myelectron.dz_allvertices()) > 0.2) continue;
-    if (fabs(myelectron.d0_allvertices()) > 0.045) continue;
-    if (myelectron.SemileptonicPFIso() / myelectron.pt() > 0.3) continue;
-    
-    if (myelectron.passConversionVeto() && isNonTrigElectronID(myelectron)
-                                        && myelectron.expectedMissingInnerHits()<=1){
-      b_extraelec_veto_ = true;
-    }
-    
-    if (myelectron.pt() < 15) continue;
-    if (fabs(myelectron.nonTrigMVAID() < 0.6)) continue; // TODO: change to equivalent POG Spring15 25ns cut-based "Veto" ID
-    if (b_dilepton_veto_) continue;
-    
-    for(int ielectron=0; ielectron < (int)goodElectrons.size(); ielectron++){
-      if(myelectron.charge() * goodElectrons[ielectron].charge() > 0) continue;
-      if(myelectron.tlv().DeltaR(goodElectrons[ielectron].tlv()) < 0.15) continue;
-      b_dilepton_veto_ = true;
-      break; //goto break_dilepton_veto;
-    }
-  }
-  
   
   
   
@@ -1023,8 +958,10 @@ void TauTauAnalysis::FillBranches(const std::string& channel, const std::vector<
   Int_t nfbtag      =  0;
   Int_t ncbtag      =  0;
   Int_t ibjet       = -1;
+  Float_t ht        = 0;
 
   for( int ijet = 0; ijet < (int)Jet.size(); ++ijet ){
+    ht += Jet.at(ijet).e();
     if(Jet.at(ijet).pt() > 30) njets++;
     if(fabs(Jet.at(ijet).eta()) < 2.4 && Jet.at(ijet).csv() > 0.8){
       nbtag++;
@@ -1108,6 +1045,9 @@ void TauTauAnalysis::FillBranches(const std::string& channel, const std::vector<
   else {b_gen_match_2[ch]               = genMatch(b_eta_2[ch], b_phi_2[ch]);}
   b_decayMode_2[ch]                     = tau.decayMode();
   
+
+  extraLeptonVetos(channel, muon, electron);
+  
   b_dilepton_veto[ch]                   = (int) b_dilepton_veto_;
   b_extraelec_veto[ch]                  = (int) b_extraelec_veto_;
   b_extramuon_veto[ch]                  = (int) b_extramuon_veto_;
@@ -1179,6 +1119,7 @@ void TauTauAnalysis::FillBranches(const std::string& channel, const std::vector<
   b_dR_ll[ch]       = tau.tlv().DeltaR(lep_lv);
   b_mt_tot[ch]      = TMath::Sqrt(TMath::Power(b_mt_1[ch],2) + TMath::Power(b_mt_2[ch],2) + 2*lep_lv.Pt()*b_pt_2[ch]*(1-TMath::Cos(deltaPhi(lep_lv.Phi(), b_phi_2[ch]))));
   b_pt_tt[ch]       = (lep_lv + tau.tlv() + lmet).Pt();
+  b_ht[ch]          = ht + lep_lv.E() + tau.tlv().E();
 
   bool doSVfit= false;
   if (m_doSVFit){
@@ -1344,6 +1285,7 @@ Float_t TauTauAnalysis::deltaR(Float_t deta, Float_t dphi){
 
 bool TauTauAnalysis::isNonTrigElectronID(const UZH::Electron& electron)
 {
+//   std::cout << "isNonTrigElectronID" << std::endl;
 // 90% efficiency working point
 // https://twiki.cern.ch/twiki/bin/view/CMS/MultivariateElectronIdentificationRun2#Non_triggering_electron_MVA_deta
 // https://github.com/gitytakahas/EXOVVNtuplizerRunII/blob/80X_ntuplizer/Ntuplizer/plugins/ElectronsNtuplizer.cc#L66-L98
@@ -1369,6 +1311,95 @@ bool TauTauAnalysis::isNonTrigElectronID(const UZH::Electron& electron)
 
 
 
+
+void TauTauAnalysis::extraLeptonVetos(const std::string& channel, const UZH::Muon& muon, const UZH::Electron& electron)
+{
+//   std::cout << "extraLeptonVetos" << std::endl;
+  
+  b_dilepton_veto_  = false;
+  b_extraelec_veto_ = false;
+  b_extramuon_veto_ = false;
+  
+  // Muons
+  // https://twiki.cern.ch/twiki/bin/view/CMS/HiggsToTauTauWorking2016#Baseline_mu_tau_h
+  // https://twiki.cern.ch/twiki/bin/view/CMS/HiggsToTauTauWorking2016#Third_lepton_vetoes
+  std::vector<UZH::Muon> passedMuons;
+  for( int i = 0; i < m_muon.N; ++i ){
+    UZH::Muon mymuon( &m_muon, i );  
+    
+    if(b_extramuon_veto_ && b_dilepton_veto_) break;
+    if(mymuon.pt() < 10) continue;
+    if(fabs(mymuon.eta()) > 2.4) continue;
+    if(fabs(mymuon.dz_allvertices()) > 0.2) continue;
+    if(fabs(mymuon.d0_allvertices()) > 0.045) continue;
+    if(mymuon.SemileptonicPFIso() / mymuon.pt() > 0.3) continue;
+    
+    // Extra muon veto
+    if(mymuon.isMediumMuon() > 0.5){ // "Medium" (HIP safe) ID
+      if(channel=="eletau"){
+        b_extramuon_veto_ = true;
+        break;
+      }
+      else if(mymuon.eta() != muon.eta() || mymuon.pt() != muon.pt() || mymuon.phi() != muon.phi()){
+        b_extramuon_veto_ = true;
+      }
+    }
+    
+    // Di-muon veto
+    if( !b_dilepton_veto_     && mymuon.pt() > 15       &&
+        mymuon.isGlobalMuon() && mymuon.isTrackerMuon() && mymuon.isPFMuon()){
+      for( int j = 0; j < (int)passedMuons.size(); ++j ){
+        if(mymuon.charge() * passedMuons[j].charge() > 0) continue;
+        if(mymuon.tlv().DeltaR(passedMuons[j].tlv()) < 0.15) continue;
+        b_dilepton_veto_ = true;
+        break;
+      }
+    }
+    
+    passedMuons.push_back(mymuon);
+  }
+  
+  // extra leptons (electrons)
+  // https://twiki.cern.ch/twiki/bin/view/CMS/HiggsToTauTauWorking2016#Baseline_e_tau_h
+  // https://twiki.cern.ch/twiki/bin/view/CMS/HiggsToTauTauWorking2016#Third_lepton_vetoes
+  std::vector<UZH::Electron> passedElectrons;
+  for( int i = 0; i < m_electron.N; ++i ){
+    UZH::Electron myelectron( &m_electron, i );
+    
+    if(b_extraelec_veto_ && b_dilepton_veto_) break;
+    if(myelectron.pt() < 10) continue;
+    if(fabs(myelectron.eta()) > 2.4) continue;
+    if(fabs(myelectron.dz_allvertices()) > 0.2) continue;
+    if(fabs(myelectron.d0_allvertices()) > 0.045) continue;
+    if(myelectron.SemileptonicPFIso() / myelectron.pt() > 0.3) continue;
+    
+    // Extra electron veto
+    if( myelectron.passConversionVeto() &&
+        isNonTrigElectronID(myelectron) && myelectron.expectedMissingInnerHits()<=1){
+      if(channel=="mutau"){
+        b_extraelec_veto_ = true;
+        break;
+      }
+      else if( myelectron.pt() != electron.pt() || myelectron.eta() != electron.eta() || myelectron.phi() != electron.phi()){
+        b_extraelec_veto_ = true;
+      }
+    }
+    
+    // Di-electron veto
+    if( !b_dilepton_veto_ && myelectron.pt() > 15 &&
+        fabs(myelectron.nonTrigMVAID() > 0.5)){ // TODO: change to equivalent POG Spring15 25ns cut-based "Veto" ID
+    
+      for(int j=0; j < (int)passedElectrons.size(); j++){
+        if(myelectron.charge() * passedElectrons[j].charge() > 0) continue;
+        if(myelectron.tlv().DeltaR(passedElectrons[j].tlv()) < 0.15) continue;
+        b_dilepton_veto_ = true;
+        break;
+      }
+    }
+    
+    passedElectrons.push_back(myelectron);
+  }
+}  
 
 
 
