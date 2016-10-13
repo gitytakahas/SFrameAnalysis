@@ -12,15 +12,18 @@ tdrstyle.setTDRStyle()
 
 # other
 # https://root.cern.ch/doc/master/classTColor.html
-legendTextSize = 0.03 #0.036
-colors = [kRed+3,kAzure+4,kOrange-6,kMagenta+3,kGreen+3,kYellow+2,kRed-7, kAzure-4, kOrange+6, kMagenta-3, kYellow-2]
-fillcolors = [kRed-2,kAzure+5,kOrange-5,kMagenta-2,kGreen-2,kYellow-3,kRed-7, kAzure-4, kOrange+6, kMagenta-3, kYellow-2]
+legendTextSize = 0.026 #0.036
+colors     = [ kRed+3, kAzure+4, kOrange-6, kMagenta+3, kGreen+3, kYellow+2,
+               kRed-7, kAzure-4, kOrange+6, kMagenta-3, kYellow-2 ]
+fillcolors = [ kRed-2, kAzure+5, kOrange-5, kMagenta-2, kGreen-2, kYellow-3,
+               kRed-7, kAzure-9, kOrange+6, kMagenta-3, kYellow-2 ]
 list = [ ("jpt_1","jet 1 pt"),   ("jpt_2","jet 2 pt"),
          ("bpt_1","b jet 1 pt"), ("bpt_2","b jet 2 pt"),
          ("abs(jeta_1)",  "jet 1 abs(eta)"), ("abs(jeta_2)",  "jet 2 abs(eta)"),
          ("abs(beta_1)","b jet 1 abs(eta)"), ("abs(beta_2)","b jet 1 abs(eta)"),
          ("jeta_1",  "jet 1 eta"), ("jeta_2",  "jet 2 eta"),
-         ("beta_1","b jet 1 eta"), ("beta_2","b jet 2 eta"), ]
+         ("beta_1","b jet 1 eta"), ("beta_2","b jet 2 eta"),
+         ("dR_ll","#Delta R_{ll}"), ]
          
 
 
@@ -208,7 +211,7 @@ class Plot(object):
         self.legend = None
         self.width = 0.26;  self.height = 0.08 + 0.05 * len(self.histsB)
         self.x2 = 0.95;     self.x1 = self.x2 - self.width
-        self.y1 = 0.50;     self.y2 = self.y1 + self.height
+        self.y1 = 0.48;     self.y2 = self.y1 + self.height
 
     @property
     def hists(self): return ( self.histsB + self.histsS + self.histsD )
@@ -396,20 +399,20 @@ class Plot(object):
              gPad.Update(); gPad.SetLogx()
         
         xlabel = makeLatex(kwargs.get('xlabel', ""))
-        ylabel = "Events / %i" % self.hists[0].GetXaxis().GetBinWidth(0)
+        ylabel = "Events / %s" % self.hists[0].GetXaxis().GetBinWidth(0)
         if kwargs.get('ylabel', ""):
             ylabel = kwargs.get('ylabel', "")
         
-        if "p_{t}" in xlabel or "m_{" in xlabel:
+        if "GeV" in xlabel:
             ylabel += " GeV"
         
         frame.GetXaxis().SetTitle(xlabel)
         
         frame.GetYaxis().SetTitle(ylabel)
-        frame.GetXaxis().SetLabelSize(0.042)
-        frame.GetYaxis().SetLabelSize(0.042)
-        frame.GetXaxis().SetTitleSize(0.045)
-        frame.GetYaxis().SetTitleSize(0.045)
+        frame.GetXaxis().SetLabelSize(0.040)
+        frame.GetYaxis().SetLabelSize(0.040)
+        frame.GetXaxis().SetTitleSize(0.042)
+        frame.GetYaxis().SetTitleSize(0.042)
         frame.GetYaxis().SetTitleOffset(1.45)
 #         frame.GetYaxis().CenterTitle(True)
 #         frame.GetXaxis().SetNdivisions(508)
@@ -492,7 +495,7 @@ class Plot(object):
         hist_diff = TH1F(name,title,N,a,b)
         
         for i in range(1,N+1):
-            hist_diff.SetBinContent(i, max(0,hist.GetBinContent(i)-stack.GetStack().Last().GetBinContent(i));
+            hist_diff.SetBinContent(i, max(0,hist.GetBinContent(i)-stack.GetStack().Last().GetBinContent(i)));
             #print ">>> i=%i, diff = %f" % (i, hist.GetBinContent(i)-stack.GetStack().Last().GetBinContent(i))  
 
         return hist_diff
