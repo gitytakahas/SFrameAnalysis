@@ -42,56 +42,62 @@ TauTauAnalysis::TauTauAnalysis()
    , m_ScaleFactorTool( this )
 {
 
-   m_logger << INFO << "Hello!" << SLogger::endmsg;
-   SetLogName( GetName() );
-   
-   // read configuration details from XML file
-   DeclareProperty("RecoTreeName", m_recoTreeName = "physics" );
+  m_logger << INFO << "Hello!" << SLogger::endmsg;
+  SetLogName( GetName() );
+  
+  // read configuration details from XML file
+  DeclareProperty("RecoTreeName", m_recoTreeName = "physics" );
 
-   // channels
-   channels_.push_back("mutau");
-   channels_.push_back("eletau");
-   
-   for(unsigned int ch=0;ch< channels_.size();ch++){
-     m_outputTreeName_ch_.push_back("");
-   }
-   
-   DeclareProperty( "OutputTreeName_mutau" , m_outputTreeName_ch_[0]);
-   DeclareProperty( "OutputTreeName_eletau" , m_outputTreeName_ch_[1]);
+  // channels
+  channels_.push_back("mutau");
+  channels_.push_back("eletau");
+  
+  for(unsigned int ch=0;ch< channels_.size();ch++){
+    m_outputTreeName_ch_.push_back("");
+  }
+  
+  DeclareProperty( "OutputTreeName_mutau" , m_outputTreeName_ch_[0]);
+  DeclareProperty( "OutputTreeName_eletau" , m_outputTreeName_ch_[1]);
 
+  DeclareProperty( "JetAK4Name",           m_jetAK4Name            = "jetAK4" );
+  DeclareProperty( "ElectronName",         m_electronName          = "el" );
+  DeclareProperty( "MuonName",             m_muonName              = "mu" );
+  DeclareProperty( "TauName",              m_tauName               = "tau" );
+  DeclareProperty( "MissingEtName",        m_missingEtName         = "MET" );
+  DeclareProperty( "GenParticleName",      m_genParticleName       = "genParticle" );
+  
+  DeclareProperty( "IsData",               m_isData                = false );
+  DeclareProperty( "doSVFit",              m_doSVFit               = false );
+  DeclareProperty( "IsSignal",             m_isSignal              = false );
+  
+  // https://twiki.cern.ch/twiki/bin/viewauth/CMS/HiggsToTauTauWorking2016
+  // for comparison https://twiki.cern.ch/twiki/bin/viewauth/CMS/MSSMAHTauTauSummer2016#Baseline
+  DeclareProperty( "AK4JetPtCut",          m_AK4jetPtCut           = 20.   );
+  DeclareProperty( "AK4JetEtaCut",         m_AK4jetEtaCut          = 4.7   );
 
-   DeclareProperty( "JetAK4Name",               m_jetAK4Name               = "jetAK4" );
-   DeclareProperty( "ElectronName",             m_electronName             = "el" );
-   DeclareProperty( "MuonName",                 m_muonName                 = "mu" );
-   DeclareProperty( "TauName",                  m_tauName                  = "tau" );
-   DeclareProperty( "MissingEtName",            m_missingEtName            = "MET" );
-   DeclareProperty( "GenParticleName",          m_genParticleName          = "genParticle" );
-   
-   DeclareProperty( "IsData",                   m_isData                   = false );
-   DeclareProperty( "doSVFit",                  m_doSVFit                  = false );
-   DeclareProperty( "IsSignal",                 m_isSignal                 = false );
-   
-   DeclareProperty( "AK4JetPtCut",              m_AK4jetPtCut              = 20.   );
-   DeclareProperty( "AK4JetEtaCut",             m_AK4jetEtaCut             = 4.7   );
+  DeclareProperty( "ElectronPtCut",        m_electronPtCut         = 26.   );
+  DeclareProperty( "ElectronEtaCut",       m_electronEtaCut        = 2.1   );
+  DeclareProperty( "ElectronD0Cut",        m_electronD0Cut         = 0.045 );
+  DeclareProperty( "ElectronDzCut",        m_electronDzCut         = 0.2   );
+  DeclareProperty( "ElectronIsoCut",       m_electronIsoCut        = 0.1   );
+  
+  DeclareProperty( "MuonPtCut",            m_muonPtCut             = 23.   );
+  DeclareProperty( "MuonEtaCut",           m_muonEtaCut            = 2.1   );
+  DeclareProperty( "MuonD0Cut",            m_muonD0Cut             = 0.045 );
+  DeclareProperty( "MuonDzCut",            m_muonDzCut             = 0.2   );
+  DeclareProperty( "MuonIsoCut",           m_muonIsoCut            = 0.15  );
 
-   DeclareProperty( "ElectronPtCut",            m_electronPtCut            = 26.   );
-   DeclareProperty( "ElectronEtaCut",           m_electronEtaCut           = 2.1   );
-   DeclareProperty( "ElectronD0Cut",            m_electronD0Cut            = 0.045 );
-   DeclareProperty( "ElectronDzCut",            m_electronDzCut            = 0.2   );
-   DeclareProperty( "ElectronIsoCut",           m_electronIsoCut           = 0.1   );
-   
-   DeclareProperty( "MuonPtCut",                m_muonPtCut                = 23.   );
-   DeclareProperty( "MuonEtaCut",               m_muonEtaCut               = 2.1   );
-   DeclareProperty( "MuonD0Cut",                m_muonD0Cut                = 0.045 );
-   DeclareProperty( "MuonDzCut",                m_muonDzCut                = 0.2   );
-   DeclareProperty( "MuonIsoCut",               m_muonIsoCut               = 0.15  );
+  DeclareProperty( "TauPtCut",             m_tauPtCut              = 20   );
+  DeclareProperty( "TauEtaCut",            m_tauEtaCut             = 2.3  );
+  DeclareProperty( "TauDzCut",             m_tauDzCut              = 0.2  );
 
-   DeclareProperty( "TauPtCut",                 m_tauPtCut                 = 20   );
-   DeclareProperty( "TauEtaCut",                m_tauEtaCut                = 2.3  );
-   DeclareProperty( "TauDzCut",                 m_tauDzCut                 = 0.2  );
-
-   DeclareProperty( "JSONName",                 m_jsonName             = std::string (std::getenv("SFRAME_DIR")) + "/../GoodRunsLists/JSON/Cert_271036-280385_13TeV_PromptReco_Collisions16_JSON_NoL1T_v2.txt" );
-     
+  DeclareProperty( "JSONName",             m_jsonName              = std::string (std::getenv("SFRAME_DIR")) + "/../GoodRunsLists/JSON/Cert_271036-280385_13TeV_PromptReco_Collisions16_JSON_NoL1T_v2.txt" );
+  
+  DeclareProperty( "TrigSF_muonName",      m_TrigSF_muonName       = std::string (std::getenv("SFRAME_DIR")) + "/../LepEff2016/data/Muon/SingleMuonTrigger_Z_RunBCD_prompt80X_7p65.root" ); 
+  DeclareProperty( "IDSF_muonName",        m_IDSF_muonName         = std::string (std::getenv("SFRAME_DIR")) + "/../LepEff2016/data/Muon/MuonID_Z_RunBCD_prompt80X_7p65.root" );
+  DeclareProperty( "IsoSF_muonName",       m_IsoSF_muonName        = std::string (std::getenv("SFRAME_DIR")) + "/../LepEff2016/data/Muon/MuonIso_Z_RunBCD_prompt80X_7p65.root" );
+  DeclareProperty( "IDSF_eleName",         m_IDSF_eleName          = std::string (std::getenv("SFRAME_DIR")) + "/../LepEff2016/data/Electron/egammaEffi.txt_SF2D.root" );
+  
 }
 
 
@@ -200,11 +206,11 @@ struct ltau_pair
     if (lep_iso != another.lep_iso)
       return lep_iso < another.lep_iso;
     if (lep_pt != another.lep_pt)
-      return lep_pt > another.lep_pt;
+      return lep_pt > another.lep_pt; // take highest pt
     if (tau_iso != another.tau_iso)
       return tau_iso > another.tau_iso; // note that tau isolation is better if we have higher value ! 
     if (tau_pt != another.tau_pt)
-      return tau_pt > another.tau_pt;
+      return tau_pt > another.tau_pt; // take highest pt
     return ilepton < another.ilepton;
   }
 
@@ -310,7 +316,9 @@ void TauTauAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
     DeclareVariable( b_id_e_mva_nt_loose_1[channels_[ch]],  "id_e_mva_nt_loose_1",  treeName);
     DeclareVariable( b_gen_match_1[channels_[ch]],    "gen_match_1",    treeName);
     DeclareVariable( b_trigweight_1[channels_[ch]],   "trigweight_1",   treeName);
+    DeclareVariable( b_idweight_1[channels_[ch]],     "idweight_1",     treeName);
     DeclareVariable( b_isoweight_1[channels_[ch]],    "isoweight_1",    treeName);
+//     DeclareVariable( b_idisoweight_1[channels_[ch]],  "idisoweight_1",  treeName);
     
     DeclareVariable( b_pt_2[channels_[ch]],           "pt_2",           treeName);
     DeclareVariable( b_eta_2[channels_[ch]],          "eta_2",          treeName);
@@ -324,7 +332,9 @@ void TauTauAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
     DeclareVariable( b_puppimt_2[channels_[ch]],      "puppimt_2",      treeName);
     DeclareVariable( b_iso_2[channels_[ch]],          "iso_2",          treeName);
     DeclareVariable( b_gen_match_2[channels_[ch]],    "gen_match_2",    treeName);
+    DeclareVariable( b_idweight_2[channels_[ch]],     "idweight_2",     treeName);
     DeclareVariable( b_isoweight_2[channels_[ch]],    "isoweight_2",    treeName);
+//     DeclareVariable( b_idisoweight_2[channels_[ch]],  "idisoweight_2",  treeName);
     
     DeclareVariable( b_againstElectronVLooseMVA6_2[channels_[ch]],  "againstElectronVLooseMVA6_2",  treeName);
     DeclareVariable( b_againstElectronLooseMVA6_2[channels_[ch]],   "againstElectronLooseMVA6_2",   treeName);
@@ -342,8 +352,8 @@ void TauTauAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
     DeclareVariable( b_decayModeFindingOldDMs_2[channels_[ch]],     "decayModeFindingOldDMs_2",     treeName);
     DeclareVariable( b_decayMode_2[channels_[ch]],                  "decayMode_2",                treeName);
     
-    DeclareVariable( b_weightLepID[channels_[ch]],                  "weightLepID",                  treeName);
-    DeclareVariable( b_weightLepIso[channels_[ch]],                 "weightLepIso",                 treeName);
+//     DeclareVariable( b_weightLepID[channels_[ch]],                  "weightLepID",                  treeName);
+//     DeclareVariable( b_weightLepIso[channels_[ch]],                 "weightLepIso",                 treeName);
     
     DeclareVariable( b_dilepton_veto[channels_[ch]],                "dilepton_veto",                treeName);
     DeclareVariable( b_extraelec_veto[channels_[ch]],               "extraelec_veto",               treeName);
@@ -453,7 +463,7 @@ void TauTauAnalysis::BeginInputFile( const SInputData& ) throw( SError ) {
     m_eventInfo.ConnectVariables(   m_recoTreeName.c_str(), Ntuple::EventInfoBasic|Ntuple::EventInfoTrigger|Ntuple::EventInfoMETFilters|Ntuple::EventInfoTruth, "" );
     m_genParticle.ConnectVariables( m_recoTreeName.c_str(), Ntuple::GenParticleBasic|Ntuple::GenParticleTauDecayAnalysis, (m_genParticleName + "_").c_str() );
   }
-  m_electron.ConnectVariables(      m_recoTreeName.c_str(), Ntuple::ElectronBasic|Ntuple::ElectronID|Ntuple::ElectronAdvancedID|Ntuple::ElectronBoostedIsolation, (m_electronName + "_").c_str() );
+  m_electron.ConnectVariables(      m_recoTreeName.c_str(), Ntuple::ElectronBasic|Ntuple::ElectronID|Ntuple::ElectronAdvancedID|Ntuple::ElectronBoostedIsolation|Ntuple::ElectronSuperCluster, (m_electronName + "_").c_str() );
   m_muon.ConnectVariables(          m_recoTreeName.c_str(), Ntuple::MuonBasic|Ntuple::MuonID|Ntuple::MuonIsolation|Ntuple::MuonTrack|Ntuple::MuonBoostedIsolation, (m_muonName + "_").c_str() );
   m_tau.ConnectVariables(           m_recoTreeName.c_str(), Ntuple::TauBasic|Ntuple::TauID|Ntuple::TauAdvancedID, (m_tauName + "_").c_str() );
 
@@ -479,7 +489,7 @@ void TauTauAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError )
   //b_weight["mutau"] = 1.;
   //b_weight["eletau"] = 1.;
   
-  
+    
   
   // Cut 0: no cuts
   for (auto ch: channels_){
@@ -495,7 +505,7 @@ void TauTauAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError )
   }
   else{
     getEventWeight();
-    genFilterZtautau();
+    genFilterZtautau(); // check Z-tautau not cut away
   }
   
   for (auto ch: channels_){
@@ -553,9 +563,9 @@ void TauTauAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError )
     if (myelectron.expectedMissingInnerHits()>1) continue;
     if (myelectron.nonTrigMVAID() < 0.5) continue;
     //if (myelectron.SemileptonicPFIso() / myelectron.pt() > m_electronIsoCut) continue;
-	  
+	
     goodElectrons.push_back(myelectron);
-  }  
+  }
   
   
   if(goodMuons.size()!=0){
@@ -709,6 +719,7 @@ void TauTauAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError )
     mu_tau++;
   
   }
+  
   
   // For ele-tau
   if(eletau_pair.size()!=0){
@@ -1042,17 +1053,23 @@ void TauTauAnalysis::FillBranches(const std::string& channel, const std::vector<
   b_puCorrPtSum_2[ch]                   = tau.puCorrPtSum();
   b_decayModeFindingOldDMs_2[ch]        = tau.decayModeFinding();
   if (m_isData) {b_gen_match_2[ch]      = -1;}
-  else {b_gen_match_2[ch]               = genMatch(b_eta_2[ch], b_phi_2[ch]);}
+  else{
+    b_gen_match_2[ch]                   = genMatch(b_eta_2[ch], b_phi_2[ch]);
+  }
+  b_idweight_2[ch]                      = 1;
+  b_isoweight_2[ch]                     = 1;
   b_decayMode_2[ch]                     = tau.decayMode();
   
 
   extraLeptonVetos(channel, muon, electron);
-  
   b_dilepton_veto[ch]                   = (int) b_dilepton_veto_;
   b_extraelec_veto[ch]                  = (int) b_extraelec_veto_;
   b_extramuon_veto[ch]                  = (int) b_extramuon_veto_;
   
   TLorentzVector lep_lv;
+  b_trigweight_1[ch]    = 1.;
+  b_idweight_1[ch]        = 1.;
+  b_isoweight_1[ch]       = 1.;
   if(channel=="mutau"){
     b_pt_1[ch]      = muon.tlv().Pt();
     b_eta_1[ch]     = muon.tlv().Eta();
@@ -1065,8 +1082,11 @@ void TauTauAnalysis::FillBranches(const std::string& channel, const std::vector<
     b_id_e_mva_nt_loose_1[ch]   = -1;
     lep_lv.SetPtEtaPhiM(b_pt_1[ch], b_eta_1[ch], b_phi_1[ch], b_m_1[ch]);
     b_channel[ch]   = 1;
-    if (!m_isData) b_weightLepID[ch]    = m_ScaleFactorTool.get_ScaleFactor_IDMuIchep(lep_lv.Pt(),fabs(lep_lv.Eta()));
-    if (!m_isData) b_weightLepIso[ch]   = m_ScaleFactorTool.get_ScaleFactor_IsoMuIchep(lep_lv.Pt(),fabs(lep_lv.Eta()));
+    if (!m_isData){
+      b_trigweight_1[ch]    = m_ScaleFactorTool.get_EfficiencyTrigMu(lep_lv.Pt(),fabs(lep_lv.Eta()));
+      b_idweight_1[ch]      = m_ScaleFactorTool.get_ScaleFactor_IDMuIchep(lep_lv.Pt(),fabs(lep_lv.Eta()));
+      b_isoweight_1[ch]     = m_ScaleFactorTool.get_ScaleFactor_IsoMuIchep(lep_lv.Pt(),fabs(lep_lv.Eta()));
+    }
   }else{
     b_pt_1[ch]      = electron.tlv().Pt();
     b_eta_1[ch]     = electron.tlv().Eta();
@@ -1078,16 +1098,19 @@ void TauTauAnalysis::FillBranches(const std::string& channel, const std::vector<
     b_iso_1[ch]     = electron.SemileptonicPFIso() / electron.pt();
     b_id_e_mva_nt_loose_1[ch]           = electron.nonTrigMVA();
     lep_lv.SetPtEtaPhiM(b_pt_1[ch], b_eta_1[ch], b_phi_1[ch], b_m_1[ch]);
-    b_channel[ch]   = 2; 
-    if (!m_isData) b_weightLepID[ch]    = m_ScaleFactorTool.get_ScaleFactor_IDEleIchep(lep_lv.Pt(),fabs(lep_lv.Eta()));
+    b_channel[ch]   = 2;
+    if (!m_isData){
+      b_idweight_1[ch]      = m_ScaleFactorTool.get_ScaleFactor_IDEleIchep(lep_lv.Pt(),fabs(lep_lv.Eta()));
+    }
   }
 
   if (m_isData) {b_gen_match_1[ch]  = -1;}
-  else {b_gen_match_1[ch]           = genMatch(b_eta_1[ch], b_phi_1[ch]);}
+  else{
+    b_weight[ch]        = b_weight[ch] * b_trigweight_1[ch] * b_idweight_1[ch] * b_isoweight_1[ch] * b_idweight_2[ch] * b_isoweight_2[ch];
+    b_gen_match_1[ch]   = genMatch(b_eta_1[ch], b_phi_1[ch]);
+  }
   
   b_id_e_mva_nt_loose_1[ch] = -1;
-  b_trigweight_1[ch]        = 1.;
-  b_isoweight_1[ch]         = 1.;
 
   b_met[ch]         = met.et();
   b_metphi[ch]      = met.phi();
@@ -1289,8 +1312,8 @@ bool TauTauAnalysis::isNonTrigElectronID(const UZH::Electron& electron)
 // 90% efficiency working point
 // https://twiki.cern.ch/twiki/bin/view/CMS/MultivariateElectronIdentificationRun2#Non_triggering_electron_MVA_deta
 // https://github.com/gitytakahas/EXOVVNtuplizerRunII/blob/80X_ntuplizer/Ntuplizer/plugins/ElectronsNtuplizer.cc#L66-L98
-  Float_t eta = fabs(electron.tlv().Eta());
-  Float_t pt = electron.tlv().Pt();
+  Float_t eta = fabs(electron.superCluster_eta());
+  Float_t pt = electron.pt();
   Float_t mva = electron.nonTrigMVAID();
 
   // assume pt > 5.0 GeV
@@ -1304,7 +1327,7 @@ bool TauTauAnalysis::isNonTrigElectronID(const UZH::Electron& electron)
     else if(eta < 1.479)    return mva > 0.805013;
     else                    return mva > 0.358969;
   }else{
-    std::cout << "Does not happen" << std::endl;
+    std::cout << ">>> Does not happen" << std::endl;
     return false;
   } 
 }
@@ -1340,9 +1363,8 @@ void TauTauAnalysis::extraLeptonVetos(const std::string& channel, const UZH::Muo
         b_extramuon_veto_ = true;
         break;
       }
-      else if(mymuon.eta() != muon.eta() || mymuon.pt() != muon.pt() || mymuon.phi() != muon.phi()){
+      else if(mymuon.eta() != muon.eta() || mymuon.pt() != muon.pt() || mymuon.phi() != muon.phi())
         b_extramuon_veto_ = true;
-      }
     }
     
     // Di-muon veto
@@ -1375,21 +1397,19 @@ void TauTauAnalysis::extraLeptonVetos(const std::string& channel, const UZH::Muo
     
     // Extra electron veto
     if( myelectron.passConversionVeto() &&
-        isNonTrigElectronID(myelectron) && myelectron.expectedMissingInnerHits()<=1){
+        isNonTrigElectronID(myelectron) && myelectron.expectedMissingInnerHits() <= 1){
       if(channel=="mutau"){
         b_extraelec_veto_ = true;
         break;
       }
-      else if( myelectron.pt() != electron.pt() || myelectron.eta() != electron.eta() || myelectron.phi() != electron.phi()){
+      else if( myelectron.pt() != electron.pt() || myelectron.eta() != electron.eta() || myelectron.phi() != electron.phi())
         b_extraelec_veto_ = true;
-      }
     }
     
     // Di-electron veto
     if( !b_dilepton_veto_ && myelectron.pt() > 15 &&
         fabs(myelectron.nonTrigMVAID() > 0.5)){ // TODO: change to equivalent POG Spring15 25ns cut-based "Veto" ID
-    
-      for(int j=0; j < (int)passedElectrons.size(); j++){
+      for(int j = 0; j < (int)passedElectrons.size(); j++){
         if(myelectron.charge() * passedElectrons[j].charge() > 0) continue;
         if(myelectron.tlv().DeltaR(passedElectrons[j].tlv()) < 0.15) continue;
         b_dilepton_veto_ = true;

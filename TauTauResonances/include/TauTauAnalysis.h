@@ -274,13 +274,15 @@ private:
   bool b_extraelec_veto_;
   bool b_extramuon_veto_;
   
-  //double b_weightLepID_;
-  //double b_weightLepIso_;
   //double b_weightBtag;
   //double b_weightBtag_veto;
   
   bool GenEvent_Htata_filter;
   bool GenEvent_Ztata_filter;
+  
+  
+  // synchronisation:
+  // https://twiki.cern.ch/twiki/bin/viewauth/CMS/HiggsToTauTauWorking2016#Synchronisation
   
   std::map<std::string,Double_t> b_weight;
   std::map<std::string,Double_t> b_genweight;
@@ -319,7 +321,9 @@ private:
   std::map<std::string,Int_t>    b_id_e_mva_nt_loose_1;
   std::map<std::string,Int_t>    b_gen_match_1;
   std::map<std::string,Double_t> b_trigweight_1;
+  std::map<std::string,Double_t> b_idweight_1;
   std::map<std::string,Double_t> b_isoweight_1;
+  //std::map<std::string,Double_t> b_idisoweight_1;
   
   std::map<std::string,Double_t> b_pt_2;
   std::map<std::string,Double_t> b_eta_2;
@@ -333,7 +337,10 @@ private:
   std::map<std::string,Double_t> b_puppimt_2;
   std::map<std::string,Double_t> b_iso_2;
   std::map<std::string,Int_t>    b_gen_match_2;
+  std::map<std::string,Int_t>    b_trigweight_2;
   std::map<std::string,Double_t> b_isoweight_2;
+  std::map<std::string,Double_t> b_idweight_2;
+  //std::map<std::string,Double_t> b_idisoweight_2;
   
   std::map<std::string,Double_t> b_againstElectronVLooseMVA6_2;
   std::map<std::string,Double_t> b_againstElectronLooseMVA6_2;
@@ -355,8 +362,8 @@ private:
   std::map<std::string,Int_t>    b_extraelec_veto;
   std::map<std::string,Int_t>    b_extramuon_veto;
   
-  std::map<std::string,Double_t> b_weightLepID;
-  std::map<std::string,Double_t> b_weightLepIso;
+//   std::map<std::string,Double_t> b_weightLepID;
+//   std::map<std::string,Double_t> b_weightLepIso;
   
   std::map<std::string,Double_t> b_jpt_1;
   std::map<std::string,Double_t> b_jeta_1;
