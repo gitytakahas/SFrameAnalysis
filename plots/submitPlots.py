@@ -11,13 +11,20 @@ def getCategories():
     header = "list of available categories:"
     tab = "\n>>>\t"
     out = subprocess.check_output("python %s/plot.py -l" % DIR, shell=True, stderr=open(os.devnull, 'w'))
+    #print ">>> output from plot.py -l:"
+    #print out
+    #print ">>> end output"
     if not header in out or not tab in out: sys.exit(1)
     return out.split(header)[1].split(tab)[1:-1]
 
 
 
 def main():
-    #print " "
+    #print
+    
+    if not os.path.exists("%s/submitPlots" % DIR):
+        os.makedirs("%s/submitPlots" % DIR)
+        print ">>> made directory %s/submitPlots" % DIR
     
     categories = getCategories()
     

@@ -1,4 +1,4 @@
-from ROOT import * #TFile, TCanvas, TH1F, TH2F, THStack, ...
+from ROOT import * #TFile, TCanvas, TH1F, TH2F, THStack, TAxis, TGaxis...
 import CMS_lumi, tdrstyle
 
 # CMS style
@@ -12,7 +12,7 @@ tdrstyle.setTDRStyle()
 
 # other
 # https://root.cern.ch/doc/master/classTColor.html
-legendTextSize = 0.026 #0.036
+legendTextSize = 0.028 #0.036
 colors     = [ kRed+3, kAzure+4, kOrange-6, kMagenta+3, kGreen+3, kYellow+2,
                kRed-7, kAzure-4, kOrange+6, kMagenta-3, kYellow-2 ]
 fillcolors = [ kRed-2, kAzure+5, kOrange-5, kMagenta-2, kGreen-2, kYellow-3,
@@ -23,9 +23,8 @@ list = [ ("jpt_1","jet 1 pt"),   ("jpt_2","jet 2 pt"),
          ("abs(beta_1)","b jet 1 abs(eta)"), ("abs(beta_2)","b jet 1 abs(eta)"),
          ("jeta_1",  "jet 1 eta"), ("jeta_2",  "jet 2 eta"),
          ("beta_1","b jet 1 eta"), ("beta_2","b jet 2 eta"),
-         ("dR_ll","#Delta R_{ll}"), ]
+         ("dR_ll","#DeltaR_{ll}"), ]
          
-
 
 
 
@@ -58,7 +57,8 @@ def makeLatex(title):
     if "phi" in title or "Phi" in title:
         if "phi_" in title or "Phi_" in title:
             title = title.replace("phi_","#phi_{").replace("Phi_","#phi_{") + "}"
-        title = title.replace("phi","#phi").replace("Phi","#phi")
+        else:
+            title = title.replace("phi","#phi").replace("Phi","#phi")
     
     if "eta" in title or "Eta" in title:
         if "eta_" in title or "Eta_" in title:
@@ -192,6 +192,7 @@ class Plot(object):
         self.histsD = [ ]
         self._hists = [ ]
         self._histsMC = [ ]
+        self.hist_error = None
         
         for sample in samples:
             if sample.isSignal:
@@ -232,13 +233,19 @@ class Plot(object):
         # https://root.cern.ch/doc/master/classTHistPainter.html#HP01e
         stack = kwargs.get('stack', False)
         residue = kwargs.get('residue', False)
+        ratio = kwargs.get('ratio', False)
         errorbars = kwargs.get('errorbars', False)
+        staterror = kwargs.get('staterror', False)
         option = 'hist'
         if errorbars: option = 'E0 '+option
         
-        self.makeCanvas(square=kwargs.get('square', False), residue = residue,
-                        scaleleftmargin=kwargs.get('scaleleftmargin', 1),scalerightmargin=kwargs.get('scalerightmargin', 1))
+        # CANVAS
+        self.makeCanvas(  square=kwargs.get('square', False),
+                          residue=residue, ratio=ratio,
+                          scaleleftmargin=kwargs.get('scaleleftmargin', 1),
+                          scalerightmargin=kwargs.get('scalerightmargin', 1)  )
         
+        # MONTE CARLO
         if stack:
             stack = THStack("stack","")
             self.stack = stack
@@ -246,21 +253,39 @@ class Plot(object):
             stack.Draw(option)
         else:
             for hist in self.histsMC: hist.Draw(option+' same')  
-        for hist in self.histsD:
-            hist.Draw('Esame')
         
+        # DATA
+        for hist in self.histsD:
+            hist.Draw('E same')
+        
+        # STATISTICAL ERROR
+        if staterror:
+            self.hist_error = self.makeStatisticalError( self.histsMC, name=makeHistName("stat_error",self.var),
+                                                                       title="statistical error" )
+            self.hist_error.Draw('E2 same')
+        
+        # STYLE
         if stack:
-            self.setFillStyle(*self.histsMC);
+            self.setFillStyle(*self.histsMC)
             for hist in self.histsMC: hist.SetMarkerStyle(1)
         else:
             self.setLineStyle(*self.histsMC)
         if self.histsD:
-            self.setMarkerStyle(*self.histsD);
+            self.setMarkerStyle(*self.histsD)
         
-        self.makeAxes(xlabel=kwargs.get('xlabel', self.var),logy=kwargs.get('logy',False),logx=kwargs.get('logx',False))
+        # AXES & LEGEND
+        self.makeAxes( xlabel=kwargs.get('xlabel', self.var), logy=kwargs.get('logy',False), 
+                                                              logx=kwargs.get('logx',False) )
         if kwargs.get('legend', True):
-            self.makeLegend(title=kwargs.get('title', ""), entries=kwargs.get('entries', ), position=kwargs.get('position', ""))
+            self.makeLegend( title=kwargs.get('title', ""), entries=kwargs.get('entries', ),
+                                                            position=kwargs.get('position', "") )
         CMS_lumi.CMS_lumi(self.canvas,13,0)
+        
+        if ratio:
+            self.pads[1].cd()
+            self.ratio = self.ratioHistStack(self.histsD[0],self.stack)
+            self.ratio.Draw("E")
+            self.makeAxes( ratio=self.ratio, xlabel=kwargs.get('xlabel', self.var))
 
 
 
@@ -277,24 +302,18 @@ class Plot(object):
         scaleleftmargin  = kwargs.get('scaleleftmargin', 1)
         scalerightmargin = kwargs.get('scalerightmargin', 1)
         residue = kwargs.get('residue', False)
+        ratio = kwargs.get('ratio', False)
         
         W = 800; H  = 600
         if square:
             W = 800; H  = 800
             self.width = 0.30
             scalerightmargin = 3.5*scalerightmargin
-        elif residue:
-            W = 800; H  = 600
-            pads = [ TPad("pad1","pad1",0,0.33,1,1),
-                     TPad("pad2","pad2",0,0,1,0.33) ]
-            pad[0].SetBottomMargin(0.00001)
-            pad[0].SetBorderMode(0)
-            pad[1].SetTopMargin(0.00001)
-            pad[1].SetBottomMargin(0.1)
-            pad[1].SetBorderMode(0)
-            pad[0].Draw()
-            pad[1].Draw()
-            self.pads = pads
+        elif residue or ratio:
+            W = 800; H  = 800
+            scaleleftmargin = 1.35*scaleleftmargin
+            CMS_lumi.cmsTextSize  = 0.55            
+            CMS_lumi.relPosX = 0.12
         
         T = 0.08*H
         B = 0.12*H
@@ -314,6 +333,20 @@ class Plot(object):
 #         canvas.SetTicky(0)
 #         canvas.cd()
 #         self.frame = self.canvas.DrawFrame(0,0,100,10000)
+
+        if residue or ratio:
+            pads = [ TPad("pad1","pad1", 0, 0.33, 1, 0.95),
+                     TPad("pad2","pad2", 0, 0.05, 1, 0.33) ]
+            pads[0].SetBottomMargin(0.00001)
+            pads[0].SetBorderMode(0)
+            pads[1].SetTopMargin(0.00001)
+            pads[1].SetBottomMargin(0.1)
+            pads[1].SetBorderMode(0)
+            pads[0].Draw()
+            pads[1].Draw()
+            pads[0].cd()
+            self.pads = pads
+
         self.canvas = canvas
 
 
@@ -374,7 +407,14 @@ class Plot(object):
     def makeAxes(self, *args, **kwargs):
         
         frame = None
-        if self.stack:
+        ratio = kwargs.get('ratio', None)
+        scale = 1
+        
+        if ratio:
+            frame = ratio
+            scale = 2
+            #frame.GetYaxis().SetRangeUser(frame.GetMinimum(),frame.GetMinimum())
+        elif self.stack:
             frame = self.stack
             maxs = [ self.stack.GetMaximum() ]
             for hist in self.histsD:
@@ -398,27 +438,28 @@ class Plot(object):
             #frame.SetMinimum(0.1)
              gPad.Update(); gPad.SetLogx()
         
-        xlabel = makeLatex(kwargs.get('xlabel', ""))
-        ylabel = "Events / %s" % self.hists[0].GetXaxis().GetBinWidth(0)
+        xlabel = makeLatex(kwargs.get('xlabel', self.hists[0].GetTitle()))
+        ylabel = "Events / %s" % frame.GetXaxis().GetBinWidth(0) # self.hists[0]
         if kwargs.get('ylabel', ""):
             ylabel = kwargs.get('ylabel', "")
+        elif ratio:
+            ylabel = "data / M.C."
         
         if "GeV" in xlabel:
             ylabel += " GeV"
         
         frame.GetXaxis().SetTitle(xlabel)
-        
         frame.GetYaxis().SetTitle(ylabel)
-        frame.GetXaxis().SetLabelSize(0.040)
-        frame.GetYaxis().SetLabelSize(0.040)
-        frame.GetXaxis().SetTitleSize(0.042)
-        frame.GetYaxis().SetTitleSize(0.042)
-        frame.GetYaxis().SetTitleOffset(1.45)
+        frame.GetXaxis().SetLabelSize(0.040*scale)
+        frame.GetYaxis().SetLabelSize(0.040*scale)
+        frame.GetXaxis().SetTitleSize(0.042*scale)
+        frame.GetYaxis().SetTitleSize(0.042*scale)
+        frame.GetYaxis().SetTitleOffset(1.45*scale)
 #         frame.GetYaxis().CenterTitle(True)
 #         frame.GetXaxis().SetNdivisions(508)
 #         ROOT.gPad.SetTicks(1,1)
 #         ROOT.gPad.SetGrid(1,1)
-
+        TGaxis.SetExponentOffset(-0.058,0.005,'y')
 
 
 
@@ -481,11 +522,63 @@ class Plot(object):
 
 
 
+    def makeStatisticalError(self,hists,**kwargs):
+        """Make statistical error for a set of histograms."""
+        
+        name = kwargs.get('name', "error_"+hists[0].GetName())
+        title = kwargs.get('title', "error")
+        color = kwargs.get('color', kBlack)
+        N = hists[0].GetNbinsX()
+        a = hists[0].GetXaxis().GetXmin()
+        b = hists[0].GetXaxis().GetXmax()
+        hist_error = TH1F(name,title,N,a,b)
+        
+        for hist in hists:
+            hist_error.Add(hist)
+        
+        #hist_error.Sumw2()
+        hist_error.SetLineStyle(1);
+        hist_error.SetMarkerStyle(1);
+        hist_error.SetFillColor(color);
+        hist_error.SetFillStyle(3004);
+        
+        return hist_error
+        
+        
+        
+    def setStatisticalErrorStyle(self,hist_error,**kwargs):
+        color = kwargs.get('color', kBlack)
+        hist_error.SetLineStyle();
+        hist_error.SetMarkerStyle(1);
+        hist_error.SetFillColor(color);
+        hist_error.SetFillStyle(3004);
+        
+
+
+    def ratioHistStack(self,hist,stack,**kwargs):
+        """Make a ratio of the data histogram / stacked MC histograms,
+           bin by bin."""
+        
+        name = kwargs.get('name', "ratio_"+hist.GetName())
+        title = kwargs.get('title', "ratio")
+        N = hist.GetNbinsX()
+        a = hist.GetXaxis().GetXmin()
+        b = hist.GetXaxis().GetXmax()
+        hist_ratio = TH1F(name,title,N,a,b)
+        
+        for i in range(1,N+1):
+            stack_bincontent = stack.GetStack().Last().GetBinContent(i)
+            hist_bincontent = hist.GetBinContent(i)
+            if stack_bincontent or hist.GetBinContent(i):
+                hist_ratio.SetBinContent(i, hist_bincontent / stack_bincontent);
+        
+        return hist_ratio
+
+
+
     def substractStackFromHist(self,stack,hist,**kwargs):
         """Substract stacked MC histograms from a data histogram,
            bin by bin if the difference is larger than zero."""
-        #Float_t binContent = ((TH1*)(stack->GetStack()->Last()))->GetBinContent(ibin);
-        # TODO: check same bin size
         
         name = kwargs.get('name', "diff_"+hist.GetName())
         title = kwargs.get('title', "difference")

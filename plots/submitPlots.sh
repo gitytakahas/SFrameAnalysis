@@ -8,7 +8,7 @@ printf "###########################################\n"
 
 CATEGORY="$1"
 JOBLOGFILES="myout.txt myerr.txt"
-OUTDIRS="mutau eletau"
+OUTDIRS=""#"mutau eletau" # if directories are made locally
 DBG=2
 TOPWORKDIR="/scratch/$USER"
 JOBDIR="plots/$CATEGORY"
