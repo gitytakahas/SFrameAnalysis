@@ -176,7 +176,7 @@ private:
   //
   Root::TGoodRunsList m_grl;
   PileupReweightingTool m_pileupReweightingTool;
-  //  BTaggingScaleTool m_bTaggingScaleTool;
+  BTaggingScaleTool m_bTaggingScaleTool;
   ScaleFactorTool m_ScaleFactorTool;
 
   //  TLorentzVector applySVFitSemileptonic    (float cov00, float cov10, float cov11, float met, float met_phi, TLorentzVector lep1 , TLorentzVector lep2);
@@ -287,6 +287,7 @@ private:
   std::map<std::string,Double_t> b_weight;
   std::map<std::string,Double_t> b_genweight;
   std::map<std::string,Double_t> b_puweight;
+  std::map<std::string,Double_t> b_weightbtag;
   std::map<std::string,Int_t>    b_channel;  // 1 mutau; 2 eletau;
   std::map<std::string,Int_t>    b_isData;
   
@@ -375,9 +376,11 @@ private:
   std::map<std::string,Double_t> b_bpt_1;
   std::map<std::string,Double_t> b_beta_1;
   std::map<std::string,Double_t> b_bphi_1;
+  std::map<std::string,Double_t> b_bcsv_1;
   std::map<std::string,Double_t> b_bpt_2;
   std::map<std::string,Double_t> b_beta_2;
   std::map<std::string,Double_t> b_bphi_2;
+  std::map<std::string,Double_t> b_bcsv_2;
   
   std::map<std::string,Double_t> b_met;
   std::map<std::string,Double_t> b_metphi;

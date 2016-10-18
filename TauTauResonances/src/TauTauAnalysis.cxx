@@ -39,6 +39,7 @@ TauTauAnalysis::TauTauAnalysis()
    , m_mvamissingEt( this )
    , m_genParticle( this )
    , m_pileupReweightingTool( this )
+   , m_bTaggingScaleTool( this )
    , m_ScaleFactorTool( this )
 {
 
@@ -283,6 +284,7 @@ void TauTauAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
     DeclareVariable( b_weight[channels_[ch]],         "weight",         treeName);
     DeclareVariable( b_genweight[channels_[ch]],      "genweight",      treeName);
     DeclareVariable( b_puweight[channels_[ch]],       "puweight",       treeName);
+    DeclareVariable( b_weightbtag[channels_[ch]],     "weightbtag",     treeName);
     DeclareVariable( b_channel[channels_[ch]],        "channel",        treeName);
     DeclareVariable( b_isData[channels_[ch]],         "isData",         treeName);
     DeclareVariable( b_run[channels_[ch]],            "run",            treeName);
@@ -369,9 +371,11 @@ void TauTauAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
     DeclareVariable( b_bpt_1[channels_[ch]],        "bpt_1",            treeName);
     DeclareVariable( b_beta_1[channels_[ch]],       "beta_1",           treeName);
     DeclareVariable( b_bphi_1[channels_[ch]],       "bphi_1",           treeName);
+    DeclareVariable( b_bcsv_1[channels_[ch]],       "bcsv_1",           treeName);
     DeclareVariable( b_bpt_2[channels_[ch]],        "bpt_2",            treeName);
     DeclareVariable( b_beta_2[channels_[ch]],       "beta_2",           treeName);
     DeclareVariable( b_bphi_2[channels_[ch]],       "bphi_2",           treeName);
+    DeclareVariable( b_bcsv_2[channels_[ch]],       "bcsv_2",           treeName);
     
     DeclareVariable( b_met[channels_[ch]],          "met",              treeName);
     DeclareVariable( b_metphi[channels_[ch]],       "metphi",           treeName);
@@ -406,7 +410,7 @@ void TauTauAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
     Book( TH1F(hname, hname, 20, 0.5, 20.5 ), dirname); 
   }
 
-  //  m_bTaggingScaleTool.BeginInputData( id );
+  m_bTaggingScaleTool.BeginInputData( id );
   m_ScaleFactorTool.BeginInputData( id );
 
   return;
@@ -968,15 +972,17 @@ void TauTauAnalysis::FillBranches(const std::string& channel, const std::vector<
   Int_t nbtag       =  0;
   Int_t nfbtag      =  0;
   Int_t ncbtag      =  0;
-  Int_t ibjet       = -1;
-  Float_t ht        = 0;
+  Int_t ibjet1      = -1;
+  Int_t ibjet2      = -1;
+  Float_t ht        =  0;
 
   for( int ijet = 0; ijet < (int)Jet.size(); ++ijet ){
     ht += Jet.at(ijet).e();
     if(Jet.at(ijet).pt() > 30) njets++;
-    if(fabs(Jet.at(ijet).eta()) < 2.4 && Jet.at(ijet).csv() > 0.8){
+    if(fabs(Jet.at(ijet).eta()) < 2.4 && Jet.at(ijet).csv() > 0.8){ // csv > 0.8 is medium
       nbtag++;
-      if(ibjet < 0) ibjet = ijet;
+      if      (ibjet1 < 0) ibjet1 = ijet;
+      else if (ibjet2 < 0) ibjet2 = ijet;
     }
     if(Jet.at(ijet).pt() > 30 && fabs(Jet.at(ijet).eta()) < 2.4 && Jet.at(ijet).csv() > 0.8) ncbtag++;
     if(Jet.at(ijet).pt() > 30 && fabs(Jet.at(ijet).eta()) > 2.4 && Jet.at(ijet).csv() > 0.8) nfbtag++;
@@ -1009,15 +1015,28 @@ void TauTauAnalysis::FillBranches(const std::string& channel, const std::vector<
     b_jphi_2[ch]    = -9;
   }
   
-  if(ibjet > 0){
-    b_bpt_1[ch]     = Jet.at(ibjet).pt();
-    b_beta_1[ch]    = Jet.at(ibjet).eta();
-    b_bphi_1[ch]    = Jet.at(ibjet).phi();
-  }
-  else{
+  if(ibjet1 < 0){
     b_bpt_1[ch]     = -1;
     b_beta_1[ch]    = -9;
     b_bphi_1[ch]    = -9;
+    b_bcsv_1[ch]    = -1;
+  }else{
+    b_bpt_1[ch]     = Jet.at(ibjet1).pt();
+    b_beta_1[ch]    = Jet.at(ibjet1).eta();
+    b_bphi_1[ch]    = Jet.at(ibjet1).phi();
+    b_bcsv_1[ch]    = Jet.at(ibjet1).csv();
+  }
+  if (ibjet2 < 0){
+    b_bpt_2[ch]     = -1;
+    b_beta_2[ch]    = -9;
+    b_bphi_2[ch]    = -9;
+    b_bcsv_2[ch]    = -1;
+  }
+  else{
+    b_bpt_2[ch]     = Jet.at(ibjet2).pt();
+    b_beta_2[ch]    = Jet.at(ibjet2).eta();
+    b_bphi_2[ch]    = Jet.at(ibjet2).phi();
+    b_bcsv_2[ch]    = Jet.at(ibjet2).csv();
   }
   
   b_njets[ch]       = njets;
@@ -1056,20 +1075,19 @@ void TauTauAnalysis::FillBranches(const std::string& channel, const std::vector<
   else{
     b_gen_match_2[ch]                   = genMatch(b_eta_2[ch], b_phi_2[ch]);
   }
-  b_idweight_2[ch]                      = 1;
-  b_isoweight_2[ch]                     = 1;
   b_decayMode_2[ch]                     = tau.decayMode();
   
-
   extraLeptonVetos(channel, muon, electron);
   b_dilepton_veto[ch]                   = (int) b_dilepton_veto_;
   b_extraelec_veto[ch]                  = (int) b_extraelec_veto_;
   b_extramuon_veto[ch]                  = (int) b_extramuon_veto_;
   
   TLorentzVector lep_lv;
-  b_trigweight_1[ch]    = 1.;
-  b_idweight_1[ch]        = 1.;
-  b_isoweight_1[ch]       = 1.;
+  b_trigweight_1[ch]                    = 1.;
+  b_idweight_1[ch]                      = 1.;
+  b_isoweight_1[ch]                     = 1.;
+  b_idweight_2[ch]                      = 1.;
+  b_isoweight_2[ch]                     = 1.;
   if(channel=="mutau"){
     b_pt_1[ch]      = muon.tlv().Pt();
     b_eta_1[ch]     = muon.tlv().Eta();
@@ -1100,13 +1118,14 @@ void TauTauAnalysis::FillBranches(const std::string& channel, const std::vector<
     lep_lv.SetPtEtaPhiM(b_pt_1[ch], b_eta_1[ch], b_phi_1[ch], b_m_1[ch]);
     b_channel[ch]   = 2;
     if (!m_isData){
-      b_idweight_1[ch]      = m_ScaleFactorTool.get_ScaleFactor_IDEleIchep(lep_lv.Pt(),fabs(lep_lv.Eta()));
+      b_idweight_1[ch]      = m_ScaleFactorTool.get_ScaleFactor_IDEleIchep(lep_lv.Pt(),fabs(lep_lv.Eta())); // TODO: update LepEff2016
     }
   }
 
   if (m_isData) {b_gen_match_1[ch]  = -1;}
   else{
-    b_weight[ch]        = b_weight[ch] * b_trigweight_1[ch] * b_idweight_1[ch] * b_isoweight_1[ch] * b_idweight_2[ch] * b_isoweight_2[ch];
+    b_weightbtag[ch]    = m_bTaggingScaleTool.getScaleFactor_veto(Jet); // getScaleFactor_veto for AK4, getScaleFactor for AK8
+    b_weight[ch]        = b_weight[ch] * b_weightbtag[ch] * b_trigweight_1[ch] * b_idweight_1[ch] * b_isoweight_1[ch] * b_idweight_2[ch] * b_isoweight_2[ch];
     b_gen_match_1[ch]   = genMatch(b_eta_1[ch], b_phi_1[ch]);
   }
   

@@ -26,6 +26,7 @@ extraOverCmsTextSize  = 0.76
 
 lumi_14TeV = "3000 fb^{-1}"
 lumi_13TeV = "20.1 fb^{-1}"
+lumi_13TeVb = "24.5 fb^{-1}"
 lumi_8TeV  = "19.7 fb^{-1}" 
 lumi_7TeV  = "5.1 fb^{-1}"
 
@@ -84,6 +85,11 @@ def CMS_lumi(pad,  iPeriod,  iPosX ):
         if( outOfFrame): lumiText += "}"
     elif ( iPeriod==12 ):
         lumiText += "8 TeV"
+    elif ( iPeriod==13 ):
+        if( outOfFrame ):lumiText += "#scale[0.90]{"
+        lumiText += lumi_13TeVb
+        lumiText += " (13 TeV)"
+        if( outOfFrame): lumiText += "}"
     elif ( iPeriod==14 ):
         if( outOfFrame ):lumiText += "#scale[0.90]{"
         lumiText += lumi_14TeV
