@@ -156,7 +156,7 @@ void ScaleFactorTool::init_ScaleFactor(TString inputRootFile){
       if (verbose)std::cout << "ERROR in ScaleFactor::init_ScaleFactor(TString inputRootFile) from NTupleMaker/src/ScaleFactor.cc : ‎File " <<inputRootFile << " does not exist. Please check. " <<std::endl; 
       exit(1); 
     }
-    etaptBinsH_IDMu = (TH2D*)fileIn->Get("MC_NUM_TightIDandIPCut_DEN_genTracks_PAR_pt_spliteta_bin1/pt_abseta_ratio");
+    etaptBinsH_IDMu = (TH2D*)fileIn->Get("MC_NUM_MediumID_DEN_genTracks_PAR_pt_spliteta_bin1/pt_abseta_ratio");
     etaptBinsH_IDMu->SetDirectory(0);
     fileIn->Close();
     
