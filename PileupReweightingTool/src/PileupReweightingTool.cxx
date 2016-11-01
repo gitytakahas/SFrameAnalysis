@@ -9,7 +9,7 @@ PileupReweightingTool::PileupReweightingTool( SCycleBase* parent, const char* na
   SetLogName( name );
   
   DeclareProperty( m_name + "_HistoPath", m_histoPath = "$SFRAME_DIR/../PileupReweightingTool/histograms/" );
-  DeclareProperty( m_name + "_DataRootFileName", m_dataRootFileName = "MyDataPileupHistogram_69p2_15p9.root" );
+  //DeclareProperty( m_name + "_DataRootFileName", m_dataRootFileName = "MyDataPileupHistogram_69p2_15p9.root" );
   //DeclareProperty( m_name + "_DataRootFileName", m_dataRootFileName = "MyDataPileupHistogram_63p0_15p9.root" );
   DeclareProperty( m_name + "_DataRootFileName", m_dataRootFileName = "Data_Pileup_2016_July22.root" );
   DeclareProperty( m_name + "_DataRootHistName", m_dataRootHistName = "pileup" );
