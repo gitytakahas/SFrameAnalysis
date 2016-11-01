@@ -82,6 +82,7 @@ public:
     kMetFilters,            // C3
     kLepton,                // C4
     kLepTau,                // C6
+    kBeforeCutsWeighted,    // C7
     kNumCuts                // last!
   } SelectionCuts;
   
@@ -138,6 +139,8 @@ public:
   virtual Float_t deltaR(Float_t p1, Float_t p2);
 
   virtual bool isNonTrigElectronID(const UZH::Electron& electron);
+  
+  virtual bool LooseJetID(const UZH::Jet& jet);
   
   /// Function to book tree branches
   //  virtual void FillBranches(const std::string& channel,  const std::vector<UZH::Jet>& Jet, const UZH::Tau& tau, const  TLorentzVector& lepton, const UZH::MissingEt& met );
@@ -268,6 +271,7 @@ private:
   double b_weight_;
   double b_genweight_;
   double b_puweight_;
+  double b_npu_;
   Int_t b_isData_;
   
   bool b_dilepton_veto_;
@@ -301,12 +305,17 @@ private:
   std::map<std::string,Double_t> b_rho;
   
   std::map<std::string,Int_t>    b_njets;
-  std::map<std::string,Int_t>    b_njetspt20;
   std::map<std::string,Int_t>    b_nfjets;
   std::map<std::string,Int_t>    b_ncjets;
   std::map<std::string,Int_t>    b_nbtag;
   std::map<std::string,Int_t>    b_ncbtag;
   std::map<std::string,Int_t>    b_nfbtag;
+  std::map<std::string,Int_t>    b_njets20;
+  std::map<std::string,Int_t>    b_nfjets20;
+  std::map<std::string,Int_t>    b_ncjets20;
+  std::map<std::string,Int_t>    b_nbtag20;
+  std::map<std::string,Int_t>    b_ncbtag20;
+  std::map<std::string,Int_t>    b_nfbtag20;
   
   std::map<std::string,Double_t> b_pt_1;
   std::map<std::string,Double_t> b_eta_1;
@@ -408,6 +417,9 @@ private:
   //std::map<std::string,Double_t> b_pt_sv; 
   //std::map<std::string,Double_t> b_eta_sv; 
   //std::map<std::string,Double_t> b_phi_sv;
+  std::map<std::string,Double_t> b_pzetamiss;
+  std::map<std::string,Double_t> b_pzetavis;
+  std::map<std::string,Double_t> b_pzeta_disc;
   
   // Macro adding the functions for dictionary generation
   ClassDef( TauTauAnalysis, 0 );
