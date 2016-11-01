@@ -103,6 +103,7 @@ class BTaggingScaleTool : public SToolBase {
   std::vector<TString> m_flavours;
   
   std::map<std::string, double> wpCuts; // could have a function to set these
+
   double currentWorkingPointCut;
   double currentWorkingPointCut_veto;
 
