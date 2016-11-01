@@ -3,12 +3,14 @@ import CMS_lumi, tdrstyle
 from math import sqrt, pow
 
 # CMS style
+lumi = 12.9 #24.5
 CMS_lumi.cmsText = "CMS"
 CMS_lumi.extraText = "Preliminary"
 CMS_lumi.cmsTextSize  = 0.65
 CMS_lumi.lumiTextSize = 0.60
 CMS_lumi.relPosX = 0.105
 CMS_lumi.outOfFrame = True
+CMS_lumi.lumi_13TeV = "%s fb^{-1}" % lumi
 tdrstyle.setTDRStyle()
 
 # other
@@ -18,13 +20,14 @@ colors     = [ kRed+3, kAzure+4, kOrange-6, kGreen+3, kMagenta+3, kYellow+2,
                kRed-7, kAzure-4, kOrange+6, kGreen-2, kMagenta-3, kYellow-2 ]
 fillcolors = [ kRed-2, kAzure+5, kOrange-5, kGreen-2, kMagenta-3, kYellow-3,
                kRed-7, kAzure-9, kOrange+6, kGreen+3, kMagenta-2, kYellow-2 ]
-list = [ ("jpt_1","jet 1 pt"),   ("jpt_2","jet 2 pt"),
-         ("bpt_1","b jet 1 pt"), ("bpt_2","b jet 2 pt"),
-         ("abs(jeta_1)",  "jet 1 abs(eta)"), ("abs(jeta_2)",  "jet 2 abs(eta)"),
-         ("abs(beta_1)","b jet 1 abs(eta)"), ("abs(beta_2)","b jet 1 abs(eta)"),
-         ("jeta_1",  "jet 1 eta"), ("jeta_2",  "jet 2 eta"),
-         ("beta_1","b jet 1 eta"), ("beta_2","b jet 2 eta"),
-         ("dR_ll","#DeltaR_{ll}"), ]
+list = [ ("jpt_1", "leading jet pt"),   ("jpt_2", "leading jet pt"),
+         ("bpt_1", "leading b jet pt"), ("bpt_2", "sub-leading b jet pt"),
+         ("abs(jeta_1)", "leading jet abs(eta)"),   ("abs(jeta_2)", "sub-leading jet abs(eta)"),
+         ("abs(beta_1)", "leading b jet abs(eta)"), ("abs(beta_2)", "sub-leading b jet abs(eta)"),
+         ("jeta_1", "leading jet eta"),   ("jeta_2",  "sub-leading jet eta"),
+         ("beta_1", "leading b jet eta"), ("beta_2","sub-leading b jet eta"),
+         ("dR_ll","#DeltaR_{ll}"),
+         ("pfmt_1","PF mt_1"), ]
          
 
 
@@ -96,6 +99,21 @@ def makeHistName(label, var):
     
     
     
+def combineWeights(*weights,**kwargs):
+    """Combine cuts and apply weight if needed."""
+
+    weights = [ w for w in weights if w and type(w) == str ]
+
+    if weights: weights = "*".join(weights)
+    else:       weights = ""
+
+    #print weights
+    return weights
+    
+    
+    
+    
+    
 def combineCuts(*cuts,**kwargs):
     """Combine cuts and apply weight if needed."""
 
@@ -121,7 +139,7 @@ def combineCuts(*cuts,**kwargs):
 
 
 class Ratio(object):
-    """Class to make histogram for Plot class."""
+    """Class to make bundle histograms (ratio, stat. error on MC and line) for ratio plot."""
 
     def __init__(self, ratio, **kwargs):
         self.ratio = ratio
@@ -131,6 +149,8 @@ class Ratio(object):
 
     
     def Draw(self, option, **kwargs):
+        """Draw all histograms"""
+        
         a = self.ratio.GetXaxis().GetXmin()
         b = self.ratio.GetXaxis().GetXmax()
         
@@ -146,7 +166,7 @@ class Ratio(object):
         if self.line:
             self.line = TLine(a,1,b,1)
             self.line.SetLineStyle(2)
-            self.line.Draw("same")
+            self.line.Draw("same") # only draw line if a histogram has been drawn!
         
         self.ratio.Draw("E same")
 
@@ -162,25 +182,32 @@ class Samples(object):
         self.label = label
         self.cuts = kwargs.get('cuts', "")
         self.weight = kwargs.get('weight', False)
-        self.scale = kwargs.get('scale', 1)
+        self.scale = kwargs.get('scale', 1.0)
+        self.scaleBU = self.scale # BU scale to overwrite previous renormalizations (WJ)
         self.isData = kwargs.get('data', False)
         self.isBackground = kwargs.get('background', False)
         self.isSignal = kwargs.get('signal', False)
+        self.blind = kwargs.get('blind', "") # TODO improve blinding: only blind for m_vis variable!
     
 
     
     def add(self, sample, **kwargs):
-        self.samples.add(sample)
+        scale  = kwargs.get('scale', 1.0) * self.scale
+        sample.scale *= scale
+        self.samples.append(sample)
     
 
     
-    def hist(self, var, nBins, a, b, scale=1, **kwargs):
+    def hist(self, var, nBins, a, b, **kwargs):
         name   = kwargs.get('name',  makeHistName(self.label, var))
         title  = kwargs.get('title', self.label)
         
+        #print ">>> Samples - hist: name = %s" % name
         hist = TH1F(name, title, nBins, a, b)
         for sample in self.samples:
-            hist.Add(sample.hist(var, nBins, a, b, scale=scale, **kwargs))
+            if 'name' in kwargs: # prevent memory leaks
+                kwargs["name"] = makeHistName(sample.label,name.replace(self.label+"_",""))
+            hist.Add( sample.hist(var, nBins, a, b, **kwargs) )
         
         return hist
 
@@ -196,8 +223,9 @@ class Sample(object):
         self.file = TFile(filename)
         self.label = label
         self.cuts = kwargs.get('cuts', "")
-        self.weight = kwargs.get('weight', False)
-        self.scale = kwargs.get('scale', 1)
+        self.weight = kwargs.get('weight', "")
+        self.scale = kwargs.get('scale', 1.0)
+        self.scaleBU = self.scale # BU scale to overwrite previous renormalizations (WJ)
         self.isData = kwargs.get('data', False)
         self.isBackground = kwargs.get('background', False)
         self.isSignal = kwargs.get('signal', False)
@@ -205,19 +233,20 @@ class Sample(object):
     
 
     
-    def hist(self, var, nBins, a, b, scale=1, **kwargs):
+    def hist(self, var, nBins, a, b, **kwargs):
         """Make a histogram with a tree."""
         
+        scale  = kwargs.get('scale', 1.0) * self.scale
         tree   = self.file.Get(self.treeName)
-        weight = self.weight or kwargs.get('weight', False)
+        weight = combineWeights(self.weight, kwargs.get('weight', ""))
         cuts   = combineCuts(self.cuts, kwargs.get('cuts', ""), weight=weight)
         name   = kwargs.get('name',  makeHistName(self.label, var))
         title  = kwargs.get('title', self.label)
         
         hist = TH1F(name, title, nBins, a, b)
         tree.Draw("%s >> %s" % (var,name), cuts, "gOff")
-        if self.scale*scale is not 1:
-            hist.Scale(self.scale*scale)
+        if scale is not 1.0:
+            hist.Scale(scale)
         #print hist.GetEntries()
         #gDirectory.Delete(label)
         return hist
@@ -265,6 +294,7 @@ class Plot(object):
         self.nBins = nBins
         self.a = a; self.b = b
         self.cuts = kwargs.get('cuts', "")
+        self.weight = kwargs.get('weight', "")
         
         self.histsS = [ ]
         self.histsB = [ ]
@@ -276,9 +306,9 @@ class Plot(object):
         
         for sample in samples:
             if sample.isSignal:
-                self.histsS.append(sample.hist(var, nBins, a, b, cuts=self.cuts))
+                self.histsS.append(sample.hist(var, nBins, a, b, cuts=self.cuts, weight=self.weight))
             elif sample.isBackground:
-                self.histsB.append(sample.hist(var, nBins, a, b, cuts=self.cuts))
+                self.histsB.append(sample.hist(var, nBins, a, b, cuts=self.cuts, weight=self.weight))
             elif sample.isData:
                 self.histsD.append(sample.hist(var, nBins, a, b, cuts=self.cuts))
         if kwargs.get('QCD', False):
@@ -309,7 +339,7 @@ class Plot(object):
 
 
     def plot(self,*args,**kwargs):
-        """Make plot with canvas, axis, error, ratio..."""
+        """Central method of Plot class: make plot with canvas, axis, error, ratio..."""
     
         # https://root.cern.ch/doc/master/classTHStack.html
         # https://root.cern.ch/doc/master/classTHistPainter.html#HP01e
@@ -377,7 +407,14 @@ class Plot(object):
         """Save plot, close canvas and delete the histograms."""
         
         self.canvas.SaveAs(filename)
-        self.canvas.Close()
+        self.close()
+
+
+
+    def close(self):
+        """Close canvas and delete the histograms."""
+        
+        if self.canvas: self.canvas.Close()
         for hist in self.hists:
             gDirectory.Delete(hist.GetName())
 
@@ -505,16 +542,31 @@ class Plot(object):
         center = kwargs.get('center',0) 
         min = center
         Max = center
+        min_large = center
+        Max_large = center
         
         for i in range(1,frame.GetNbinsX()+1):
             low = frame.GetBinContent(i) - frame.GetBinError(i)
             up  = frame.GetBinContent(i) + frame.GetBinError(i)
-            if low and low < min: min = low
-            if         up  > Max: Max = up
+            if low and low < min:
+                 if center and low < min_large and low < center-center*5:
+                     min_large = low
+                 else:
+                     min = low
+            if up  and up  > Max:
+                 if center and up  > Max_large and up  > center+center*5:
+                     Max_large = up
+                 else:
+                     Max = up
         
-        width = max(abs(center-min),abs(Max-center))*1.05
+        if min is center and Max is center: # no Max, no min found
+            if min_large < center: min = min_large
+            else:  min = center - 0.3
+            if Max_large > center: Max = Max_large
+            else:  Max = center + 0.3
+        
+        width = max(abs(center-min),abs(Max-center))*1.10
         return [ center-width, center+width ]
-    
 
 
 
@@ -537,7 +589,7 @@ class Plot(object):
             for hist in self.histsD:
                 maxs.append(hist.GetMaximum())
             #frame.SetMinimum(0)
-            frame.SetMaximum(max(maxs)*1.12)
+            frame.SetMaximum(max(maxs)*1.15)
         else:
             frame = self.hists[0]
             mins = [ 0 ]
@@ -636,6 +688,8 @@ class Plot(object):
 
 
     def setMarkerStyle(self, *hists):
+        """Make marker style."""
+        
         #print ">>> setMarkerStyle"
         if len(hists) is 0: hists = self.hists
         for hist in hists:
@@ -668,12 +722,12 @@ class Plot(object):
         
         for hist in hists:
             hist_error.Add(hist)
-        
         #hist_error.Sumw2()
+        
         hist_error.SetLineStyle(1);
-        hist_error.SetMarkerStyle(1);
+        hist_error.SetMarkerSize(0);
         hist_error.SetFillColor(color);
-        hist_error.SetFillStyle(3004);
+        hist_error.SetFillStyle(3001);
         
         return hist_error
         
@@ -682,14 +736,15 @@ class Plot(object):
     def setStatisticalErrorStyle(self,hist_error,**kwargs):
         color = kwargs.get('color', kBlack)
         hist_error.SetLineStyle(1);
-        hist_error.SetMarkerStyle(1);
+        hist_error.SetMarkerSize(0);
         hist_error.SetFillColor(color);
-        hist_error.SetFillStyle(3004);
+        hist_error.SetFillStyle(3001);
         
        
         
     def ratioError(self,a,ea,b,eb):
         """Calculate the error on a ratio a/b given errors ea on a and eb on b"""
+        
         if b == 0:
             print ">>> Warning in ratioError: cannot divide by zero!"
             return ea
@@ -725,7 +780,7 @@ class Plot(object):
                 hist_staterror.SetBinError(i,hist_stack.GetBinError(i)/stack_binc)
                 if hist_binc and hist_binc / stack_binc < 100:
                     hist_ratio.SetBinContent(i, hist_binc / stack_binc );
-                    hist_ratio.SetBinError(i, hist.GetBinError(i) / stack_binc )
+                    hist_ratio.SetBinError(i, hist.GetBinError(i) / stack_binc ) # assume error on MC is 0
         #gDirectory.Delete(hist.GetName())
         
         if not staterror:
@@ -757,13 +812,16 @@ class Plot(object):
     def QCD(self,**kwargs):
         """Substract MC from data with same sign (SS) selection of a lepton - tau pair
            and return a histogram of the difference."""
+        print ">>> estimating QCD for variable %s" % (self.var)
         
         cuts = self.cuts
+        weight = self.weight
         var = self.var
         nBins = self.nBins
         a = self.a
         b = self.b
         samples = self.samples
+        scale = 1.06 # scale up QCD 6% in OS region
         
         if "q_1 * q_2 < 0" in cuts or "q_1*q_2<0" in cuts or "q_1*q_2 < 0" in cuts:
             cuts = cuts.replace("q_1 * q_2 < 0","q_1 * q_2 > 0").replace("q_1*q_2 < 0","q_1 * q_2 > 0").replace("q_1*q_2<0","q_1 * q_2 > 0")        
@@ -773,25 +831,151 @@ class Plot(object):
             cuts = "q_1 * q_2 > 0"
             #return None
         
+        if "q_1 * q_2 > 0" in cuts or "q_1*q_2>0" in cuts or "q_1*q_2 > 0" in cuts:
+            scale = 1.0
+        
         histsMC_SS = [ ]
         histsD_SS  = [ ]
         for sample in samples:
             name = makeHistName(sample.label+"_SS", var)
             if sample.isBackground or sample.isSignal:
-                histsMC_SS.append(sample.hist(var, nBins, a, b, cuts=cuts, name=name))
+                histsMC_SS.append(sample.hist(var, nBins, a, b, cuts=cuts, weight=weight, name=name))
             elif sample.isData:
                 histsD_SS.append(sample.hist(var, nBins, a, b, cuts=cuts, name=name))
         if not histsD_SS:
-            print ">>> Warning! No data to make data driven QCD!"
+            print ">>> Warning! No data to make DATA driven QCD!"
             return None 
         
         stack_SS = THStack("stack_SS","stack_SS")
         for hist in histsMC_SS: stack_SS.Add(hist)
         histQCD = self.substractStackFromHist(stack_SS,histsD_SS[0],name=makeHistName("QCD",var),title="QCD")
+        histQCD.Scale(scale)
         
-        for hist in histsMC_SS + histsD_SS: gDirectory.Delete(hist.GetName())
+        for hist in histsMC_SS + histsD_SS:
+            gDirectory.Delete(hist.GetName())
         return histQCD
 
 
 
+    def integrateStack(self,*args,**kwargs):
+        """Integrate stack."""
+        
+        a = kwargs.get('a',0)
+        b = kwargs.get('b',0)
+        
+        if   len(args) == 1:
+            stack = args[0].GetStack().Last()
+        elif len(args) == 2:
+            stack = self.stack.GetStack().Last()
+            a = args[0]
+            b = args[1]
+        elif len(args) == 3:
+            stack = args[0].GetStack().Last()
+            a = args[1]
+            b = args[2]
+        else:
+            stack = self.stack.GetStack().Last()
+        
+        #print ">>> a = %s" % a
+        #print ">>> b = %s" % b
+        
+        integral = 0
+        if a < b: integral = stack.Integral(stack.FindBin(a), stack.FindBin(b))
+        else:     integral = stack.Integral(stack.FindBin(a), stack.FindBin(b))
+        
+        return integral
 
+
+
+    def renormalizeWJ(self,**kwargs):
+        """Renormalize WJ by requireing that MC and data has the same number of events in
+           the mt_1 > 80 GeV sideband.
+           This method assume that the variable of this Plot object is a transverse mass and is plotted
+           from 80 GeV to at least 100 GeV."""
+        print ">>> renormalizing WJ with mt > 80 GeV sideband for variable %s" % (self.var)
+        
+        samples = self.samples
+        cuts = self.cuts
+        var = self.var
+        nBins = self.nBins
+        a = self.a
+        b = self.b
+        samples = self.samples
+        
+        # STACK
+        stack = THStack("stack","")
+        for hist in self.histsMC: stack.Add(hist)
+        self.stack = stack
+        
+        # CHECK MC and DATA
+        if not self.histsMC:
+            print ">>> Warning! Could not renormalize WJ: no MC!"
+            return
+        if not self.stack:
+            print ">>> Warning! Could not renormalize WJ: no stack!"
+            return
+        if not self.histsD:
+            print ">>> Warning! Could not renormalize WJ: no data!"
+            return
+        
+        # CHECK mt
+        for v in [ "mt", "mT", "m_T", "MT", "M_T" ]:
+            if v in var: break
+        else:
+            print ">>> Warning! Could not renormalize WJ: Plot object has no transverse mass variable!"
+            return
+        
+        # CHECK a, b    
+        if a is not 80:
+            print ">>> Warning! Renormalizing WJ with mt > %s GeV, instead of mt > 80 GeV!" % a
+        if b < 100:
+            print ">>> Warning! Renormalizing WJ with mt < %s GeV < 100 GeV!" % b
+            return
+        
+        # GET WJ
+        WJ = None
+        histWJ = None
+        for sample in samples:
+            if "WJ" in sample.label:
+                WJ = sample
+                break
+        else:
+            print ">>> Warning! Could not renormalize WJ: no WJ sample!"
+            return
+        for hist in self.histsMC:
+            if "WJ" in hist.GetName():
+                histWJ = hist
+                break
+        else:
+            print ">>> Warning! Could not renormalize WJ: no WJ sample!"
+            return
+        
+        # INTEGRATE
+        I_MC = self.stack.GetStack().Last().Integral()
+        I_D  = self.histsD[0].Integral()
+        I_WJ = histWJ.Integral()
+        print ">>> I_D = %s"  % I_D
+        print ">>> I_MC = %s" % I_MC
+        print ">>> I_WJ = %s" % I_WJ
+        if I_MC < 10:
+            print ">>> Warning! Could not renormalize WJ: integral of MC is %s < 10!" % I_MC
+            return
+        if I_D < 10:
+            print ">>> Warning! Could not renormalize WJ: integral of data is %s < 10!" % I_D
+            return
+        if I_WJ < 10:
+            print ">>> Warning! Could not renormalize WJ: integral of WJ is %s < 10!" % I_WJ
+            return
+        
+        # SET WJ SCALE
+        scale = ( I_D - I_MC + I_WJ ) / I_WJ # renormalize WJ such that #(MC) = #(data)
+        if scale < 0: scale = 1 # use BU scale to overwrite previous renormalizations
+        WJ.scale = WJ.scaleBU * scale
+        print ">>> renormalization scale = %s" % scale
+        self.close()
+        
+        
+        
+        
+        
+        
