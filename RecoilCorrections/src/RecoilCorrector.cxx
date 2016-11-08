@@ -7,8 +7,7 @@
 
 
 
-RecoilCorrector::RecoilCorrector(SCycleBase* parent, const char* name ):
- SToolBase( parent ), m_name( name ) 
+RecoilCorrectorTool::RecoilCorrectorTool(SCycleBase* parent, const char* name ) : SToolBase( parent ), m_name( name )
 {
   SetLogName( name );
   DeclareProperty(  m_name+"PFMETFile",     m_PFMETFile     = std::string (std::getenv("SFRAME_DIR")) + "/../RecoilCorrections/data/TypeIPFMET_2016BCD.root" );
@@ -19,19 +18,17 @@ RecoilCorrector::RecoilCorrector(SCycleBase* parent, const char* name ):
 
 
 
-void RecoilCorrector::BeginInputData( const SInputData& ) throw( SError ) {
-
+void RecoilCorrectorTool::BeginInputData( const SInputData& ) throw( SError ) {
   
   m_logger << INFO << "Initializing RecoilCorrector for lepons" << SLogger::endmsg;
   m_logger << INFO << "Efficiency file PF MET: " << m_PFMETFile << SLogger::endmsg;
   m_logger << INFO << "Efficiency file MVA MET: " << m_MVAMETFile << SLogger::endmsg;
 
+  m_PFMETCorrector  = new RecoilCorrector(m_PFMETFile);
+  m_logger << INFO <<"RecoilCorrector for PF MET initialised"<< SLogger:: endmsg;
 
-  //m_PFMETCorrector  = new m_PFMETCorrector(m_PFMETFile);
-  //m_logger << INFO <<"RecoilCorrector PF MET initialised"<< SLogger:: endmsg;
-
-  //m_MVAMETCorrector = new m_PFMETCorrector(m_MVAMETFile);
-  //m_logger << INFO <<"RecoilCorrector MVA MET initialised"<< SLogger:: endmsg;
+  m_MVAMETCorrector = new RecoilCorrector(m_MVAMETFile);
+  m_logger << INFO <<"RecoilCorrector for MVA MET initialised"<< SLogger:: endmsg;
   
   return;
 }
@@ -39,79 +36,83 @@ void RecoilCorrector::BeginInputData( const SInputData& ) throw( SError ) {
 
 
 
-// 
-// RecoilCorrector::RecoilCorrector(TString fileName) {
-// 
-//   //TString cmsswBase = TString( getenv ("CMSSW_BASE") );
-//   //TString baseDir = cmsswBase + "/src";
-// 
-//   _fileName = fileName; //baseDir+"/"+fileName;
-//   TFile * file = new TFile(_fileName);
-//   if (file->IsZombie()) {
-//     std::cout << "file " << _fileName << " is not found...   quitting " << std::endl;
-//     exit(-1);
-//   }
-// 
-//   TH1D * projH = (TH1D*)file->Get("projH");
-//   if (projH==NULL) {
-//     std::cout << "File should contain histogram with the name projH " << std::endl;
-//     std::cout << "Check content of the file " << _fileName << std::endl;
-//   }
-// 
-//   TString firstBinStr  = projH->GetXaxis()->GetBinLabel(1);
-//   TString secondBinStr = projH->GetXaxis()->GetBinLabel(2);
-// 
-//   TString paralZStr = firstBinStr;
-//   TString perpZStr  = secondBinStr;
-//   if (firstBinStr.Contains("Perp")) {
-//     paralZStr = secondBinStr;
-//     perpZStr  = firstBinStr;
-//   }
-//   std::cout << "Parallel component      (U1) : " << paralZStr << std::endl;
-//   std::cout << "Perpendicular component (U2) : " << perpZStr << std::endl;
-// 
-//   TH1D * ZPtBinsH = (TH1D*)file->Get("ZPtBinsH");
-//   if (ZPtBinsH==NULL) {
-//     std::cout << "File should contain histogram with the name ZPtBinsH " << std::endl;
-//     std::cout << "Check content of the file " << _fileName << std::endl;
-//     exit(-1);
-//   }
-//   int nZPtBins = ZPtBinsH->GetNbinsX();
-//   float ZPtBins[10];
-//   TString ZPtStr[10];
-//   for (int i=0; i<=nZPtBins; ++i) {
-//     ZPtBins[i] = ZPtBinsH->GetXaxis()->GetBinLowEdge(i+1);
-//     if (i<nZPtBins)
-//       ZPtStr[i] = ZPtBinsH->GetXaxis()->GetBinLabel(i+1);
-//   }
-// 
-//   TH1D * nJetBinsH = (TH1D*)file->Get("nJetBinsH");
-//   if (nJetBinsH==NULL) {
-//     std::cout << "File should contain histogram with the name nJetBinsH" << std::endl;
-//     std::cout << "Check content of the file " << _fileName << std::endl;
-//     exit(-1);
-//   }
-//   int nJetsBins = nJetBinsH->GetNbinsX();
-//   TString nJetsStr[5];
-//   for (int i=0; i<nJetsBins; ++i) {
-//     nJetsStr[i] = nJetBinsH->GetXaxis()->GetBinLabel(i+1);
-//   }
-// 
-//   InitMEtWeights(file,
-// 		 perpZStr,
-// 		 paralZStr,
-// 		 nZPtBins,
-// 		 ZPtBins,
-// 		 ZPtStr,
-// 		 nJetsBins,
-// 		 nJetsStr);
-// 
-//   _epsrel = 5e-4;
-//   _epsabs = 5e-4;
-//   _range = 0.95;
-// 
-// }
-// 
+
+RecoilCorrectorTool::~RecoilCorrectorTool() {
+
+}
+
+
+
+
+
+// void RecoilCorrector::init_RecoilCorrector(TString fileName) {
+RecoilCorrector::RecoilCorrector(TString fileName) {
+  //TString cmsswBase = TString( getenv ("CMSSW_BASE") );
+  //TString baseDir = cmsswBase + "/src";
+
+  _fileName = fileName; //baseDir+"/"+fileName;
+  TFile * file = new TFile(_fileName);
+  if (file->IsZombie()) {
+    std::cout << "file " << _fileName << " is not found...   quitting " << std::endl;
+    exit(-1);
+  }
+
+  TH1D * projH = (TH1D*)file->Get("projH");
+  if (projH==NULL) {
+    std::cout << "File should contain histogram with the name projH " << std::endl;
+    std::cout << "Check content of the file " << _fileName << std::endl;
+  }
+
+  TString firstBinStr  = projH->GetXaxis()->GetBinLabel(1);
+  TString secondBinStr = projH->GetXaxis()->GetBinLabel(2);
+
+  TString paralZStr = firstBinStr;
+  TString perpZStr  = secondBinStr;
+  if (firstBinStr.Contains("Perp")) {
+    paralZStr = secondBinStr;
+    perpZStr  = firstBinStr;
+  }
+  //std::cout << "Parallel component      (U1) : " << paralZStr << std::endl;
+  //std::cout << "Perpendicular component (U2) : " << perpZStr << std::endl;
+
+  TH1D * ZPtBinsH = (TH1D*)file->Get("ZPtBinsH");
+  if (ZPtBinsH==NULL) {
+    std::cout << "File should contain histogram with the name ZPtBinsH " << std::endl;
+    std::cout << "Check content of the file " << _fileName << std::endl;
+    exit(-1);
+  }
+  int nZPtBins = ZPtBinsH->GetNbinsX();
+  float ZPtBins[10];
+  TString ZPtStr[10];
+  for (int i=0; i<=nZPtBins; ++i) {
+    ZPtBins[i] = ZPtBinsH->GetXaxis()->GetBinLowEdge(i+1);
+    if (i<nZPtBins)
+      ZPtStr[i] = ZPtBinsH->GetXaxis()->GetBinLabel(i+1);
+  }
+
+  TH1D * nJetBinsH = (TH1D*)file->Get("nJetBinsH");
+  if (nJetBinsH==NULL) {
+    //std::cout << "File should contain histogram with the name nJetBinsH" << std::endl;
+    //std::cout << "Check content of the file " << _fileName << std::endl;
+    exit(-1);
+  }
+  int nJetsBins = nJetBinsH->GetNbinsX();
+  TString nJetsStr[5];
+  for (int i=0; i<nJetsBins; ++i) {
+    nJetsStr[i] = nJetBinsH->GetXaxis()->GetBinLabel(i+1);
+  }
+
+  InitMEtWeights(file,  perpZStr,   paralZStr,
+		                nZPtBins,   ZPtBins,     ZPtStr,
+		                nJetsBins,  nJetsStr);
+  
+  _epsrel = 5e-4;
+  _epsabs = 5e-4;
+  _range = 0.95;
+
+}
+
+
 
 
 
@@ -122,22 +123,10 @@ RecoilCorrector::~RecoilCorrector() {
 
 
 
-void RecoilCorrector::test() {
-    std::cout << ">>> Billy Mays here!" << std::endl;
-}
-
-
-
-
-
-void RecoilCorrector::InitMEtWeights(TFile * _file,
-				     TString  _perpZStr,
-				     TString  _paralZStr,
-				     int nZPtBins,
-				     float * ZPtBins,
-				     TString * _ZPtStr,
-				     int nJetsBins,
-				     TString * _nJetsStr) {
+void RecoilCorrector::InitMEtWeights(   TFile * _file,
+                                        TString _perpZStr,  TString  _paralZStr,
+				                        int nZPtBins,       float * ZPtBins,
+				                        TString * _ZPtStr,  int nJetsBins,  TString * _nJetsStr) {
 
 	std::vector<float> newZPtBins;
 	std::vector<std::string> newZPtStr;
@@ -165,12 +154,11 @@ void RecoilCorrector::InitMEtWeights(TFile * _file,
 
 
 
-void RecoilCorrector::InitMEtWeights(TFile * _fileMet,
-				     const std::vector<float>& ZPtBins,
-				     const std::string _perpZStr,
-				     const std::string _paralZStr,
-				     const std::vector<std::string>& _ZPtStr,
-				     const std::vector<std::string>& _nJetsStr)
+
+void RecoilCorrector::InitMEtWeights(   TFile * _fileMet,
+                                        const std::vector<float>& ZPtBins,  const std::string _perpZStr,
+				                        const std::string _paralZStr,       const std::vector<std::string>& _ZPtStr,
+				                        const std::vector<std::string>& _nJetsStr)
 {
 
   // checking files
@@ -227,7 +215,7 @@ void RecoilCorrector::InitMEtWeights(TFile * _fileMet,
 	
       }
 
-      std::cout << _ZPtStr[ZPtBin] << " : " << _nJetsStr[jetBin] << std::endl;
+      //std::cout << _ZPtStr[ZPtBin] << " : " << _nJetsStr[jetBin] << std::endl;
       
       double xminD,xmaxD;
 
@@ -272,15 +260,12 @@ void RecoilCorrector::InitMEtWeights(TFile * _fileMet,
 
 
 
-void RecoilCorrector::Correct(float MetPx,
-			      float MetPy,
-			      float genVPx, 
-			      float genVPy,
-			      float visVPx,
-			      float visVPy,
-			      int njets,
-			      float & MetCorrPx,
-			      float & MetCorrPy) {
+
+void RecoilCorrector::Correct(  float MetPx,    float MetPy,
+			                    float genVPx,   float genVPy,
+			                    float visVPx,   float visVPy,
+			                    int njets,
+			                    float & MetCorrPx,  float & MetCorrPy) {
   
   // input parameters
   // MetPx, MetPy - missing transverse momentum 
@@ -296,16 +281,11 @@ void RecoilCorrector::Correct(float MetPx,
   float metU1 = 0;
   float metU2 = 0;
 
-  CalculateU1U2FromMet(MetPx,
-		       MetPy,
-		       genVPx,
-		       genVPy,
-		       visVPx,
-		       visVPy,
-		       U1,
-		       U2,
-		       metU1,
-		       metU2);
+  CalculateU1U2FromMet( MetPx,  MetPy,
+		                genVPx, genVPy,
+		                visVPx, visVPy,
+		                U1,     U2,
+		                metU1,  metU2);
   if (Zpt>1000)
     Zpt = 999;
 
@@ -393,15 +373,12 @@ void RecoilCorrector::Correct(float MetPx,
 
 
 
-void RecoilCorrector::CorrectByMeanResolution(float MetPx,
-					      float MetPy,
-					      float genVPx, 
-					      float genVPy,
-					      float visVPx,
-					      float visVPy,
-					      int njets,
-					      float & MetCorrPx,
-					      float & MetCorrPy) {
+
+void RecoilCorrector::CorrectByMeanResolution(  float MetPx,        float MetPy,
+					                            float genVPx,       float genVPy,
+					                            float visVPx,       float visVPy,
+					                            int njets,
+					                            float& MetCorrPx,   float& MetCorrPy) {
   
   // input parameters
   // MetPx, MetPy - missing transverse momentum 
@@ -409,40 +386,82 @@ void RecoilCorrector::CorrectByMeanResolution(float MetPx,
   // visVPx, visVPy - visible transverse momentum of Z(W)
   // njets - number of jets 
   // MetCorrPx, MetCorrPy - corrected missing transverse momentum
-
+  
   float Zpt = TMath::Sqrt(genVPx*genVPx + genVPy*genVPy);
-
+  
   float U1 = 0;
   float U2 = 0;
   float metU1 = 0;
   float metU2 = 0;
-
-  CalculateU1U2FromMet(MetPx,
-		       MetPy,
-		       genVPx,
-		       genVPy,
-		       visVPx,
-		       visVPy,
-		       U1,
-		       U2,
-		       metU1,
-		       metU2);
+  
+  CalculateU1U2FromMet( MetPx,  MetPy,
+		                genVPx, genVPy,
+		                visVPx, visVPy,
+		                U1,     U2,
+		                metU1,  metU2);
   if (Zpt>1000)
     Zpt = 999;
-
+  
   if (njets>=_nJetsBins)
     njets = _nJetsBins - 1;
-
+  
   int ZptBin = binNumber(Zpt, _ZPtBins);
-
-  U1U2CorrectionsByWidth(U1, 
-			 U2,
-			 ZptBin,
-			 njets);  
+  
+  U1U2CorrectionsByWidth(   U1,     U2,
+			                ZptBin, njets);
   
   CalculateMetFromU1U2(U1,U2,genVPx,genVPy,visVPx,visVPy,MetCorrPx,MetCorrPy);
 
 }
+
+
+
+
+
+TLorentzVector RecoilCorrector::CorrectByMeanResolution(    float MetPx,    float MetPy,
+					                                        float genVPx,   float genVPy,
+					                                        float visVPx,   float visVPy,   int njets) {                      
+  float METCorrPx;
+  float METCorrPy;
+  CorrectByMeanResolution(    MetPx,  MetPy,
+                              genVPx, genVPy,
+					          visVPx, visVPy,
+					          njets,
+					          METCorrPx, METCorrPy );
+  // return TLV
+  TLorentzVector METCorr;
+  METCorr.SetPx( METCorrPx   );
+  METCorr.SetPy( METCorrPy   );
+  METCorr.SetE(  METCorr.P() );
+  
+  return METCorr;
+}
+
+
+
+
+
+TLorentzVector RecoilCorrectorTool::CorrectPFMETByMeanResolution(   float MetPx,    float MetPy,
+					                                                float genVPx,   float genVPy,
+					                                                float visVPx,   float visVPy,  int njets) {
+  return m_PFMETCorrector->CorrectByMeanResolution( MetPx,  MetPy,
+                                                    genVPx, genVPy,
+					                                visVPx, visVPy, njets );
+}
+
+
+
+
+
+TLorentzVector RecoilCorrectorTool::CorrectMVAMETByMeanResolution(  float MetPx,    float MetPy,
+					                                                float genVPx,   float genVPy,
+					                                                float visVPx,   float visVPy,
+					                                                int njets) {
+  return m_MVAMETCorrector->CorrectByMeanResolution( MetPx,  MetPy,
+                                                     genVPx, genVPy,
+					                                 visVPx, visVPy, njets );
+}
+
 
 
 
@@ -475,10 +494,9 @@ float RecoilCorrector::CorrectionsBySampling(float x, TF1 * funcMC, TF1 * funcDa
 
 
 
-void RecoilCorrector::U1U2CorrectionsByWidth(float & U1, 
-					     float & U2,
-					     int ZptBin,
-					     int njets) {
+
+void RecoilCorrector::U1U2CorrectionsByWidth(   float & U1, float & U2,
+					                            int ZptBin, int njets) {
 
   if (njets>=_nJetsBins)
     njets = _nJetsBins - 1;
@@ -500,6 +518,7 @@ void RecoilCorrector::U1U2CorrectionsByWidth(float & U1,
 
 
 
+
 float RecoilCorrector::rescale(float x,
 			       float meanData, 
 			       float meanMC,
@@ -515,16 +534,12 @@ float RecoilCorrector::rescale(float x,
 
 
 
-void RecoilCorrector::CalculateU1U2FromMet(float metPx,
-					   float metPy,
-					   float genZPx,
-					   float genZPy,
-					   float diLepPx,
-					   float diLepPy,
-					   float & U1,
-					   float & U2,
-					   float & metU1,
-					   float & metU2) {
+
+void RecoilCorrector::CalculateU1U2FromMet( float metPx,    float metPy,
+			                                float genZPx,   float genZPy,
+			                                float diLepPx,  float diLepPy,
+			                                float & U1,     float & U2,
+			                                float & metU1,  float & metU2) {
   
   float hadRecX = metPx + diLepPx - genZPx;
   float hadRecY = metPy + diLepPy - genZPy;
@@ -554,14 +569,11 @@ void RecoilCorrector::CalculateU1U2FromMet(float metPx,
 
 
 
-void RecoilCorrector::CalculateMetFromU1U2(float U1,
-					   float U2,
-					   float genZPx,
-					   float genZPy,
-					   float diLepPx,
-					   float diLepPy,
-					   float & metPx,
-					   float & metPy) {
+
+void RecoilCorrector::CalculateMetFromU1U2( float U1,       float U2,
+			                                float genZPx,   float genZPy,
+			                                float diLepPx,  float diLepPy,
+			                                float & metPx,  float & metPy   ) {
   
   float hadRecPt = TMath::Sqrt(U1*U1+U2*U2);
 

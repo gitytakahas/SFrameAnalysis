@@ -72,7 +72,7 @@ TauTauAnalysis::TauTauAnalysis() : SCycleBase()
   DeclareProperty( "IsData",               m_isData                = false );
   DeclareProperty( "doSVFit",              m_doSVFit               = false );
   DeclareProperty( "IsSignal",             m_isSignal              = false );
-  DeclareProperty( "doMETCor",             m_doMETCorr             = false );
+  DeclareProperty( "doRecoilCorr",         m_doRecoilCorr          = false );
   
   // for SUSY https://twiki.cern.ch/twiki/bin/viewauth/CMS/HiggsToTauTauWorking2016
   // for comparison https://twiki.cern.ch/twiki/bin/viewauth/CMS/MSSMAHTauTauSummer2016#Baseline
@@ -186,7 +186,6 @@ void TauTauAnalysis::BeginCycle() throw( SError ) {
 //   m_triggerNames_eletau.push_back("HLT_Ele32_eta2p1_WPLoose_Gsf_LooseIsoPFTau20_SingleL1_v2");
 
 
-
   return;
 
 }
@@ -246,6 +245,8 @@ void TauTauAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
   m_logger << INFO << "IsData:               " <<             (m_isData ? "TRUE" : "FALSE") << SLogger::endmsg;
   m_logger << INFO << "IsSignal:             " <<             (m_isSignal ? "TRUE" : "FALSE") << SLogger::endmsg;
   m_logger << INFO << "doSVFit:              " <<             (m_doSVFit ? "TRUE" : "FALSE") << SLogger::endmsg;
+  m_logger << INFO << "doRecoilCorr:         " <<             (m_doRecoilCorr ? "TRUE" : "FALSE") << SLogger::endmsg;
+  
   m_logger << INFO << "ElectronPtCut:        " <<             m_electronPtCut << SLogger::endmsg;
   m_logger << INFO << "ElectronEtaCut:       " <<             m_electronEtaCut << SLogger::endmsg;
   m_logger << INFO << "ElectronD0Cut:        " <<             m_electronD0Cut << SLogger::endmsg;
@@ -383,6 +384,8 @@ void TauTauAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
     
     DeclareVariable( b_met[channels_[ch]],          "met",              treeName);
     DeclareVariable( b_metphi[channels_[ch]],       "metphi",           treeName);
+    DeclareVariable( b_metcorr[channels_[ch]],      "metcorr",          treeName);
+    DeclareVariable( b_metcorrphi[channels_[ch]],   "metcorrphi",       treeName);
     DeclareVariable( b_puppimet[channels_[ch]],     "puppimet",         treeName);
     DeclareVariable( b_puppimetphi[channels_[ch]],  "puppimetphi",      treeName);
     DeclareVariable( b_mvamet[channels_[ch]],       "mvamet",           treeName);
@@ -401,7 +404,7 @@ void TauTauAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
     DeclareVariable( b_m_sv[channels_[ch]],         "m_sv",             treeName);
     DeclareVariable( b_m_sv_pfmet[channels_[ch]],   "m_sv_pfmet",       treeName);
     DeclareVariable( b_dR_ll[channels_[ch]],        "dR_ll",            treeName);
-    DeclareVariable( b_dphi_ll_bj[channels_[ch]],    "dphi_ll_bj",       treeName);
+    DeclareVariable( b_dphi_ll_bj[channels_[ch]],   "dphi_ll_bj",       treeName);
     DeclareVariable( b_pt_tt[channels_[ch]],        "pt_tt",            treeName);
     DeclareVariable( b_mt_tot[channels_[ch]],       "mt_tot",           treeName);
     DeclareVariable( b_ht[channels_[ch]],           "ht",               treeName);
@@ -522,6 +525,7 @@ void TauTauAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError )
   else{
     getEventWeight();
     genFilterZtautau(); // checks Z-tautau not cut away
+    if(m_doRecoilCorr) recoilCorrection();
   }
   
   for (auto ch: channels_){
@@ -1183,10 +1187,23 @@ void TauTauAnalysis::FillBranches(const std::string& channel, const std::vector<
 
 
   // TODO: MET corrections
-  m_RecoilCorrector.test();
-  //  std::getenv("SFRAME_DIR")) + "/../RecoilCorrections/data/TypeIPFMET_2016BCD.root"
-  //RecoilCorrector* corrector = new RecoilCorrector( );
-  //corrector->test();
+  b_metcorr[ch]     = -1;
+  b_metcorrphi[ch]  = -9;
+  TLorentzVector lmet;
+  //TLorentzVector lmvamet;
+  TLorentzVector PFMETCorr;
+  //TLorentzVector MVAMETCorr;
+  lmet.SetPxPyPzE(met.et()*TMath::Cos(met.phi()), met.et()*TMath::Sin(met.phi()), 0, met.et());
+  //lmvamet.SetPxPyPzE(mvamet.et()*TMath::Cos(mvamet.phi()), mvamet.et()*TMath::Sin(mvamet.phi()), 0, mvamet.et());
+  if(m_doRecoilCorr){
+    PFMETCorr =  m_RecoilCorrector.CorrectPFMETByMeanResolution( lmet.Px(),          lmet.Py(),
+					                                             boson_tlv.Px(),     boson_tlv.Py(),
+					                                             boson_tlv_vis.Px(), boson_tlv_vis.Py(), m_jetAK4.N );
+//     MVAMETCorr = m_RecoilCorrector.CorrectPFMETByMeanResolution( lmvamet.Px(), lmvamet.Py(), boson_tlv.Px(),     boson_tlv.Py(),
+// 					                                                                         boson_tlv_vis.Px(), boson_tlv_vis.Py(), m_eventInfo.lheNj );
+    b_metcorr[ch]     = PFMETCorr.E();
+    b_metcorrphi[ch]  = PFMETCorr.Phi();
+  }
 
   b_met[ch]         = met.et();
   b_metphi[ch]      = met.phi();
@@ -1211,8 +1228,6 @@ void TauTauAnalysis::FillBranches(const std::string& channel, const std::vector<
   b_pfmt_2[ch]      = TMath::Sqrt(2*b_pt_2[ch]*met.et()*(1-TMath::Cos(deltaPhi(b_phi_2[ch], met.phi()))));
   b_puppimt_2[ch]   = TMath::Sqrt(2*b_pt_2[ch]*puppimet.et()*(1-TMath::Cos(deltaPhi(b_phi_2[ch], puppimet.phi()))));
 
-  TLorentzVector lmet;
-  lmet.SetPxPyPzE(met.et()*TMath::Cos(met.phi()), met.et()*TMath::Sin(met.phi()), 0, met.et());
 //  NSVfitStandalone::Vector measuredMET(met *TMath::Cos(met_phi), met *TMath::Sin(met_phi), 0);
   b_m_vis[ch]       = (lep_lv + tau.tlv()).M();
   b_dR_ll[ch]       = tau.tlv().DeltaR(lep_lv);
@@ -1284,10 +1299,40 @@ void TauTauAnalysis::genFilterZtautau() {
     UZH::GenParticle mygoodGenPart( &m_genParticle, p );
 
     if( fabs(mygoodGenPart.pdgId()) == 15 ){
-      if( mygoodGenPart.mother()[0]==25 ){ GenEvent_Htata_filter= true; }
-      if( mygoodGenPart.mother()[0]==23 ){ GenEvent_Ztata_filter= true; }
+      if( mygoodGenPart.mother()[0]==25 ){ GenEvent_Htata_filter = true; }
+      if( mygoodGenPart.mother()[0]==23 ){ GenEvent_Ztata_filter = true; }
     } 
   }
+}
+
+
+
+
+
+void TauTauAnalysis::recoilCorrection(){
+//   std::cout << "recoilCorrection" << std::endl;
+// https://twiki.cern.ch/twiki/bin/viewauth/CMS/HiggsToTauTauWorking2016#Computation_of_generator_Z_W_Hig
+// TODO: check case of more than one boson
+  
+  boson_tlv     = TLorentzVector();
+  boson_tlv_vis = TLorentzVector();
+  
+  for ( int p = 0; p < (m_genParticle.N); ++p ) {
+    UZH::GenParticle mygoodGenPart( &m_genParticle, p );
+    float pdg = fabs(mygoodGenPart.pdgId());
+    bool isNeutrino = (pdg == 12 || pdg == 14 || pdg == 16);
+    
+    if( (mygoodGenPart.fromHardProcessFinalState() && (pdg == 11 || pdg == 13 || isNeutrino)) ||
+        mygoodGenPart.isDirectHardProcessTauDecayProductFinalState() ){
+      boson_tlv += mygoodGenPart.tlv();
+      if(!isNeutrino)
+        boson_tlv_vis += mygoodGenPart.tlv();
+    }
+  }
+  
+  //std::cout << ">>> recoilCorrection: boson_tlv.E() " << boson_tlv.E() << std::endl;
+  //std::cout << ">>> recoilCorrection: boson_tlv.P() " << boson_tlv.P() << std::endl;
+  
 }
 
 

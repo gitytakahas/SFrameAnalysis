@@ -7,6 +7,7 @@
   <Library Name="libBTaggingTools" />
   <Library Name="libTauTauResonances" />
   <Library Name="libScaleFactorTool"/>
+  <Library Name="libRecoilCorrector"/>
 
   <Package Name="SFrameCore.par" />
   <Package Name="NtupleVariables.par" />
@@ -15,6 +16,7 @@
   <Package Name="BTaggingTools.par" />
   <Package Name="TauTauResonances.par" />
   <Package Name="ScaleFactorTool.par" />
+  <Package Name="RecoilCorrector.par" />
 
   <Cycle Name="TauTauAnalysis" OutputDirectory="./" PostFix="" ProofServer="lite" ProofWorkDir="" RunMode="LOCAL" TargetLumi="1.0">
     <InputData Lumi="0.0" NEventsMax="-1" Type="WJetsToLNu" Version="UZH" SkipValid="True">
@@ -33,11 +35,13 @@
       <OutputTree Name="tree_eletau" />
     </InputData>
   <UserConfig>
-    <Item Name="RecoTreeName" Value="tree"/>
-    <Item Name="OutputTreeName_eletau"    Value="tree_eletau"/>
-    <Item Name="OutputTreeName_mutau"     Value="tree_mutau"/>
-    <Item Name="doSVFit" Value="False"/>
-    <Item Name="IsSignal" Value="False"/>
+    <Item Name="RecoTreeName"               Value="tree"/>
+    <Item Name="OutputTreeName_eletau"      Value="tree_eletau"/>
+    <Item Name="OutputTreeName_mutau"       Value="tree_mutau"/>
+    <Item Name="doSVFit"                    Value="False"/>
+    <Item Name="IsSignal"                   Value="False"/>
+    <Item Name="doSVFit"                    Value="False"/>
+    <Item Name="doRecoilCorr"               Value="True"/>
   </UserConfig>
   </Cycle>
 </JobConfiguration>

@@ -134,6 +134,8 @@ public:
   /// Function GenFilter  to select Z to tautau events
   virtual void genFilterZtautau();
 
+  virtual void recoilCorrection();
+
   virtual int genMatch(Float_t lep_eta, Float_t lep_phi);
 
   virtual Float_t deltaPhi(Float_t p1, Float_t p2);
@@ -185,7 +187,7 @@ private:
   PileupReweightingTool m_pileupReweightingTool;
   BTaggingScaleTool m_bTaggingScaleTool;
   ScaleFactorTool m_ScaleFactorTool;
-  RecoilCorrector m_RecoilCorrector;
+  RecoilCorrectorTool m_RecoilCorrector;
 
   //  TLorentzVector applySVFitSemileptonic    (float cov00, float cov10, float cov11, float met, float met_phi, TLorentzVector lep1 , TLorentzVector lep2);
   //  TLorentzVector applySVFitHadronic    (float cov00, float cov10, float cov11, float met, float met_phi, TLorentzVector lep1 , TLorentzVector lep2);
@@ -216,7 +218,7 @@ private:
   bool      m_isSignal;
   bool      m_applyMETFilters;
   bool      m_doSVFit;
-  bool      m_doMETCorr;
+  bool      m_doRecoilCorr;
 
   // cuts
   // jets
@@ -291,6 +293,9 @@ private:
   
   bool GenEvent_Htata_filter;
   bool GenEvent_Ztata_filter;
+  
+  TLorentzVector boson_tlv;
+  TLorentzVector boson_tlv_vis;
   
   
   // synchronisation:
@@ -401,6 +406,8 @@ private:
   
   std::map<std::string,Double_t> b_met;
   std::map<std::string,Double_t> b_metphi;
+  std::map<std::string,Double_t> b_metcorr;
+  std::map<std::string,Double_t> b_metcorrphi;
   std::map<std::string,Double_t> b_puppimet;
   std::map<std::string,Double_t> b_puppimetphi;
   std::map<std::string,Double_t> b_mvamet;
