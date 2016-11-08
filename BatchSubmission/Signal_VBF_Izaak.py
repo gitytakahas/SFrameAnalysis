@@ -1,19 +1,21 @@
 path2xml="$SFRAME_DIR/../BatchSubmission/xmls_Izaak"
 path2tmp="$SFRAME_DIR/../AnalysisTemp"
-jobName="signal"
+jobName="signal_VBF"
 outDir="$SFRAME_DIR/../AnalysisOutput/" + jobName
 cycleName="TauTauAnalysis"
 nEventsMax=-1
 #nEventsMax=200
 nProcesses=1
-nFiles=10
+nFiles=5
 hCPU="03:30:00"
 hVMEM="5000M"
 postFix = ""
-label = "_ICHEP" #"_triggerless" # _nocuts
+label = "" #"_triggerless" # _nocuts
 dataSets = [
-                ["LowMass_30GeV_DiTauResonance"+label,
-                 [  "LowMass_30GeV_DiTauResonance_RunIISpring16MiniAODv2_PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1.xml", ]],
+                ["VBFHToTauTau_M125_13TeV_powheg_pythia8",
+                 [  'VBFHToTauTau_M125_13TeV_powheg_pythia8_161014_151922_0.xml', 
+                    'VBFHToTauTau_M125_13TeV_powheg_pythia8_161014_151922_1.xml'
+                    ]],
            ]
 
 userItems = [ 

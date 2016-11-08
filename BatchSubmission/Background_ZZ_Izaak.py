@@ -6,11 +6,11 @@ cycleName="TauTauAnalysis"
 nEventsMax=-1
 #nEventsMax=200
 nProcesses=1
-nFiles=1
+nFiles=5
 hCPU="03:30:00"
 hVMEM="5000M"
 postFix = ""
-label = "_triggerless"
+label = "_ICHEP" #"_triggerless"
 dataSets = [
                     
 #                [ "ZZTo2L2Q"+label,
@@ -704,6 +704,8 @@ userItems = [
                 ["IsData","false"],
                 ["IsSignal","false"],
                 ["doSVFit","false"],
+                ["OutputTreeName_mutau", "tree_mutau" ],
+                ["OutputTreeName_eletau","tree_eletau"],
              ]
 
 jobOptionsFile2=open("AnalysisOptions.py", 'r')
@@ -716,4 +718,4 @@ exec command2
 userItems += AddUserItems
 
 inputTrees=["ntuplizer/tree"]
-outputTrees=["tree"]
+outputTrees=["tree_mutau","tree_eletau"]
