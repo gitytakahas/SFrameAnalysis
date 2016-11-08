@@ -27,7 +27,7 @@ PLOTS_DIR = os.path.expandvars("/shome/ineuteli/analysis/SFrameAnalysis/plots/")
 samplesB = [
                 ("TT/", "TT_TuneCUETP8M1",                      "ttbar",               831.76  ),
                 ("DY/", "DYJetsToLL_M-10to50_TuneCUETP8M1",     "Drell-Yan 10-50",   18610.0   ), 
-                ("DY/", "DYJetsToLL_M-50_TuneCUETP8M1",         "Drell-Yan 50",       5765.4   ), 
+                ("DY/", "DYJetsToLL_M-50_TuneCUETP8M1",         "Drell-Yan 50",       5765.4   ),
                 ("WJ/", "WJetsToLNu_TuneCUETP8M1",              "WJ",                61526.7   ), 
                 ("WZ/", "WZ_TuneCUETP8M1",                      "WZ",                   22.82  ), #10.71? # https://cmsweb.cern.ch/das/request?input=dataset%3D%2FWZ_TuneCUETP8M1_13TeV-pythia8%2FRunIISummer15GS-MCRUN2_71_V1-v1%2FGEN-SIM&instance=prod%2Fglobal
                 ("ZZ/", "ZZ_TuneCUETP8M1",                      "ZZ",                   10.32  ), #3.22? # https://cmsweb.cern.ch/das/request?input=dataset%3D%2FZZ_TuneCUETP8M1_13TeV-pythia8%2FRunIISummer15GS-MCRUN2_71_V1-v1%2FGEN-SIM&instance=prod%2Fglobal
@@ -35,17 +35,17 @@ samplesB = [
                 ("ST/", "ST_tW_antitop_5f_inclusiveDecays",     "ST atW",               35.60  ), #  38.09 https://cmsweb.cern.ch/das/request?input=dataset%3D%2FST_tW_antitop_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1%2FRunIISummer15GS-MCRUN2_71_V1-v1%2FGEN-SIM&instance=prod%2Fglobal
                 ("ST/", "ST_t-channel_antitop_4f_leptonDecays", "ST t",                 80.95  ), #  80.95 TWiki # 80.95 https://cmsweb.cern.ch/das/request?input=dataset%3D%2FST_t-channel_antitop_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1%2FRunIISummer15GS-MCRUN2_71_V1-v1%2FGEN-SIM&instance=prod%2Fglobal
                 ("ST/", "ST_t-channel_top_4f_leptonDecays",     "ST at",               136.02  ), # 136.02 TWiki # 136.02 https://cmsweb.cern.ch/das/request?input=dataset%3D%2FST_t-channel_top_4f_inclusiveDecays_13TeV-powhegV2-madspin-pythia8_TuneCUETP8M1%2FRunIISummer15GS-MCRUN2_71_V1-v1%2FGEN-SIM&instance=prod%2Fglobal
-                #("WW/", "WWTo1L1Nu2Q",                          "WW",                   1.212  ), #  1.212 TWiki # 45.85 https://cmsweb.cern.ch/das/request?input=dataset%3D%2FWWTo1L1Nu2Q_13TeV_amcatnloFXFX_madspin_pythia8%2FRunIISummer15GS-MCRUN2_71_V1-v1%2FGEN-SIM&instance=prod%2Fglobal
-                #("WW/", "WWTo4Q_4f",                            "WW",                   45.31  ), # 45.31 https://cmsweb.cern.ch/das/request?input=dataset%3D%2FWWTo4Q_4f_13TeV_amcatnloFXFX_madspin_pythia8%2FRunIISummer15GS-MCRUN2_71_V1-v1%2FGEN-SIM&instance=prod%2Fglobal
+                ##("WW/", "WWTo1L1Nu2Q",                          "WW",                   1.212  ), #  1.212 TWiki # 45.85 https://cmsweb.cern.ch/das/request?input=dataset%3D%2FWWTo1L1Nu2Q_13TeV_amcatnloFXFX_madspin_pythia8%2FRunIISummer15GS-MCRUN2_71_V1-v1%2FGEN-SIM&instance=prod%2Fglobal
+                ##("WW/", "WWTo4Q_4f",                            "WW",                   45.31  ), # 45.31 https://cmsweb.cern.ch/das/request?input=dataset%3D%2FWWTo4Q_4f_13TeV_amcatnloFXFX_madspin_pythia8%2FRunIISummer15GS-MCRUN2_71_V1-v1%2FGEN-SIM&instance=prod%2Fglobal
                 ("WW/", "WW_TuneCUETP8M1",                      "WW",                   63.21  ), # 63.21 https://cmsweb.cern.ch/das/request?input=dataset%3D%2FWW_TuneCUETP8M1_13TeV-pythia8%2FRunIISummer15GS-MCRUN2_71_V1-v1%2FGEN-SIM&instance=prod%2Fglobal
-                #("ST/", "ST_tW_top_5f_NoFullyHadronicDecays",   "ST",                   38.09  ), # 
-                #("ST/", "ST_tW_antitop_5f_NoFullyHadronicDecays", "ST",                  0.00  ), # 
-                #("ST/", "ST_s-channel_4f_leptonDecays",         "ST",                   10.11  ), # 10.11 https://cmsweb.cern.ch/das/request?input=dataset%3D%2FST_s-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1%2FRunIISummer15GS-MCRUN2_71_V1-v1%2FGEN-SIM&instance=prod%2Fglobal
-                #("ST/", "ST_t-channel_antitop_4f_inclusiveDecays", "ST",                80.95  ), # 80.95 https://cmsweb.cern.ch/das/request?view=list&limit=50&instance=prod%2Fglobal&input=dataset%3D%2FST_t-channel_antitop_4f_inclusiveDecays_13TeV-powhegV2-madspin-pythia8_TuneCUETP8M1%2FRunIISummer15GS-MCRUN2_71_V1-v1%2FGEN-SIM
-                #("ST/", "ST_t-channel_top_4f_inclusiveDecays",  "ST",                    0.00  ), # 
+                ##("ST/", "ST_tW_top_5f_NoFullyHadronicDecays",   "ST",                   38.09  ), # 
+                ##("ST/", "ST_tW_antitop_5f_NoFullyHadronicDecays", "ST",                  0.00  ), # 
+                ##("ST/", "ST_s-channel_4f_leptonDecays",         "ST",                   10.11  ), # 10.11 https://cmsweb.cern.ch/das/request?input=dataset%3D%2FST_s-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1%2FRunIISummer15GS-MCRUN2_71_V1-v1%2FGEN-SIM&instance=prod%2Fglobal
+                ##("ST/", "ST_t-channel_antitop_4f_inclusiveDecays", "ST",                80.95  ), # 80.95 https://cmsweb.cern.ch/das/request?view=list&limit=50&instance=prod%2Fglobal&input=dataset%3D%2FST_t-channel_antitop_4f_inclusiveDecays_13TeV-powhegV2-madspin-pythia8_TuneCUETP8M1%2FRunIISummer15GS-MCRUN2_71_V1-v1%2FGEN-SIM
+                ##("ST/", "ST_t-channel_top_4f_inclusiveDecays",  "ST",                    0.00  ), # 
             ]
             
-samplesS = [    ("signal/", "LowMass_30GeV_DiTauResonance",     "signal",                40.0  ),
+samplesS = [    ("signal/", "LowMass_30GeV_DiTauResonance",     "signal",                400.0  ),
             ]
 
 lumi = 12.9 #24.5
@@ -62,15 +62,15 @@ samplesD = {
 vetos   = "dilepton_veto == 0 && extraelec_veto == 0 && extramuon_veto == 0 && againstElectronVLooseMVA6_2 == 1 && againstMuonTight3_2 == 1"
 isocuts = "iso_1 < 0.15 && iso_2 == 1"
 categories = [
-#                 ("no cuts",             ""),
-#                 ("isolation",           "%s" % (isocuts)),
-#                 ("lepton vetos",        "%s" % (vetos)),
-#                 ("iso, lepton vetos",   "%s && %s" % (isocuts, vetos)),
-#                 ("lepton vetos, OS",    "%s && q_1*q_2<0" % (vetos)),
-#                 ("iso, vetos, OS",      "%s && %s && q_1*q_2<0" % (isocuts, vetos)),
-#                 ("iso, vetos, SS",      "%s && %s && q_1*q_2>0" % (isocuts, vetos)),
-                ("category 1",          "%s && %s && q_1*q_2<0 && ncbtag > 0 && nfjets > 0" % (isocuts, vetos)),
-                ("category 2",          "%s && %s && q_1*q_2<0 && ncbtag > 0 && ncjets > 0" % (isocuts, vetos)),
+                #("no cuts",             ""),
+                #("isolation",           "%s" % (isocuts)),
+                #("lepton vetos",        "%s" % (vetos)),
+                #("iso, lepton vetos",   "%s && %s" % (isocuts, vetos)),
+                #("lepton vetos, OS",    "%s && q_1*q_2<0" % (vetos)),
+                ("iso, vetos, OS",      "%s && %s && q_1*q_2<0" % (isocuts, vetos)),
+                #("iso, vetos, SS",      "%s && %s && q_1*q_2>0" % (isocuts, vetos)),
+#                 ("category 1",          "%s && %s && q_1*q_2<0 && ncbtag > 0 && ncjets == 1 && nfjets  > 0" % (isocuts, vetos)),
+#                 ("category 2",          "%s && %s && q_1*q_2<0 && ncbtag > 0 && ncjets  > 1 && nfjets == 0 && dphi_ll_bj > 2 && met < 50" % (isocuts, vetos)),
               ]
 
 
@@ -155,7 +155,7 @@ def plotStacks(channel, **kwargs):
     samples = [ ]
     treeName = "tree_%s" % channel
     channeli = 0
-    weight = "puweight*genweight*trigweight_1*idweight_1*isoweight_1" #"weight" #"puweight*genweight" #"puweight*genweight*trigweight_1*idweight_1*isoweight_1"
+    weight = "puweight*genweight*trigweight_1*idweight_1*isoweight_1*(gen_match_2==5 ? 1.056 : 1.)" #"weight" #"puweight*genweight" #"puweight*genweight*trigweight_1*idweight_1*isoweight_1"
     if "mutau" in channel:  channeli = 1
     if "eletau" in channel: channeli = 2
     
@@ -186,30 +186,31 @@ def plotStacks(channel, **kwargs):
     
     
     # VARIABLES
-    variables.append(( "m_vis", 35, 0, 70 ))
-    variables.append(( "m_vis", 40, 0, 120 ))
-    variables.append(( "mt_1", 30, 0, 150 ))
-    variables.append(( "pfmt_1", 30, 0, 150 ))
-    variables.append(( "mt_2", 30, 0, 150 ))
-    variables.append(( "pfmt_1", 30, 0, 150 ))
-    variables.append(( "npu", 50, 0, 50 ))
-    variables.append(( "npv", 50, 0, 50 ))
-    variables.append(( "met", 30, 0, 120 ))
-    variables.append(( "puppimet", 30, 0, 120 ))
-    variables.append(( "mvamet", 30, 0, 120 ))
-    variables.append(( "dR_ll", 45, 0, 7 ))
-    for n in [ "nbtag", ]: #"njets" ]:
-        variables.append( (n,5,0,5) )
-    for n in [ "ncbtag", "nfjets", "ncjets" ]:
-        variables.append( (n,10,0,10) )
-    for p in [ ("j",1), ("b",1) ]: #[ ("",1), ("",2), ("j",1), ("j",2), ("b",1) ]:
-        variables.append(( "%spt_%i"  % p, 50,   0, 150 ))
-        #variables.append(( "%sphi_%i" % p,  50,   0,   5 ))
-        variables.append(( "abs(%seta_%i)" % p,  25,  0,  5 ))
-    for n in [ "iso_2", "againstElectronVLooseMVA6_2", "againstMuonTight3_2" ]:
-        variables.append( (n,2,0,2) )
-    variables.append(( "iso_1", 20, 0, 1.0 ))
-    variables.append(( "byIsolationMVA3oldDMwLTraw_2", 25, -1, 1 ))
+#     variables.append(( "m_vis", 35, 5, 75 ))
+    variables.append(( "m_vis", 35, 0, 140 ))
+    variables.append(( "mt_1", 40, 0, 200 ))
+#     variables.append(( "pfmt_1", 30, 0, 150 ))
+#     variables.append(( "mt_2", 30, 0, 150 ))
+#     variables.append(( "pfmt_1", 30, 0, 150 ))
+#     variables.append(( "npu", 50, 0, 50 ))
+#     variables.append(( "npv", 50, 0, 50 ))
+#     variables.append(( "met", 30, 0, 120 ))
+#     variables.append(( "puppimet", 30, 0, 120 ))
+#     variables.append(( "mvamet", 30, 0, 120 ))
+#     variables.append(( "dR_ll", 45, 0, 7 ))
+#     variables.append(( "dphi_ll_bj", 45, 0, 7 ))
+#     for n in [ "nbtag", "njets" ]:
+#        variables.append( (n,6,0,6) )
+#     for n in [ "ncbtag", "nfjets", "ncjets" ]:
+#        variables.append( (n,5,0,5) )
+#     for p in [ ("j",1), ("b",1), ("",1), ("",2), ("j",1), ("j",2), ("b",1) ]:
+#        variables.append(( "%spt_%i"  % p, 50,   0, 150 ))
+#        #variables.append(( "%sphi_%i" % p,  50,   0,   5 ))
+#        variables.append(( "abs(%seta_%i)" % p,  25,  0,  5 ))
+#     for n in [ "iso_2", "againstElectronVLooseMVA6_2", "againstMuonTight3_2" ]:
+#        variables.append( (n,2,0,2) )
+#     variables.append(( "iso_1", 20, 0, 1.0 ))
+#     variables.append(( "byIsolationMVA3oldDMwLTraw_2", 25, -1, 1 ))
 
 
     # LOOP over SELECTIONS
@@ -243,7 +244,7 @@ def plotStacks(channel, **kwargs):
             if "m_vis" in var:
                 name = "%s/%s_%i_%s.png" % (DIR,var,b,label)
                 for sample in samples:
-                    if sample.isData: sample.cuts = "( m_vis < 15 || 30 < m_vis )"
+                    if sample.isData: sample.cuts = "( m_vis < 10 || 25 < m_vis )"
             name = name.replace(" and ","-").replace(" ","").replace(",","-") #.replace("(","").replace(")","")
             
             
@@ -253,9 +254,9 @@ def plotStacks(channel, **kwargs):
     
             # WEIGHT
             varweight = ""
-            if "category" not in name and ("btag" in var or "bpt" in var or "beta" in var or "bphi" in var):
-                varweight = "weightbtag"
-                title = "%s (btag SF)" % title
+            #if "category" not in name and ("btag" in var or "bpt" in var or "beta" in var or "bphi" in var):
+            #    varweight = "weightbtag"
+            #    title = "%s (btag SF)" % title
     
     
             # LEGEND POSITION
@@ -273,7 +274,7 @@ def plotStacks(channel, **kwargs):
             
             
             # PLOT
-            plot = Plot( samples, var, nBins, a, b, cuts=cuts, QCD=QCD, weight=varweight)
+            plot = Plot( samples, var, nBins, a, b, cuts=cuts, QCD=QCD) #, weight=varweight)
             plot.plot(stack=True, position=position, title=title, staterror=True, logy=logy, ratio=True)
             if "m_vis" in var: print ">>> integral signal region %s: %s MC events" % (var,plot.integrateStack(15,30))
             plot.saveAs(name)

@@ -16,7 +16,8 @@ tdrstyle.setTDRStyle()
 # other
 # https://root.cern.ch/doc/master/classTColor.html
 legendTextSize = 0.028 #0.036
-colors     = [ kRed+3, kAzure+4, kOrange-6, kGreen+3, kMagenta+3, kYellow+2,
+colors     = [ kAzure+4,
+               kRed+3, kAzure+4, kOrange-6, kGreen+3, kMagenta+3, kYellow+2,
                kRed-7, kAzure-4, kOrange+6, kGreen-2, kMagenta-3, kYellow-2 ]
 fillcolors = [ kRed-2, kAzure+5, kOrange-5, kGreen-2, kMagenta-3, kYellow-3,
                kRed-7, kAzure-9, kOrange+6, kGreen+3, kMagenta-2, kYellow-2 ]
@@ -74,8 +75,9 @@ def makeLatex(title):
     if "abs(" in title and ")" in title:
         title = title.replace("abs(","|").replace(")","") + "|" # TODO: split at next space
     
-    if "muon" in title or "Muon" in title:
-        title = title.replace("muon","#muon").replace("Muon","#muon")
+    if "mu" in title or "Mu" in title:
+        if "muon" not in title and "Muon" not in title: 
+            title = title.replace("mu","#mu").replace("Mu","#mu")
     
     if "ttbar" in title or "TTbar" in title:
         title = title.replace("ttbar","t#bar{t}").replace("TTbar","t#bar{t}")
@@ -361,10 +363,11 @@ class Plot(object):
         if stack:
             stack = THStack("stack","")
             self.stack = stack
-            for hist in self.histsMC: stack.Add(hist)
+            for hist in self.histsB: stack.Add(hist)
             stack.Draw(option)
+            for hist in self.histsS: hist.Draw(option+' same')
         else:
-            for hist in self.histsMC: hist.Draw(option+' same')  
+            for hist in self.histsMC: hist.Draw(option+' same')
         
         # DATA
         for hist in self.histsD:
@@ -372,18 +375,24 @@ class Plot(object):
         
         # STATISTICAL ERROR
         if staterror:
-            self.hist_error = self.makeStatisticalError( self.histsMC, name=makeHistName("stat_error",self.var),
+            self.hist_error = self.makeStatisticalError( self.histsB, name=makeHistName("stat_error",self.var),
                                                                        title="statistical error" )
             self.hist_error.Draw('E2 same')
+            #if self.histS:                
+            #    self.hist_error = self.makeStatisticalError( self.histsB, name=makeHistName("stat_error",self.var),
+            #                                                               title="statistical error" )
+            #    self.hist_error.Draw('E2 same')
         
         # STYLE
         if stack:
-            self.setFillStyle(*self.histsMC)
+            self.setFillStyle(*self.histsB)
             for hist in self.histsMC: hist.SetMarkerStyle(1)
         else:
-            self.setLineStyle(*self.histsMC)
+            self.setLineStyle(*self.histsB)
         if self.histsD:
             self.setMarkerStyle(*self.histsD)
+        if self.histsS:
+            self.setLineStyle(*self.histsS)
         
         # AXES & LEGEND
         self.makeAxes( xlabel=kwargs.get('xlabel', self.var), noxaxis=ratio,
@@ -489,6 +498,7 @@ class Plot(object):
         position = kwargs.get('position', "")
         transparent = kwargs.get('transparent', False)
         hists = self.hists
+        histsS = self.histsS
         histsD = self.histsD
         x1 = self.x1; x2 = self.x2
         y1 = self.y1; y2 = self.y2
@@ -496,8 +506,9 @@ class Plot(object):
         height = self.height
         
         styleD  = 'le'
-        styleMC = 'l'
-        if self.stack: styleMC = 'f'
+        styleB = 'l'
+        styleS = 'l'
+        if self.stack: styleB = 'f'
         
         if position:
             if "LeftLeft" in position:      x1 = 0.15;      x2 =x1 + width
@@ -522,13 +533,15 @@ class Plot(object):
         if hists:
             if entries:
                 for hist, entry in zip( hists, entries ):
-                    style = styleMC
+                    style = styleB
                     if hist in histsD: style = styleD
-                    legend.AddEntry(hist,entry,styleMC)
+                    if hist in histsS: style = styleS
+                    legend.AddEntry(hist,entry,style)
             else:
                 for hist in hists:
-                    style = styleMC
+                    style = styleB
                     if hist in histsD: style = styleD
+                    if hist in histsS: style = styleS
                     legend.AddEntry(hist,hist.GetTitle(),style)
 
             self.legend = legend
@@ -549,12 +562,12 @@ class Plot(object):
             low = frame.GetBinContent(i) - frame.GetBinError(i)
             up  = frame.GetBinContent(i) + frame.GetBinError(i)
             if low and low < min:
-                 if center and low < min_large and low < center-center*5:
+                 if center and low < min_large and low < center-center*2:
                      min_large = low
                  else:
                      min = low
             if up  and up  > Max:
-                 if center and up  > Max_large and up  > center+center*5:
+                 if center and up  > Max_large and up  > center+center*2:
                      Max_large = up
                  else:
                      Max = up
@@ -581,7 +594,8 @@ class Plot(object):
             frame = ratio.ratio
             scale = 2.5
             #width = max(abs(1-frame.GetMinimum(0)),abs(1-frame.GetMaximum()))*1.30
-            frame.GetYaxis().SetRangeUser(*self.symmetricYRange(frame,center=1.0))
+            #frame.GetYaxis().SetRangeUser(*self.symmetricYRange(frame,center=1.0))
+            frame.GetYaxis().SetRangeUser(0.4,1.6)
             frame.GetYaxis().SetNdivisions(505)
         elif self.stack:
             frame = self.stack
@@ -610,7 +624,7 @@ class Plot(object):
         xlabel = makeLatex(kwargs.get('xlabel', self.hists[0].GetTitle()))
         ylabel = kwargs.get('ylabel', "")
         if not ylabel:
-            ylabel = "Events / %s" % frame.GetXaxis().GetBinWidth(0)
+            ylabel = ("Events / %.3f" % frame.GetXaxis().GetBinWidth(0)).rstrip("0").rstrip(".")
             if "GeV" in xlabel:
                 ylabel += " GeV"
         
@@ -812,7 +826,7 @@ class Plot(object):
     def QCD(self,**kwargs):
         """Substract MC from data with same sign (SS) selection of a lepton - tau pair
            and return a histogram of the difference."""
-        print ">>> estimating QCD for variable %s" % (self.var)
+        #print ">>> estimating QCD for variable %s" % (self.var)
         
         cuts = self.cuts
         weight = self.weight
@@ -969,7 +983,9 @@ class Plot(object):
         
         # SET WJ SCALE
         scale = ( I_D - I_MC + I_WJ ) / I_WJ # renormalize WJ such that #(MC) = #(data)
-        if scale < 0: scale = 1 # use BU scale to overwrite previous renormalizations
+        if scale < 0:
+            scale = 1 # use BU scale to overwrite previous renormalizations
+            print ">>> Warning! Could not renormalize WJ: scale < 0"
         WJ.scale = WJ.scaleBU * scale
         print ">>> renormalization scale = %s" % scale
         self.close()
