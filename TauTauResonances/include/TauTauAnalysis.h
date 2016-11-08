@@ -26,10 +26,11 @@
 #include "../GoodRunsLists/include/TGoodRunsList.h"
 #include "../PileupReweightingTool/include/PileupReweightingTool.h"
 #include "../BTaggingTools/include/BTaggingScaleTool.h"
+#include "../LepEff2016/interface/ScaleFactorTool.h"
+#include "../RecoilCorrections/interface/RecoilCorrector.h"
 //#include "../SVFit/include/NSVfitStandaloneAlgorithm.h"
 //#include "../SVfitStandalone/interface/SVfitStandaloneAlgorithm.h"
 //#include "../SVfitStandalone/interface/SVfitStandaloneLikelihood.h"
-#include "../LepEff2016/interface/ScaleFactorTool.h"
 
 //class TH1D;
 //class TH2D;
@@ -39,6 +40,7 @@
 #include <TFile.h>
 #include <TTree.h>
 #include <TMath.h>
+#include "TRandom3.h"
 
 //Float_t deltaPhi(Float_t p1, Float_t p2){
 //  Float_t res = p1 - p2;
@@ -142,6 +144,8 @@ public:
   
   virtual bool LooseJetID(const UZH::Jet& jet);
   
+  virtual bool getBTagWeight_promote_demote( const UZH::Jet& jet );
+  
   /// Function to book tree branches
   //  virtual void FillBranches(const std::string& channel,  const std::vector<UZH::Jet>& Jet, const UZH::Tau& tau, const  TLorentzVector& lepton, const UZH::MissingEt& met );
   virtual void FillBranches(const std::string& channel, const std::vector<UZH::Jet>& Jet,
@@ -181,6 +185,7 @@ private:
   PileupReweightingTool m_pileupReweightingTool;
   BTaggingScaleTool m_bTaggingScaleTool;
   ScaleFactorTool m_ScaleFactorTool;
+  RecoilCorrector m_RecoilCorrector;
 
   //  TLorentzVector applySVFitSemileptonic    (float cov00, float cov10, float cov11, float met, float met_phi, TLorentzVector lep1 , TLorentzVector lep2);
   //  TLorentzVector applySVFitHadronic    (float cov00, float cov10, float cov11, float met, float met_phi, TLorentzVector lep1 , TLorentzVector lep2);
@@ -207,54 +212,56 @@ private:
   std::string m_genParticleName;       ///< name of gen particle collection in tree with reconstructed objects
   
   // flags
-  bool        m_isData;
-  bool        m_isSignal;
-  bool        m_applyMETFilters;
-  bool        m_doSVFit;
+  bool      m_isData;
+  bool      m_isSignal;
+  bool      m_applyMETFilters;
+  bool      m_doSVFit;
+  bool      m_doMETCorr;
 
   // cuts
   // jets
-  double      m_jetPtCut;         ///< cut on jet pT
-  double      m_jetEtaCut;        ///< cut on jet eta
-  double      m_AK4jetPtCut;         ///< cut on jet pT
-  double      m_AK4jetEtaCut;        ///< cut on jet eta
+  double    m_jetPtCut;         ///< cut on jet pT
+  double    m_jetEtaCut;        ///< cut on jet eta
+  double    m_AK4jetPtCut;      ///< cut on jet pT
+  double    m_AK4jetEtaCut;     ///< cut on jet eta
+  double    m_CSVWorkingPoint;
   // substructure cuts
   // b-tagging
-  double      m_csvMin;
+  double    m_csvMin;
   
   
   // electrons
-  double         m_electronPtCut;
-  double         m_electronEtaCut;
-  double         m_electronD0Cut;
-  double         m_electronDzCut;
-  double         m_electronIsoCut;
+  double    m_electronPtCut;
+  double    m_electronEtaCut;
+  double    m_electronD0Cut;
+  double    m_electronDzCut;
+  double    m_electronIsoCut;
 
   // muons
-  double         m_muonPtCut;
-  double         m_muonEtaCut;
-  double         m_muonD0Cut;
-  double         m_muonDzCut;
-  double         m_muonIsoCut;
+  double    m_muonPtCut;
+  double    m_muonEtaCut;
+  double    m_muonD0Cut;
+  double    m_muonDzCut;
+  double    m_muonIsoCut;
   
   // leptons=muons and electrons
-  double         m_leptonPtCut;
-  double         m_leptonEtaCut;
+  double    m_leptonPtCut;
+  double    m_leptonEtaCut;
 
  // taus
-  double         m_tauPtCut;
-  double         m_tauEtaCut;
-  double         m_tauDzCut;
+  double    m_tauPtCut;
+  double    m_tauEtaCut;
+  double    m_tauDzCut;
 
   // MET
-  double         m_metCut;
+  double    m_metCut;
    
   // further settings
   std::string m_jsonName;
-  std::string m_TrigSF_muonName;
-  std::string m_IDSF_muonName;
-  std::string m_IsoSF_muonName;
-  std::string m_IDSF_eleName;
+  //std::string m_TrigSF_muonName;
+  //std::string m_IDSF_muonName;
+  //std::string m_IsoSF_muonName;
+  //std::string m_IDSF_eleName;
 
   // other variables needed
   std::vector<std::string> m_triggerNames_mutau;
@@ -271,6 +278,7 @@ private:
   double b_weight_;
   double b_genweight_;
   double b_puweight_;
+  double b_weightbtag_;
   double b_npu_;
   Int_t b_isData_;
   
@@ -411,6 +419,7 @@ private:
   std::map<std::string,Double_t> b_m_sv; 
   std::map<std::string,Double_t> b_m_sv_pfmet;
   std::map<std::string,Double_t> b_dR_ll;
+  std::map<std::string,Double_t> b_dphi_ll_bj;
   std::map<std::string,Double_t> b_pt_tt;
   std::map<std::string,Double_t> b_mt_tot;
   std::map<std::string,Double_t> b_ht;

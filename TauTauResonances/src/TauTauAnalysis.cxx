@@ -6,6 +6,7 @@
 #include "../GoodRunsLists/include/TGoodRunsListReader.h"
 
 #include <TMath.h>
+#include "TRandom3.h"
 
 ClassImp( TauTauAnalysis );
 
@@ -28,8 +29,7 @@ const std::string TauTauAnalysis::kCutName[ TauTauAnalysis::kNumCuts ] = {
 
 
 
-TauTauAnalysis::TauTauAnalysis()
-   : SCycleBase()
+TauTauAnalysis::TauTauAnalysis() : SCycleBase()
    , m_jetAK4( this )
    , m_eventInfo( this )
    , m_electron( this )
@@ -42,6 +42,7 @@ TauTauAnalysis::TauTauAnalysis()
    , m_pileupReweightingTool( this )
    , m_bTaggingScaleTool( this )
    , m_ScaleFactorTool( this )
+   , m_RecoilCorrector( this )
 {
 
   m_logger << INFO << "Hello!" << SLogger::endmsg;
@@ -71,12 +72,14 @@ TauTauAnalysis::TauTauAnalysis()
   DeclareProperty( "IsData",               m_isData                = false );
   DeclareProperty( "doSVFit",              m_doSVFit               = false );
   DeclareProperty( "IsSignal",             m_isSignal              = false );
+  DeclareProperty( "doMETCor",             m_doMETCorr             = false );
   
   // for SUSY https://twiki.cern.ch/twiki/bin/viewauth/CMS/HiggsToTauTauWorking2016
   // for comparison https://twiki.cern.ch/twiki/bin/viewauth/CMS/MSSMAHTauTauSummer2016#Baseline
   // for us https://twiki.cern.ch/twiki/bin/view/CMS/SMTauTau2016#Baseline_sync_selection
   DeclareProperty( "AK4JetPtCut",          m_AK4jetPtCut           = 20.   );
   DeclareProperty( "AK4JetEtaCut",         m_AK4jetEtaCut          = 4.7   );
+  DeclareProperty( "CSVWorkingPoint",      m_CSVWorkingPoint       = 0.8   ); // 0.8 is Medium
 
   DeclareProperty( "ElectronPtCut",        m_electronPtCut         = 26.   );
   DeclareProperty( "ElectronEtaCut",       m_electronEtaCut        = 2.1   );
@@ -98,11 +101,6 @@ TauTauAnalysis::TauTauAnalysis()
 //   DeclareProperty( "JSONName",             m_jsonName              = std::string (std::getenv("SFRAME_DIR")) + "/../GoodRunsLists/JSON/Cert_271036-280385_13TeV_PromptReco_Collisions16_JSON_NoL1T_v2.txt" );
   DeclareProperty( "JSONName",             m_jsonName              = std::string (std::getenv("SFRAME_DIR")) + "/../GoodRunsLists/JSON/Cert_271036-276811_13TeV_PromptReco_Collisions16_JSON_ICHEP.txt" );
   
-  DeclareProperty( "TrigSF_muonName",      m_TrigSF_muonName       = std::string (std::getenv("SFRAME_DIR")) + "/../LepEff2016/data/Muon/SingleMuonTrigger_Z_RunBCD_prompt80X_7p65.root" ); 
-  DeclareProperty( "IDSF_muonName",        m_IDSF_muonName         = std::string (std::getenv("SFRAME_DIR")) + "/../LepEff2016/data/Muon/MuonID_Z_RunBCD_prompt80X_7p65.root" );
-  DeclareProperty( "IsoSF_muonName",       m_IsoSF_muonName        = std::string (std::getenv("SFRAME_DIR")) + "/../LepEff2016/data/Muon/MuonIso_Z_RunBCD_prompt80X_7p65.root" );
-  DeclareProperty( "IDSF_eleName",         m_IDSF_eleName          = std::string (std::getenv("SFRAME_DIR")) + "/../LepEff2016/data/Electron/egammaEffi.txt_SF2D.root" ); // TODO: https://github.com/CMS-HTT/LeptonEfficiencies/tree/master/Electron/Run2016BCD
-
 }
 
 
@@ -403,10 +401,11 @@ void TauTauAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
     DeclareVariable( b_m_sv[channels_[ch]],         "m_sv",             treeName);
     DeclareVariable( b_m_sv_pfmet[channels_[ch]],   "m_sv_pfmet",       treeName);
     DeclareVariable( b_dR_ll[channels_[ch]],        "dR_ll",            treeName);
+    DeclareVariable( b_dphi_ll_bj[channels_[ch]],    "dphi_ll_bj",       treeName);
     DeclareVariable( b_pt_tt[channels_[ch]],        "pt_tt",            treeName);
     DeclareVariable( b_mt_tot[channels_[ch]],       "mt_tot",           treeName);
     DeclareVariable( b_ht[channels_[ch]],           "ht",               treeName);
-  
+    
     DeclareVariable( b_pzetamiss[channels_[ch]],    "pzetamiss",        treeName);
     DeclareVariable( b_pzetavis[channels_[ch]],     "pzetavis",        treeName);
     DeclareVariable( b_pzeta_disc[channels_[ch]],   "pzeta_disc",       treeName);
@@ -422,6 +421,7 @@ void TauTauAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
 
   m_bTaggingScaleTool.BeginInputData( id );
   m_ScaleFactorTool.BeginInputData( id );
+  m_RecoilCorrector.BeginInputData( id );
 
   return;
 
@@ -965,6 +965,7 @@ void TauTauAnalysis::FillBranches(const std::string& channel, const std::vector<
 //   std::cout << "FillBranches" << std::endl;
   
   const char* ch = channel.c_str();
+  b_weightbtag_ = 1.;
   
   b_weight[ch]      = b_weight_;
   b_genweight[ch]   = b_genweight_;
@@ -993,31 +994,34 @@ void TauTauAnalysis::FillBranches(const std::string& channel, const std::vector<
   Int_t ncbtag20    =  0;
   Int_t ibjet1      = -1;
   Int_t ibjet2      = -1;
+  Int_t icjet1      = -1; // central jet that is not the same as leading b jet for dphi_ll_bj
   Float_t ht        =  0; // total scalar energy HT
-
+  
   // https://twiki.cern.ch/twiki/bin/viewauth/CMS/HiggsToTauTauWorking2016#Other_common_selections
   for( int ijet = 0; ijet < (int)Jet.size(); ++ijet ){
     ht += Jet.at(ijet).e();
+    bool isBTagged = getBTagWeight_promote_demote(Jet.at(ijet)); // (Jet.at(ijet).csv()) > 0.8 //csv > 0.8 is medium
     if(Jet.at(ijet).pt() > 30) njets++;
-    if(fabs(Jet.at(ijet).eta()) < 2.4 && Jet.at(ijet).csv() > 0.8){ // csv > 0.8 is medium
+    if(fabs(Jet.at(ijet).eta()) < 2.4 && isBTagged){
       nbtag++;
       if      (ibjet1 < 0) ibjet1 = ijet;
       else if (ibjet2 < 0) ibjet2 = ijet;
     }
-    if(fabs(Jet.at(ijet).eta()) < 2.4){        // CENTRAL
-      if(Jet.at(ijet).csv() > 0.8) ncbtag20++; //  btag
-      ncjets20++;                              //  jets
-      if(Jet.at(ijet).pt() > 30){              // 30 GeV
-        if(Jet.at(ijet).csv() > 0.8) ncbtag++; //  btag
-        ncjets++;                              //  jets
+    if(fabs(Jet.at(ijet).eta()) < 2.4){         // CENTRAL 20 GeV
+      if(isBTagged) ncbtag20++;                 //  btag
+      ncjets20++;                               //  jets
+      if(icjet1 < 0 && (icjet1 != ibjet1 || ibjet1 < 0 )) icjet1 = ijet;
+      if(Jet.at(ijet).pt() > 30){               // CENTRAL 30 GeV
+        if(isBTagged) ncbtag++;                 //  btag
+        ncjets++;                               //  jets
       }
     }
-    else if(fabs(Jet.at(ijet).eta()) > 2.4){   // FORWARD
-      if(Jet.at(ijet).csv() > 0.8) nfbtag20++; //  btag
-      nfjets20++;                              //  jets
-      if(Jet.at(ijet).pt() > 30){              // 30 GeV
-        if(Jet.at(ijet).csv() > 0.8) nfbtag++; //  btag
-        nfjets++;                              //  jets
+    else if(fabs(Jet.at(ijet).eta()) > 2.4){    // FORWARD 20 GeV
+      if(isBTagged) nfbtag20++;                 //  btag
+      nfjets20++;                               //  jets
+      if(Jet.at(ijet).pt() > 30){               // FORWARD 30 GeV
+        if(isBTagged) nfbtag++;                 //  btag
+        nfjets++;                               //  jets
       }
     }
   }
@@ -1026,7 +1030,7 @@ void TauTauAnalysis::FillBranches(const std::string& channel, const std::vector<
   njets = ncjets + nfjets;
   nbtag = ncbtag + nfbtag;
   
-  if(njets20 >= 2){
+  if(njets20 > 1){
     b_jpt_1[ch]     = Jet.at(0).pt();
     b_jeta_1[ch]    = Jet.at(0).eta();
     b_jphi_1[ch]    = Jet.at(0).phi();
@@ -1115,7 +1119,7 @@ void TauTauAnalysis::FillBranches(const std::string& channel, const std::vector<
   if (m_isData)  b_gen_match_2[ch]      = -1;
   else{
     b_gen_match_2[ch]                   = genMatch(b_eta_2[ch], b_phi_2[ch]);
-    b_weight[ch]                        = b_weight[ch]    * (b_gen_match_2[ch]==5 ? 0.95 : 1.);
+    b_weight[ch]                        = b_weight[ch]    * (b_gen_match_2[ch]==5 ? 0.95 : 1.); // 10% downscaling
     b_genweight[ch]                     = b_genweight[ch] * (b_gen_match_2[ch]==5 ? 0.95 : 1.);
   }
   b_decayMode_2[ch]                     = tau.decayMode();
@@ -1169,12 +1173,20 @@ void TauTauAnalysis::FillBranches(const std::string& channel, const std::vector<
   b_weightbtag[ch] = 1.;
   if (m_isData) b_gen_match_1[ch]  = -1;
   else{
-    b_weightbtag[ch]    = m_bTaggingScaleTool.getScaleFactor_veto(Jet); // getScaleFactor_veto for AK4, getScaleFactor for AK8
-    b_weight[ch]        = b_weight[ch] * b_weightbtag[ch] * b_trigweight_1[ch] * b_idweight_1[ch] * b_isoweight_1[ch] * b_idweight_2[ch] * b_isoweight_2[ch];
+    b_weightbtag[ch]    = b_weightbtag_; // do not apply b tag weight when using promote-demote method !!!
+    //b_weightbtag[ch]    = m_bTaggingScaleTool.getScaleFactor_veto(Jet); // getScaleFactor_veto for AK4, getScaleFactor for AK8
+    b_weight[ch]        = b_weight[ch] * b_trigweight_1[ch] * b_idweight_1[ch] * b_isoweight_1[ch] * b_idweight_2[ch] * b_isoweight_2[ch]; // * b_weightbtag[ch]
     b_gen_match_1[ch]   = genMatch(b_eta_1[ch], b_phi_1[ch]);
   }
   
   b_id_e_mva_nt_loose_1[ch] = -1;
+
+
+  // TODO: MET corrections
+  m_RecoilCorrector.test();
+  //  std::getenv("SFRAME_DIR")) + "/../RecoilCorrections/data/TypeIPFMET_2016BCD.root"
+  //RecoilCorrector* corrector = new RecoilCorrector( );
+  //corrector->test();
 
   b_met[ch]         = met.et();
   b_metphi[ch]      = met.phi();
@@ -1207,6 +1219,12 @@ void TauTauAnalysis::FillBranches(const std::string& channel, const std::vector<
   b_mt_tot[ch]      = TMath::Sqrt(TMath::Power(b_mt_1[ch],2) + TMath::Power(b_mt_2[ch],2) + 2*lep_lv.Pt()*b_pt_2[ch]*(1-TMath::Cos(deltaPhi(lep_lv.Phi(), b_phi_2[ch]))));
   b_pt_tt[ch]       = (lep_lv + tau.tlv() + lmet).Pt();
   b_ht[ch]          = ht + lep_lv.E() + tau.tlv().E();
+
+  // Delta phi( lep+tau, bj+j ) if there is one central b jet and on central jet
+  if(icjet1 != -1 && ibjet1 != -1)
+    b_dphi_ll_bj[ch] = fabs(deltaPhi( (lep_lv+tau.tlv()).Phi(), (Jet.at(ibjet1).tlv()+Jet.at(icjet1).tlv()).Phi() ));
+  else
+    b_dphi_ll_bj[ch] = -1;
 
   TVector3 leg1(lep_lv.Px(), lep_lv.Py(), 0.);
   TVector3 leg2(tau.tlv().Px(), tau.tlv().Py(), 0.);
@@ -1277,6 +1295,13 @@ void TauTauAnalysis::genFilterZtautau() {
 
 
 int TauTauAnalysis::genMatch(Float_t lep_eta, Float_t lep_phi) {
+// https://twiki.cern.ch/twiki/bin/viewauth/CMS/HiggsToTauTauWorking2016#MC_Matching
+//  1: prompt electron
+//  2: prompt muon
+//  3: tau -> e
+//  4. tau -> mu
+//  5: tau -> hadr.
+//  6: fake jet / PU
 
   Float_t min_dR = 1000;
   int id = 6;
@@ -1327,22 +1352,24 @@ int TauTauAnalysis::genMatch(Float_t lep_eta, Float_t lep_phi) {
       mother = abs(mygoodGenPart.mother()[0]);
     }
 
+    // save gen tau neutrino
     if(mygoodGenPart.status()==1 && abspdgId==16 && mother==15){
       TLorentzVector genNeutrino;
-      genNeutrino.SetPtEtaPhiE(pt,eta,phi,energy);  
+      genNeutrino.SetPtEtaPhiE(pt,eta,phi,energy);
       gennus[pdgId] = genNeutrino;
-      //      std::cout << "Neutrino : " << pdgId << " " << genNeutrino.Pt() << std::endl;
+      //std::cout << "Neutrino : " << pdgId << " " << genNeutrino.Pt() << std::endl;
     }
 
+    // skip if not tau
     if(!(mygoodGenPart.status()==2 && abspdgId==15 && isPrompt > 0.5)) continue;
 
     bool isleptonic = false;
     for(int daughter=0; daughter < (int)mygoodGenPart.nDau(); daughter++){
-      //      std::cout << "\t" << "parent " << pdgId << "(pt = " << pt << ") daughter : " << mygoodGenPart.dau()[daughter] << std::endl;
+      //std::cout << "\t" << "parent " << pdgId << "(pt = " << pt << ") daughter : " << mygoodGenPart.dau()[daughter] << std::endl;
       Int_t daughter_pdgId = abs(mygoodGenPart.dau()[daughter]);
       if(daughter_pdgId==11 || daughter_pdgId==13) isleptonic = true;
       if(daughter_pdgId==15){
-        std::cout << "Tau decays into taus !!" << std::endl;
+        std::cout << "Tau decays into taus !!!" << std::endl;
         isleptonic = true;
       }
     }
@@ -1355,9 +1382,10 @@ int TauTauAnalysis::genMatch(Float_t lep_eta, Float_t lep_phi) {
   }
   
   
-  // loop over gentaus, gennus
+  // if tau decays hadronically: loop over gentaus, gennus
+  // substract gennu pt from gentau pt
   for(std::map<int, TLorentzVector>::iterator it = gentaus.begin(); it!=gentaus.end(); ++it){
-    Int_t pdg = (*it).first; 
+    Int_t pdg = (*it).first;
     for(std::map<int, TLorentzVector>::iterator itn = gennus.begin(); itn!=gennus.end(); ++itn){
       Int_t nu = (*itn).first;
       if(pdg==15){
@@ -1365,7 +1393,7 @@ int TauTauAnalysis::genMatch(Float_t lep_eta, Float_t lep_phi) {
       }else if(pdg==-15){
         if(nu==-16) (*it).second -= (*itn).second;
       }else{
-	  std::cout << "Impossible !!" << std::endl;
+	  std::cout << "Impossible !!!" << std::endl;
       }
     }
   }
@@ -1373,7 +1401,7 @@ int TauTauAnalysis::genMatch(Float_t lep_eta, Float_t lep_phi) {
   
   // match lepton gentaus
   for(std::map<int, TLorentzVector>::iterator it = gentaus.begin(); it!=gentaus.end(); ++it){
-    //    Int_t pdg = (*it).first; 
+    //    Int_t pdg = (*it).first;
     Float_t dr = deltaR(lep_eta - (*it).second.Eta(), 
 			            deltaPhi(lep_phi, (*it).second.Phi()));
     if(dr < min_dR){
@@ -1571,6 +1599,50 @@ void TauTauAnalysis::extraLeptonVetos(const std::string& channel, const UZH::Muo
     }
   }
 }
+
+
+
+
+
+bool TauTauAnalysis::getBTagWeight_promote_demote( const UZH::Jet& jet ) {
+  //std::cout << "getBTagSF_promote_demote" << std::endl;
+  // https://twiki.cern.ch/twiki/bin/viewauth/CMS/HiggsToTauTauWorking2016#B_tag_scale_factors
+  // example: https://github.com/rappoccio/usercode/blob/Dev_53x/EDSHyFT/plugins/BTagSFUtil_tprime.h
+  //
+  // instead of calculating the event weights,
+  // scale factors are used to update the b-tagging status on a jet-by-jet basis
+  // advantage: 1) no need to apply event weights
+  //            2) reproducibility with seed
+  
+  bool isBTagged = (jet.csv() > m_CSVWorkingPoint);
+  if (m_isData) return isBTagged;
+  
+  //if (isBTagged) std::cout << "Jet b tagged" << std::endl;
+  //else           std::cout << "Jet b not tagged" << std::endl;
+  
+  TRandom3* generator = new TRandom3( (int) ((jet.eta()+5)*100000) );
+  double rand = generator->Uniform(1.);
+  
+  double BTag_SF  = m_bTaggingScaleTool.getScaleFactor_noWeight(jet);
+  double BTag_eff = m_bTaggingScaleTool.getEfficiency(jet,"jet_ak4");
+  double BTag_SFweight  = m_bTaggingScaleTool.getScaleFactor_veto(jet);
+  b_weightbtag_ *= BTag_SFweight;
+  
+  if (BTag_SF == 1) return isBTagged; // no correction
+  else if(BTag_SF > 1){
+    if(isBTagged) return isBTagged;
+    float mistagPercentage = (1.0 - BTag_SF) / (1.0 - (1.0/BTag_eff)); // fraction of jets to be promoted
+    if( rand < mistagPercentage ) isBTagged = true; // PROMOTE
+  }
+  else{//(BTag_SF < 1)
+    if(!isBTagged) return isBTagged;
+    if( rand < 1 - BTag_SF ) isBTagged = false; // DEMOTE: 1-SF fraction of jets to be demoted
+  }
+  
+  return isBTagged;
+}
+
+
 
 
 
