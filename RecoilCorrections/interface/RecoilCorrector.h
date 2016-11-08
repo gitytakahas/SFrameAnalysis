@@ -5,6 +5,7 @@
 #include "TFile.h"
 #include "TH1.h"
 #include "TH2.h"
+#include "TF1.h"
 #include "TAxis.h"
 #include "TGraphAsymmErrors.h"
 #include <TString.h>
@@ -46,6 +47,10 @@ class RecoilCorrector : public SToolBase {
 
   
  private:
+
+  std::string m_name;
+  std::string m_PFMETFile;
+  std::string m_MVAMETFile;
 
   int binNumber(float x, const std::vector<float> bins) const
   {
