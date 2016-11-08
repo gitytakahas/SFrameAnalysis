@@ -134,7 +134,7 @@ public:
   /// Function GenFilter  to select Z to tautau events
   virtual void genFilterZtautau();
 
-  virtual void recoilCorrection();
+  virtual void setGenBosonTLVs();
 
   virtual int genMatch(Float_t lep_eta, Float_t lep_phi);
 

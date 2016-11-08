@@ -525,7 +525,7 @@ void TauTauAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError )
   else{
     getEventWeight();
     genFilterZtautau(); // checks Z-tautau not cut away
-    if(m_doRecoilCorr) recoilCorrection();
+    if(m_doRecoilCorr) setGenBosonTLVs();
   }
   
   for (auto ch: channels_){
@@ -1309,7 +1309,7 @@ void TauTauAnalysis::genFilterZtautau() {
 
 
 
-void TauTauAnalysis::recoilCorrection(){
+void TauTauAnalysis::setGenBosonTLVs(){
 //   std::cout << "recoilCorrection" << std::endl;
 // https://twiki.cern.ch/twiki/bin/viewauth/CMS/HiggsToTauTauWorking2016#Computation_of_generator_Z_W_Hig
 // TODO: check case of more than one boson
