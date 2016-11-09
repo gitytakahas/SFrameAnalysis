@@ -91,49 +91,53 @@ public:
   /// static array of all cut names
   static const std::string kCutName[ kNumCuts ];
   
-   /// Default constructor
-   TauTauAnalysis();
-   /// Default destructor
-   ~TauTauAnalysis();
+  /// Default constructor
+  TauTauAnalysis();
+  
+  /// Default destructor
+  ~TauTauAnalysis();
 
-   /// Function called at the beginning of the cycle
-   virtual void BeginCycle() throw( SError );
-   /// Function called at the end of the cycle
-   virtual void EndCycle() throw( SError );
+  /// Function called at the beginning of the cycle
+  virtual void BeginCycle() throw( SError );
+  
+  /// Function called at the end of the cycle
+  virtual void EndCycle() throw( SError );
 
-   /// Function called at the beginning of a new input data
-   virtual void BeginInputData( const SInputData& ) throw( SError );
-   /// Function called after finishing to process an input data
-   virtual void EndInputData  ( const SInputData& ) throw( SError );
-
-   /// Function called after opening each new input file
-   virtual void BeginInputFile( const SInputData& ) throw( SError );
-
-   /// Function called for every event
-   virtual void ExecuteEvent( const SInputData&, Double_t ) throw( SError );
-   
-   /// Function to check good lumi section
-   virtual bool isGoodEvent(int runNumber, int lumiSection);
-   
-   /// Function to check for trigger pass
-   virtual TString passTrigger();
-   
-   /// Function to check for MET filters pass
-   virtual bool passMETFilters();
-   
-   /// Function to obtain event weights for MC
-   virtual void getEventWeight();
-   
-   /// Function to clear/reset all output branches
+  /// Function called at the beginning of a new input data
+  virtual void BeginInputData( const SInputData& ) throw( SError );
+  
+  /// Function called after finishing to process an input data
+  virtual void EndInputData  ( const SInputData& ) throw( SError );
+  
+  /// Function called after opening each new input file
+  virtual void BeginInputFile( const SInputData& ) throw( SError );
+  
+  /// Function called for every event
+  virtual void ExecuteEvent( const SInputData&, Double_t ) throw( SError );
+  
+  /// Function to check good lumi section
+  virtual bool isGoodEvent(int runNumber, int lumiSection);
+  
+  /// Function to check for trigger pass
+  virtual TString passTrigger();
+  
+  /// Function to check for MET filters pass
+  virtual bool passMETFilters();
+  
+  /// Function to obtain event weights for MC
+  virtual void getEventWeight();
+  
+  /// Function to clear/reset all output branches
   //   virtual void clearBranches();
    
   /// Function to fill cut flow
-  //  virtual void fillCutflow( const std::string histName, const std::string dirName, const Int_t id, const Double_t weight = 1.);
-  virtual void fillCutflow(TString histName, TString dirName, const Int_t id, const Double_t weight);
-   
-  /// Function GenFilter  to select Z to tautau events
+  //virtual void fillCutflow( const std::string histName, const std::string dirName, const Int_t id, const Double_t weight = 1.);
+  virtual void fillCutflow(TString histName, TString dirName, const Int_t id, const Double_t weight = 1.);
+  
+  /// Function GenFilter to select Z to tautau events
   virtual void genFilterZtautau();
-
+  
+  /// Function to set tlv of generator boson for recoil corrections
   virtual void setGenBosonTLVs();
 
   virtual int genMatch(Float_t lep_eta, Float_t lep_phi);
@@ -146,10 +150,14 @@ public:
   
   virtual bool LooseJetID(const UZH::Jet& jet);
   
+  virtual float genMatchSF(const int genmatch_2, const float tau_eta);
+  
   virtual bool getBTagWeight_promote_demote( const UZH::Jet& jet );
   
+  virtual void checks();
+  
   /// Function to book tree branches
-  //  virtual void FillBranches(const std::string& channel,  const std::vector<UZH::Jet>& Jet, const UZH::Tau& tau, const  TLorentzVector& lepton, const UZH::MissingEt& met );
+  //virtual void FillBranches(const std::string& channel,  const std::vector<UZH::Jet>& Jet, const UZH::Tau& tau, const  TLorentzVector& lepton, const UZH::MissingEt& met );
   virtual void FillBranches(const std::string& channel, const std::vector<UZH::Jet>& Jet,
                             const UZH::Tau& tau, const UZH::Muon& muon, const UZH::Electron& electron,
                             const UZH::MissingEt& met, const UZH::MissingEt& puppimet, const UZH::MissingEt& mvamet);
@@ -305,6 +313,7 @@ private:
   std::map<std::string,Double_t> b_genweight;
   std::map<std::string,Double_t> b_puweight;
   std::map<std::string,Double_t> b_weightbtag;
+  std::map<std::string,Double_t> b_genmatchweight;
   std::map<std::string,Int_t>    b_channel;  // 1 mutau; 2 eletau;
   std::map<std::string,Int_t>    b_isData;
   
@@ -364,6 +373,7 @@ private:
   std::map<std::string,Double_t> b_isoweight_2;
   std::map<std::string,Double_t> b_idweight_2;
   //std::map<std::string,Double_t> b_idisoweight_2;
+  std::map<std::string,Double_t> b_pol_2;
   
   std::map<std::string,Double_t> b_againstElectronVLooseMVA6_2;
   std::map<std::string,Double_t> b_againstElectronLooseMVA6_2;
@@ -385,9 +395,6 @@ private:
   std::map<std::string,Int_t>    b_extraelec_veto;
   std::map<std::string,Int_t>    b_extramuon_veto;
   
-//   std::map<std::string,Double_t> b_weightLepID;
-//   std::map<std::string,Double_t> b_weightLepIso;
-  
   std::map<std::string,Double_t> b_jpt_1;
   std::map<std::string,Double_t> b_jeta_1;
   std::map<std::string,Double_t> b_jphi_1;
@@ -405,12 +412,13 @@ private:
   std::map<std::string,Double_t> b_bcsv_2;
   
   std::map<std::string,Double_t> b_met;
+  std::map<std::string,Double_t> b_met_old;
   std::map<std::string,Double_t> b_metphi;
-  std::map<std::string,Double_t> b_metcorr;
-  std::map<std::string,Double_t> b_metcorrphi;
+  //std::map<std::string,Double_t> b_metcorrphi;
   std::map<std::string,Double_t> b_puppimet;
   std::map<std::string,Double_t> b_puppimetphi;
   std::map<std::string,Double_t> b_mvamet;
+  std::map<std::string,Double_t> b_mvamet_old;
   std::map<std::string,Double_t> b_mvametphi;
   
   std::map<std::string,Double_t> b_metcov00;
