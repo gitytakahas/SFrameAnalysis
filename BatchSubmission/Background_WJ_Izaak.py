@@ -16,12 +16,29 @@ dataSets = [
                [ "WJetsToLNu_TuneCUETP8M1"+label,
                 [   "WJetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_reHLT_ext_0000_0.xml",
                     "WJetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_reHLT_ext_0000_1.xml" ]],
+
+               [ "W1JetsToLNu_TuneCUETP8M1"+label,
+                [   "W1JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_HLT1_0000_0.xml",
+                    "W1JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_HLT1_0000_1.xml",
+                    "W1JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_HLT1_0000_2.xml"]],
+
+               [ "W2JetsToLNu_TuneCUETP8M1"+label,
+                 [  "W2JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_HLT1_0000_0.xml",
+                    "W2JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_HLT1_0000_1.xml",]],
+
+               [ "W3JetsToLNu_TuneCUETP8M1"+label,
+                [   "W3JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_HLT1_0000_0.xml",
+                    "W3JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_HLT1_0000_1.xml",]],
+
+               [ "W4JetsToLNu_TuneCUETP8M1"+label,
+                [   "W4JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_HLT1_0000.xml",]],
            ]
 
 userItems = [ 
                 ["IsData","false"],
                 ["IsSignal","false"],
                 ["doSVFit","false"],
+                ["doRecoilCorr","true"],
                 ["OutputTreeName_mutau", "tree_mutau" ],
                 ["OutputTreeName_eletau","tree_eletau"],
              ]

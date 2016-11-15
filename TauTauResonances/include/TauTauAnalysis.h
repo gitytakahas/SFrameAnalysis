@@ -353,9 +353,9 @@ private:
   std::map<std::string,Int_t>    b_id_e_mva_nt_loose_1;
   std::map<std::string,Int_t>    b_gen_match_1;
   std::map<std::string,Double_t> b_trigweight_1;
-  std::map<std::string,Double_t> b_idweight_1;
-  std::map<std::string,Double_t> b_isoweight_1;
-  //std::map<std::string,Double_t> b_idisoweight_1;
+  //std::map<std::string,Double_t> b_idweight_1;
+  //std::map<std::string,Double_t> b_isoweight_1;
+  std::map<std::string,Double_t> b_idisoweight_1;
   
   std::map<std::string,Double_t> b_pt_2;
   std::map<std::string,Double_t> b_eta_2;
@@ -370,9 +370,9 @@ private:
   std::map<std::string,Double_t> b_iso_2;
   std::map<std::string,Int_t>    b_gen_match_2;
   std::map<std::string,Int_t>    b_trigweight_2;
-  std::map<std::string,Double_t> b_isoweight_2;
-  std::map<std::string,Double_t> b_idweight_2;
-  //std::map<std::string,Double_t> b_idisoweight_2;
+  //std::map<std::string,Double_t> b_isoweight_2;
+  //std::map<std::string,Double_t> b_idweight_2;
+  std::map<std::string,Double_t> b_idisoweight_2;
   std::map<std::string,Double_t> b_pol_2;
   
   std::map<std::string,Double_t> b_againstElectronVLooseMVA6_2;

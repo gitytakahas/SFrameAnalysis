@@ -13,18 +13,32 @@ postFix = ""
 label = "_ICHEP" #"_triggerless"
 dataSets = [
                 
-               ["DYJetsToLL_M-50_TuneCUETP8M1"+label,
-                [   "DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_reHLT_ext_0000.xml", ]],
+               ##############
+               #  M-10to50  #
+               ##############
                
                ["DYJetsToLL_M-10to50_TuneCUETP8M1"+label,
                 [   "DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_HLT1_0000_0.xml",
                     "DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_HLT1_0000_0.xml", ]],
+
+               ["DYJetsToLL_M-10to50_nlo"+label,
+                [   "DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_HLT1_0000_0.xml",
+                    "DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_HLT1_0000_1.xml",
+                    "DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_HLT1_0000_2.xml", ]],
                 
-               ["DY1JetsToLL_M-10to50"+label,
+               ["DY1JetsToLL_M-10to50_nlo"+label,
                 [   "DY1JetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_reHLT_0000.xml", ]],
                 
-               ["DY2JetsToLL_M-10to50"+label,
+               ["DY2JetsToLL_M-10to50_nlo"+label,
                 [   "DY2JetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_reHLT_0000.xml", ]],
+                
+                
+                ##########
+                #  M-50  #
+                ##########
+                 
+               ["DYJetsToLL_M-50_TuneCUETP8M1"+label,
+                [   "DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_reHLT_ext_0000.xml", ]],
                 
                ["DY1JetsToLL_M-50_TuneCUETP8M1"+label,
                 [   "DY1JetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_HLT1_0000_0.xml",
@@ -43,12 +57,41 @@ dataSets = [
                ["DY4JetsToLL_M-50_TuneCUETP8M1"+label,
                 [   "DY4JetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_HLT1_0000.xml", ]],
                 
+                
+                #######################
+                #  M-5-50  HT binned  #
+                #######################
+                
+                
+#                ["DYJetsToLL_M-5to50_TuneCUETP8M1"+label,
+#                 [   "DYJetsToLL_M-5to50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_HLT1_0000.xml", ]],
+#                 
+#                ["DYJetsToLL_M-5to50_HT-100to200_TuneCUETP8M1"+label,
+#                 [   "DYJetsToLL_M-5to50_HT-100to200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_HLT1_0000.xml",
+#                     "DYJetsToLL_M-5to50_HT-100to200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_HLT1_ext_0000.xml", ]],
+#                 
+#                ["DYJetsToLL_M-5to50_HT-200to400_TuneCUETP8M1"+label,
+#                 [   "DYJetsToLL_M-5to50_HT-200to400_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_HLT1_0000.xml",
+#                     "DYJetsToLL_M-5to50_HT-200to400_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_HLT1_ext_0000.xml", ]],
+#                 
+#                ["DYJetsToLL_M-5to50_HT-400to600_TuneCUETP8M1"+label,
+#                 [   "DYJetsToLL_M-5to50_HT-400to600_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_HLT1_0000.xml",
+#                     "DYJetsToLL_M-5to50_HT-400to600_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_HLT1_v3_ext_0000_0.xml",
+#                     "DYJetsToLL_M-5to50_HT-400to600_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_HLT1_v3_ext_0000_1.xml",
+#                     "DYJetsToLL_M-5to50_HT-400to600_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_HLT1_v3_ext_0000_2.xml",
+#                     "DYJetsToLL_M-5to50_HT-400to600_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_HLT1_v3_ext_0001.xml", ]],
+#                 
+#                ["DYJetsToLL_M-5to50_HT-600toInf_TuneCUETP8M1"+label,
+#                 [   "DYJetsToLL_M-5to50_HT-600toInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_HLT1_0000.xml",
+#                     "DYJetsToLL_M-5to50_HT-600toInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_HLT1_ext_0000.xml", ]],
+                
            ]
 
 userItems = [ 
                 ["IsData","false"],
                 ["IsSignal","false"],
                 ["doSVFit","false"],
+                ["doRecoilCorr","true"],
                 ["OutputTreeName_mutau", "tree_mutau" ],
                 ["OutputTreeName_eletau","tree_eletau"],
              ]

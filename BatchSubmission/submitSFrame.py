@@ -122,7 +122,7 @@ class BatchScript(object):
     self.batchScript+="date\n"
     self.batchScript+="hostname\n"
     self.batchScript+="uname -a\n"
-    self.batchScript+="df -h\n"
+#    self.batchScript+="df -h\n"
     self.batchScript+="cd %s/..\n" %(path2sframe)
     # setup ROOT and python
     if (socket.gethostname()).find("psi.ch") >=0:
@@ -288,11 +288,11 @@ def checkCompletion(dataSets, listOfJobs, outDir, cycleName, postFix,keepTemp):
         fileToMerge=fileToMerge.partition("Run2016")[0]+fileToMerge.partition("Run2016")[1]+'*'
         fileToMerge=fileToMerge.partition("madgraph")[0]+fileToMerge.partition("madgraph")[1]+'*'
         mergeCmd='hadd -f %s.root %s.root && rm -rf %s.root'  %(mergeFileBaseName,  fileToMerge,  fileToMerge)
-        mergeCmd_mt = 'hadd -f %s/%s %s/Myroot_mutau*.root && rm -rf %s/Myroot_mutau*.root'  %(outDir, 'mutau.root', fileBaseName, fileBaseName)
-        mergeCmd_et = 'hadd -f %s/%s %s/Myroot_eletau*.root && rm -rf %s/Myroot_eletau*.root'  %(outDir, 'eletau.root', fileBaseName, fileBaseName)
+        #mergeCmd_mt = 'hadd -f %s/%s_mutau.root %s/%s_mutau*.root && rm -rf %s/%s_mutau*.root'  %(outDir, d[0], fileBaseName, d[0], fileBaseName, d[0])
+        #mergeCmd_et = 'hadd -f %s/%s_eletau.root %s/%s_eletau*.root && rm -rf %s/%s_eletau*.root'  %(outDir, d[0], fileBaseName, d[0], fileBaseName, d[0])
         print "mergeCmd is %s " %mergeCmd
-        print "mergeCmd_private_mt is %s " %mergeCmd_mt
-        print "mergeCmd_private_et is %s " %mergeCmd_et
+        #print "mergeCmd_private_mt is %s " %mergeCmd_mt
+        #print "mergeCmd_private_et is %s " %mergeCmd_et
 
       lock=thread.allocate_lock()
       lock.acquire()
@@ -317,15 +317,15 @@ def checkCompletion(dataSets, listOfJobs, outDir, cycleName, postFix,keepTemp):
         mergeDebug+=subProcess.stdout.read()
         mergeDebug+=subProcess.stderr.read()
 
-        subProcess_mt = subprocess.Popen(mergeCmd_mt, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
-        #subProcess.wait()
-        mergeDebug += subProcess_mt.stdout.read()
-        mergeDebug += subProcess_mt.stderr.read()
+        #subProcess_mt = subprocess.Popen(mergeCmd_mt, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+        ##subProcess.wait()
+        #mergeDebug += subProcess_mt.stdout.read()
+        #mergeDebug += subProcess_mt.stderr.read()
 
-        subProcess_et = subprocess.Popen(mergeCmd_et, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
-        #subProcess.wait()
-        mergeDebug += subProcess_et.stdout.read()
-        mergeDebug += subProcess_et.stderr.read()
+        #subProcess_et = subprocess.Popen(mergeCmd_et, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+        ##subProcess.wait()
+        #mergeDebug += subProcess_et.stdout.read()
+        #mergeDebug += subProcess_et.stderr.read()
 
       else:
         mergeDebug+="FATAL: Missing root files. No merging!"
@@ -794,9 +794,9 @@ def main():
           baseName=cycleName+"."+str(dataSets[i][0])+"."+str(dataSets[i][1][j])+postFix
           thisXmlTemplate.write(baseName+subJob+'.xml')
           listOfJobs.append([str(dataSets[i][0]), str(dataSets[i][1][j]), baseName, subJob, "",tempDirSh,tempDirRoot,tempDirLog])
+          nJobs+=1
           inFileText=""
           subsampleLumi=0.
-      nJobs+=1
       inFile.close()
 
   if useBatch:
@@ -876,8 +876,8 @@ def main():
       batchScript.addLine("echo \"##################################################\"\n")
       batchScript.addLine("echo \"cp -f %s %s/%s\"\n" %(j[2]+".root", tempDirRoot, j[2]+j[3]+".root"))
       batchScript.addLine("cp -f %s %s/%s\n" %(j[2]+".root", tempDirRoot, j[2]+j[3]+".root"))
-      batchScript.addLine("cp -f %s %s/%s\n" %("Myroot_mutau.root", tempDirRoot, "Myroot_mutau_"+j[3]+".root"))
-      batchScript.addLine("cp -f %s %s/%s\n" %("Myroot_eletau.root", tempDirRoot, "Myroot_eletau_"+j[3]+".root"))
+      batchScript.addLine("cp -f %s %s/%s\n" %("Myroot_mutau.root",  tempDirRoot, j[0]+"_mutau_"+j[3]+".root"))
+      batchScript.addLine("cp -f %s %s/%s\n" %("Myroot_eletau.root", tempDirRoot, j[0]+"_eletau_"+j[3]+".root"))
 
       batchScript.replace("HCPU", hCPU)
       batchScript.replace("HVMEM", hVMEM)

@@ -21,14 +21,14 @@ colors     = [ kAzure+4,
                kRed-7, kAzure-4, kOrange+6, kGreen-2, kMagenta-3, kYellow-2 ]
 fillcolors = [ kRed-2, kAzure+5, kOrange-5, kGreen-2, kMagenta-3, kYellow-3,
                kRed-7, kAzure-9, kOrange+6, kGreen+3, kMagenta-2, kYellow-2 ]
-list = [ ("jpt_1", "leading jet pt"),   ("jpt_2", "leading jet pt"),
-         ("bpt_1", "leading b jet pt"), ("bpt_2", "sub-leading b jet pt"),
-         ("abs(jeta_1)", "leading jet abs(eta)"),   ("abs(jeta_2)", "sub-leading jet abs(eta)"),
-         ("abs(beta_1)", "leading b jet abs(eta)"), ("abs(beta_2)", "sub-leading b jet abs(eta)"),
-         ("jeta_1", "leading jet eta"),   ("jeta_2",  "sub-leading jet eta"),
-         ("beta_1", "leading b jet eta"), ("beta_2","sub-leading b jet eta"),
-         ("dR_ll","#DeltaR_{ll}"),
-         ("pfmt_1","PF mt_1"), ]
+varlist = [ ("jpt_1", "leading jet pt"),   ("jpt_2", "leading jet pt"),
+            ("bpt_1", "leading b jet pt"), ("bpt_2", "sub-leading b jet pt"),
+            ("abs(jeta_1)", "leading jet abs(eta)"),   ("abs(jeta_2)", "sub-leading jet abs(eta)"),
+            ("abs(beta_1)", "leading b jet abs(eta)"), ("abs(beta_2)", "sub-leading b jet abs(eta)"),
+            ("jeta_1", "leading jet eta"),   ("jeta_2",  "sub-leading jet eta"),
+            ("beta_1", "leading b jet eta"), ("beta_2","sub-leading b jet eta"),
+            ("dR_ll","#DeltaR_{ll}"),
+            ("pfmt_1","PF mt_1"), ]
          
 
 
@@ -37,7 +37,7 @@ list = [ ("jpt_1", "leading jet pt"),   ("jpt_2", "leading jet pt"),
 def makeLatex(title):
     """Convert patterns in a string to LaTeX format."""
 
-    for a, b in list:
+    for a, b in varlist:
         if a in title:
             title = title.replace(a,b)
             break
@@ -94,7 +94,8 @@ def makeLatex(title):
 def makeHistName(label, var):
     """Use label and var to make an unique and valid histogram name."""
     hist_name = "%s_%s" % (label, var)
-    hist_name = hist_name.replace(".","_").replace(" ","_").replace("(","_").replace(")","_").replace("[","_").replace("]","_")
+    hist_name = hist_name.replace("+","-").replace(" - ","-").replace(".","_").replace(" ","_")
+    hist_name = hist_name.replace("(","_").replace(")","_").replace("[","_").replace("]","_")
     return hist_name
     
     
@@ -144,9 +145,9 @@ class Ratio(object):
     """Class to make bundle histograms (ratio, stat. error on MC and line) for ratio plot."""
 
     def __init__(self, ratio, **kwargs):
-        self.ratio = ratio
-        self.staterror = kwargs.get('staterror', None)
-        self.line = kwargs.get('line', False)
+        self.ratio      = ratio
+        self.staterror  = kwargs.get('staterror', None)
+        self.line       = kwargs.get('line', False)
     
 
     
@@ -180,17 +181,21 @@ class Samples(object):
     """Class to combine a set of Sample-objects to make one histogram with the Plot class."""
 
     def __init__(self, label, **kwargs):
-        self.samples = [ ]
-        self.label = label
-        self.cuts = kwargs.get('cuts', "")
-        self.weight = kwargs.get('weight', False)
-        self.scale = kwargs.get('scale', 1.0)
-        self.scaleBU = self.scale # BU scale to overwrite previous renormalizations (WJ)
-        self.isData = kwargs.get('data', False)
+        self.samples    = [ ]
+        self.label      = label
+        self.cuts       = kwargs.get('cuts', "")
+        self.weight     = kwargs.get('weight', False)
+        self.scale      = kwargs.get('scale', 1.0)
+        self.sigma      = kwargs.get('sigma', 0.0)
+        self.scaleBU    = self.scale # BU scale to overwrite previous renormalizations (WJ)
+        self.isData     = kwargs.get('data', False)
         self.isBackground = kwargs.get('background', False)
-        self.isSignal = kwargs.get('signal', False)
-        self.blind = kwargs.get('blind', "") # TODO improve blinding: only blind for m_vis variable!
-    
+        self.isSignal   = kwargs.get('signal', False)
+        self.blind      = kwargs.get('blind', "")
+        filename = label
+        if self.samples: filename = self.samples[0].filename
+        self.filename   = kwargs.get('filename', filename)
+        self.filenameshort = "/".join(self.filename.split('/')[-2:])
 
     
     def add(self, sample, **kwargs):
@@ -198,20 +203,36 @@ class Samples(object):
         sample.scale *= scale
         self.samples.append(sample)
     
-
     
     def hist(self, var, nBins, a, b, **kwargs):
         name   = kwargs.get('name',  makeHistName(self.label, var))
         title  = kwargs.get('title', self.label)
         
         #print ">>> Samples - hist: name = %s" % name
-        hist = TH1F(name, title, nBins, a, b)
+        hist = TH1F(name+"_merged", title, nBins, a, b)
         for sample in self.samples:
             if 'name' in kwargs: # prevent memory leaks
                 kwargs["name"] = makeHistName(sample.label,name.replace(self.label+"_",""))
             hist.Add( sample.hist(var, nBins, a, b, **kwargs) )
         
         return hist
+
+
+    def resetScalesAndWeights(self,**kwargs):
+        
+        for sample in self.samples:
+            sample.resetScalesAndWeights(**kwargs)
+
+    
+    def isPartOf(self, *labels):
+        """Check if labels are in label or filename."""
+        
+        if not labels: return False
+        yes = True
+        for label in labels:
+            yes = yes and (label in self.label or label in self.filenameshort)
+        
+        return yes
 
 
 
@@ -221,17 +242,23 @@ class Sample(object):
     """Class to make histogram with the Plot class."""
 
     def __init__(self, filename, label, **kwargs):
-        self.filename = filename
-        self.file = TFile(filename)
-        self.label = label
-        self.cuts = kwargs.get('cuts', "")
-        self.weight = kwargs.get('weight', "")
-        self.scale = kwargs.get('scale', 1.0)
-        self.scaleBU = self.scale # BU scale to overwrite previous renormalizations (WJ)
-        self.isData = kwargs.get('data', False)
+        self.filename   = filename
+        self.filenameshort = "/".join(self.filename.split('/')[-2:])
+        self.file       = TFile(filename)
+        self.label      = label
+        self.cuts       = kwargs.get('cuts', "")
+        self.weight     = kwargs.get('weight', "")
+        self.scale      = kwargs.get('scale', 1.0)
+        self.sigma      = kwargs.get('sigma', 0.0)
+        self.N          = kwargs.get('N', 0)
+        self.scaleBU    = self.scale # BU scale to overwrite previous renormalizations (WJ)
+        self.isData     = kwargs.get('data', False)
         self.isBackground = kwargs.get('background', False)
-        self.isSignal = kwargs.get('signal', False)
-        self.treeName = kwargs.get('treeName', "tree")
+        self.isSignal   = kwargs.get('signal', False)
+        self.tree       = kwargs.get('treeName', None)
+        self.treeName   = kwargs.get('treeName', "tree")
+        # TODO improve blinding: only blind for m_vis variable!
+        # TODO: rewrite class with tree method, applycut method, ...
     
 
     
@@ -284,6 +311,38 @@ class Sample(object):
             hist.Scale(1/I)
 
 
+    def resetScalesAndWeights(self,**kwargs):
+        """Reset all scales and weight to unity. Option to normalize."""
+        norm    = kwargs.get('norm',True)
+        weight  = kwargs.get('weight',"")
+        self.scale  = 1
+        self.weight = weight
+        if norm and self.N:
+            self.scale = 1/self.N
+
+    
+    def addWeight(self, weight):
+        """Combine weight to."""
+        self.weight = combineWeights(self.weight, weight)
+        #print ">>> addWeight: combine weights %s" % self.weight
+
+
+    def applyCuts(self, treename, cuts):
+        """Make tree with cuts applied."""
+        # TODO: implement method that saves new tree with cuts
+
+    
+    def isPartOf(self, *labels):
+        """Check if labels are in label or filename."""
+        
+        if not labels: return False
+        yes = True
+        for label in labels:
+            yes = yes and (label in self.label or label in self.filenameshort)
+        
+        return yes
+
+
 
 
 
@@ -291,20 +350,20 @@ class Plot(object):
     """Class to automatically make CMS plot."""
 
     def __init__(self, samples, var, nBins, a, b, **kwargs):
-        self.samples = samples
-        self.var = var
-        self.nBins = nBins
+        self.samples    = samples
+        self.var        = var
+        self.nBins      = nBins
         self.a = a; self.b = b
-        self.cuts = kwargs.get('cuts', "")
-        self.weight = kwargs.get('weight', "")
+        self.cuts       = kwargs.get('cuts', "")
+        self.weight     = kwargs.get('weight', "")
         
-        self.histsS = [ ]
-        self.histsB = [ ]
-        self.histsD = [ ]
-        self._hists = [ ]
-        self._histsMC = [ ]
+        self.histsS     = [ ]
+        self.histsB     = [ ]
+        self.histsD     = [ ]
+        self._hists     = [ ]
+        self._histsMC   = [ ]
         self.hist_error = None
-        self.ratio = None
+        self.ratio      = None
         
         for sample in samples:
             if sample.isSignal:
@@ -322,7 +381,7 @@ class Plot(object):
         self.pads = [ ]
         self.frame = None
         self.legend = None
-        self.width = 0.26;  self.height = 0.08 + 0.05 * len(self.histsB)
+        self.width = 0.20;  self.height = 0.08 + 0.05 * len(self.histsB)
         self.x2 = 0.95;     self.x1 = self.x2 - self.width
         self.y1 = 0.48;     self.y2 = self.y1 + self.height
 
@@ -350,6 +409,7 @@ class Plot(object):
         ratio = kwargs.get('ratio', False) and self.histsD
         errorbars = kwargs.get('errorbars', False)
         staterror = kwargs.get('staterror', False)
+        norm = kwargs.get('norm', False)
         option = 'hist'
         if errorbars: option = 'E0 '+option
         
@@ -372,6 +432,9 @@ class Plot(object):
         # DATA
         for hist in self.histsD:
             hist.Draw('E same')
+        
+        # NORM
+        if norm: self.norm(self.hists)
         
         # STATISTICAL ERROR
         if staterror:
@@ -403,7 +466,7 @@ class Plot(object):
         CMS_lumi.CMS_lumi(self.canvas,13,0)
         
         # RATIO
-        if ratio:
+        if ratio and stack:
             self.pads[1].cd()
             self.ratio = self.ratioHistStack( self.histsD[0], self.stack, staterror=self.hist_error,
                                               name=makeHistName("ratio",self.var), title="ratio" )
@@ -442,7 +505,7 @@ class Plot(object):
         W = 800; H  = 600
         if square:
             W = 800; H  = 800
-            self.width = 0.30
+            self.width = 0.25
             scalerightmargin = 3.5*scalerightmargin
         elif residue or ratio:
             W = 800; H  = 750
@@ -612,7 +675,7 @@ class Plot(object):
                 mins.append(hist.GetMinimum())
                 maxs.append(hist.GetMaximum())
             frame.GetYaxis().SetRangeUser(min(mins),max(maxs)*1.12)
-        frame.GetXaxis().SetLimits(self.a,self.b)
+        frame.GetXaxis().SetRangeUser(self.a,self.b)
         
         if kwargs.get('logy',False):
             #frame.SetMinimum(0.1)
@@ -715,6 +778,7 @@ class Plot(object):
     def norm(self,*hists):
         """ Normalize histogram."""
         
+        if isinstance(hists[0],list): hists = hists[0]
         if len(hists) is 0: hists = self.hists
         for hist in hists:
             I = hist.Integral()
@@ -851,7 +915,7 @@ class Plot(object):
         histsMC_SS = [ ]
         histsD_SS  = [ ]
         for sample in samples:
-            name = makeHistName(sample.label+"_SS", var)
+            name = makeHistName(sample.label+"_SS_QCD", var)
             if sample.isBackground or sample.isSignal:
                 histsMC_SS.append(sample.hist(var, nBins, a, b, cuts=cuts, weight=weight, name=name))
             elif sample.isData:
@@ -906,7 +970,7 @@ class Plot(object):
            the mt_1 > 80 GeV sideband.
            This method assume that the variable of this Plot object is a transverse mass and is plotted
            from 80 GeV to at least 100 GeV."""
-        print ">>> renormalizing WJ with mt > 80 GeV sideband for variable %s" % (self.var)
+        print ">>>\n>>> renormalizing WJ with mt > 80 GeV sideband for variable %s" % (self.var)
         
         samples = self.samples
         cuts = self.cuts
@@ -948,18 +1012,32 @@ class Plot(object):
         
         # GET WJ
         WJ = None
-        histWJ = None
+        WJs = [ ]
         for sample in samples:
-            if "WJ" in sample.label:
-                WJ = sample
-                break
+            print sample.label
+            if "WJ" in sample.label or "W + jets" in sample.label or "W + Jets" in sample.label:
+                WJs.append(sample)
+        if   len(WJs) == 1:
+            WJ = WJs[0]
+        elif len(WJs)  > 1:
+            WJ = WJs[0]
+            print ">>> Warning! More than one WJ sample, renormalizing with first instance (%s)!" % (WJ.label)
         else:
             print ">>> Warning! Could not renormalize WJ: no WJ sample!"
             return
+                
+        # GET WJ HIST
+        histWJ = None
+        histsWJ = [ ]
         for hist in self.histsMC:
-            if "WJ" in hist.GetName():
-                histWJ = hist
-                break
+            print hist.GetName()
+            if "WJ" in hist.GetName() or "W-jets" in hist.GetName() or "W-Jets" in hist.GetName():
+                histsWJ.append(hist)
+        if   len(histsWJ) == 1:
+            histWJ = histsWJ[0]
+        elif len(histsWJ)  > 1:
+            histWJ = histsWJ[0]
+            print ">>> Warning! More than one WJ sample, renormalizing with first instance (%s)!" % (histWJ.GetName())
         else:
             print ">>> Warning! Could not renormalize WJ: no WJ sample!"
             return

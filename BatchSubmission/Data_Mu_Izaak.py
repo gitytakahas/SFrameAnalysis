@@ -7,7 +7,7 @@ nEventsMax=-1
 #nEventsMax=200
 nProcesses=1
 nFiles=5
-hCPU="05:00:00"
+hCPU="04:00:00"
 hVMEM="5000M"
 postFix = ""
 label = "_ICHEP" #"_triggerless"
@@ -100,6 +100,7 @@ userItems = [
                 ["IsData","true"],
                 ["IsSignal","false"],
                 ["doSVFit","false"],
+                ["doRecoilCorr","false"],
                 ["OutputTreeName_mutau", "tree_mutau" ],
                 ["OutputTreeName_eletau","tree_eletau"],
              ]

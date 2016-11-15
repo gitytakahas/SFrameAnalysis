@@ -22,6 +22,7 @@ userItems = [
                 ["IsData","false"],
                 ["IsSignal","true"],
                 ["doSVFit","false"],
+                ["doRecoilCorr","false"],
                 ["OutputTreeName_mutau", "tree_mutau" ],
                 ["OutputTreeName_eletau","tree_eletau"],
              ]
