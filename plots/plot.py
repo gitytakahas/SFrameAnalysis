@@ -26,28 +26,28 @@ OUT_DIR = os.path.expandvars("/shome/ineuteli/analysis/SFrameAnalysis/AnalysisOu
 PLOTS_DIR = os.path.expandvars("/shome/ineuteli/analysis/SFrameAnalysis/plots/")
 samplesB = [
             ("TT/", "TT_TuneCUETP8M1",                      "ttbar",                    831.76  ),
-#             ("DY/", "DYJetsToLL_M-10to50_TuneCUETP8M1",     "Drell-Yan 10-50",        18610.0   ),
-            ("DY/", "DYJetsToLL_M-10to50_nlo",              "Drell-Yan 10-50 NLO",    18610.0   ), # 18610 https://cmsweb.cern.ch/das/request?input=dataset%3D%2FDYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8%2FRunIISummer15GS-MCRUN2_71_V1-v1%2FGEN-SIM&instance=prod%2Fglobal
-#             ("DY/", "DY1JetsToLL_M-10to50_nlo",             "Drell-Yan 1J 10-50 NLO",   421.5   ), # 421.5 https://cmsweb.cern.ch/das/request?input=dataset%3D%2FDY1JetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8%2FRunIISummer15GS-MCRUN2_71_V1-v1%2FGEN-SIM&instance=prod%2Fglobal
-#             ("DY/", "DY2JetsToLL_M-10to50_nlo",             "Drell-Yan 2J 10-50 NLO",   184.3   ), # 184.3 https://cmsweb.cern.ch/das/request?input=dataset%3D%2FDY2JetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8%2FRunIISummer15GS-MCRUN2_71_V1-v1%2FGEN-SIM&instance=prod%2Fglobal
+            #("DY/", "DYJetsToLL_M-10to50_TuneCUETP8M1",     "Drell-Yan 10-50",        18610.0   ),
+            ("DY/", "DYJetsToLL_M-10to50_nlo",              "Drell-Yan 10-50",    18610.0   ), # 18610 https://cmsweb.cern.ch/das/request?input=dataset%3D%2FDYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8%2FRunIISummer15GS-MCRUN2_71_V1-v1%2FGEN-SIM&instance=prod%2Fglobal
+            ##("DY/", "DY1JetsToLL_M-10to50_nlo",             "Drell-Yan 1J 10-50 NLO",   421.5   ), # 421.5 https://cmsweb.cern.ch/das/request?input=dataset%3D%2FDY1JetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8%2FRunIISummer15GS-MCRUN2_71_V1-v1%2FGEN-SIM&instance=prod%2Fglobal
+            ##("DY/", "DY2JetsToLL_M-10to50_nlo",             "Drell-Yan 2J 10-50 NLO",   184.3   ), # 184.3 https://cmsweb.cern.ch/das/request?input=dataset%3D%2FDY2JetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8%2FRunIISummer15GS-MCRUN2_71_V1-v1%2FGEN-SIM&instance=prod%2Fglobal
             ("DY/", "DYJetsToLL_M-50_TuneCUETP8M1",         "Drell-Yan 50",            4954.0   ), # LO 4954.0; NLO 5765.4
             ("DY/", "DY1JetsToLL_M-50_TuneCUETP8M1",        "Drell-Yan 1J 50",         1012.5   ), 
             ("DY/", "DY2JetsToLL_M-50_TuneCUETP8M1",        "Drell-Yan 2J 50",          332.8   ), 
             ("DY/", "DY3JetsToLL_M-50_TuneCUETP8M1",        "Drell-Yan 3J 50",          101.8   ), 
-            ("DY/", "DY4JetsToLL_M-50_TuneCUETP8M1",        "Drell-Yan 4J 50",           54.8   ),
+            ("DY/", "DY4JetsToLL_M-50_TuneCUETP8M1",        "Drell-Yan 4J 50",           54.8   ), 
             ("WJ/", "WJetsToLNu_TuneCUETP8M1",              "W + jets",               50380.0   ), # LO 50380.0; NLO 61526.7
-            ("WJ/", "W1JetsToLNu_TuneCUETP8M1",             "W + 1J",                  9644.5   ),
-            ("WJ/", "W2JetsToLNu_TuneCUETP8M1",             "W + 2J",                  3144.5   ),
-            ("WJ/", "W3JetsToLNu_TuneCUETP8M1",             "W + 3J",                   954.8   ),
-            ("WJ/", "W4JetsToLNu_TuneCUETP8M1",             "W + 4J",                   485.6   ),
-            ("WZ/", "WZ_TuneCUETP8M1",                      "WZ",                        22.82  ), #10.71? # https://cmsweb.cern.ch/das/request?input=dataset%3D%2FWZ_TuneCUETP8M1_13TeV-pythia8%2FRunIISummer15GS-MCRUN2_71_V1-v1%2FGEN-SIM&instance=prod%2Fglobal
-            ("ZZ/", "ZZ_TuneCUETP8M1",                      "ZZ",                        10.32  ), #3.22? # https://cmsweb.cern.ch/das/request?input=dataset%3D%2FZZ_TuneCUETP8M1_13TeV-pythia8%2FRunIISummer15GS-MCRUN2_71_V1-v1%2FGEN-SIM&instance=prod%2Fglobal
+            ("WJ/", "W1JetsToLNu_TuneCUETP8M1",             "W + 1J",                  9644.5   ), 
+            ("WJ/", "W2JetsToLNu_TuneCUETP8M1",             "W + 2J",                  3144.5   ), 
+            ("WJ/", "W3JetsToLNu_TuneCUETP8M1",             "W + 3J",                   954.8   ), 
+            ("WJ/", "W4JetsToLNu_TuneCUETP8M1",             "W + 4J",                   485.6   ), 
+            ("WW/", "WW_TuneCUETP8M1",                      "WW",                        63.21  ), # 63.21  https://cmsweb.cern.ch/das/request?input=dataset%3D%2FWW_TuneCUETP8M1_13TeV-pythia8%2FRunIISummer15GS-MCRUN2_71_V1-v1%2FGEN-SIM&instance=prod%2Fglobal
+            ("WZ/", "WZ_TuneCUETP8M1",                      "WZ",                        22.82  ), # 10.71? https://cmsweb.cern.ch/das/request?input=dataset%3D%2FWZ_TuneCUETP8M1_13TeV-pythia8%2FRunIISummer15GS-MCRUN2_71_V1-v1%2FGEN-SIM&instance=prod%2Fglobal
+            ("ZZ/", "ZZ_TuneCUETP8M1",                      "ZZ",                        10.32  ), #  3.22? https://cmsweb.cern.ch/das/request?input=dataset%3D%2FZZ_TuneCUETP8M1_13TeV-pythia8%2FRunIISummer15GS-MCRUN2_71_V1-v1%2FGEN-SIM&instance=prod%2Fglobal
             ("ST/", "ST_tW_top_5f_inclusiveDecays",         "ST tW",                     35.60  ), #  38.09 https://cmsweb.cern.ch/das/request?input=dataset%3D%2FST_tW_top_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1%2FRunIISummer15GS-MCRUN2_71_V1-v1%2FGEN-SIM&instance=prod%2Fglobal
             ("ST/", "ST_tW_antitop_5f_inclusiveDecays",     "ST atW",                    35.60  ), #  38.09 https://cmsweb.cern.ch/das/request?input=dataset%3D%2FST_tW_antitop_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1%2FRunIISummer15GS-MCRUN2_71_V1-v1%2FGEN-SIM&instance=prod%2Fglobal
             ("ST/", "ST_t-channel_antitop_4f_leptonDecays", "ST t",                      80.95  ), #  80.95 TWiki # 80.95 https://cmsweb.cern.ch/das/request?input=dataset%3D%2FST_t-channel_antitop_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1%2FRunIISummer15GS-MCRUN2_71_V1-v1%2FGEN-SIM&instance=prod%2Fglobal
-            ("ST/", "ST_t-channel_top_4f_leptonDecays",     "ST at",                    136.02  ), # 136.02 TWiki # 136.02 https://cmsweb.cern.ch/das/request?input=dataset%3D%2FST_t-channel_top_4f_inclusiveDecays_13TeV-powhegV2-madspin-pythia8_TuneCUETP8M1%2FRunIISummer15GS-MCRUN2_71_V1-v1%2FGEN-SIM&instance=prod%2Fglobal
-            ("WW/", "WW_TuneCUETP8M1",                      "WW",                        63.21  ), # 63.21 https://cmsweb.cern.ch/das/request?input=dataset%3D%2FWW_TuneCUETP8M1_13TeV-pythia8%2FRunIISummer15GS-MCRUN2_71_V1-v1%2FGEN-SIM&instance=prod%2Fglobal
-            ##("WW/", "WWTo1L1Nu2Q",                          "WW",                        1.212  ), #  1.212 TWiki # 45.85 https://cmsweb.cern.ch/das/request?input=dataset%3D%2FWWTo1L1Nu2Q_13TeV_amcatnloFXFX_madspin_pythia8%2FRunIISummer15GS-MCRUN2_71_V1-v1%2FGEN-SIM&instance=prod%2Fglobal
+            ("ST/", "ST_t-channel_top_4f_leptonDecays",     "ST at",                    136.02  ), # 136.02 TWiki # 136.02 https://cmsweb.cern.ch/das/request?input=dataset%3D%2FST_t-channel_top_4f_inclusiveDecays_13TeV-powhegV2-madspin-pythia8_TuneCUETP8M1%2FRunIISummer15GS-MCRUN2_71_V1-v1%2FGEN-SIM&instance=prod%2Fglobal 
+            ##("WW/", "WWTo1L1Nu2Q",                          "WW",                        1.212  ), # 1.212 TWiki # 45.85 https://cmsweb.cern.ch/das/request?input=dataset%3D%2FWWTo1L1Nu2Q_13TeV_amcatnloFXFX_madspin_pythia8%2FRunIISummer15GS-MCRUN2_71_V1-v1%2FGEN-SIM&instance=prod%2Fglobal
             ##("WW/", "WWTo4Q_4f",                            "WW",                        45.31  ), # 45.31 https://cmsweb.cern.ch/das/request?input=dataset%3D%2FWWTo4Q_4f_13TeV_amcatnloFXFX_madspin_pythia8%2FRunIISummer15GS-MCRUN2_71_V1-v1%2FGEN-SIM&instance=prod%2Fglobal
             ##("ST/", "ST_tW_top_5f_NoFullyHadronicDecays",   "ST",                        38.09  ), # 
             ##("ST/", "ST_tW_antitop_5f_NoFullyHadronicDecays", "ST",                       0.00  ), # 
@@ -56,7 +56,8 @@ samplesB = [
             ##("ST/", "ST_t-channel_top_4f_inclusiveDecays",  "ST",                         0.00  ), # 
             ]
             
-samplesS = [    ("signal/", "LowMass_30GeV_DiTauResonance",     "signal",                400.0  ),
+samplesS = [
+                ("signal/", "LowMass_30GeV_DiTauResonance",     "signal",            400000.0  ),
             ]
 
 samplesD = {
@@ -64,11 +65,20 @@ samplesD = {
                 #"eletau" :  [( "SingleElectron/", "SingleElectron_Run2016", "single electron" )],
             }
 
+# LUMI
 lumi = 12.9 #24.5
 PlotTools.lumi = lumi
-mylabel = "_ICHEP"  # extra label for opening file, saving plots to dir
-plotlabel = ""      # extra label for png file
 
+
+# LABELS
+mylabel   = "_ICHEP"    # extra label for opening file, saving plots to dir
+plotlabel = "" #"_noWJrenomalization" #_DY_check" # extra label for png file
+
+
+# PLOTS OPTIONS
+stack       = True # COMPARE: set to false
+normalizeWJ = stack and True
+doQCD       = True
 
 
 # CATEGORIES / SELECTIONS
@@ -78,12 +88,11 @@ categories = [
 #                 ("no cuts",             ""),
                 #("isolation",           "%s" % (isocuts)),
                 #("lepton vetos",        "%s" % (vetos)),
-                #("iso, lepton vetos",   "%s && %s" % (isocuts, vetos)),
-                #("lepton vetos, OS",    "%s && q_1*q_2<0" % (vetos)),
-                ("iso, vetos, OS",      "%s && %s && q_1*q_2<0" % (isocuts, vetos)),
-                #("iso, vetos, SS",      "%s && %s && q_1*q_2>0" % (isocuts, vetos)),
+#                 ("iso, lepton vetos",   "%s && %s" % (isocuts, vetos)),
+#                 ("iso, vetos, OS",      "%s && %s && q_1*q_2<0" % (isocuts, vetos)),
+#                 ("iso, vetos, SS",      "%s && %s && q_1*q_2>0" % (isocuts, vetos)),
 #                 ("category 1",          "%s && %s && q_1*q_2<0 && ncbtag > 0 && ncjets == 1 && nfjets  > 0" % (isocuts, vetos)),
-#                 ("category 2",          "%s && %s && q_1*q_2<0 && ncbtag > 0 && ncjets  > 1 && nfjets == 0 && dphi_ll_bj > 2 && met < 50" % (isocuts, vetos)),
+                ("category 2",          "%s && %s && q_1*q_2<0 && ncbtag > 0 && ncjets  > 1 && nfjets == 0 && dphi_ll_bj > 2" % (isocuts, vetos)), # && met < 60
               ]
 
 
@@ -99,31 +108,235 @@ def getScales():
     
     print "\n>>> integrated luminosity L = %s / fb" % lumi
     print ">>> "
-    print ">>> %12s  %26s  %18s  %6s" % ("events", "sample".ljust(20), "cross section (pb)", "norm. scale" )
+    print ">>> %12s  %12s  %26s  %18s  %12s" % ("events", "sum weights", "sample".ljust(22), "cross section (pb)", "norm. scale" )
     
     # BACKGROUND
     for i, s in enumerate(samplesB):
         sigma = s[3]
         file = TFile( OUT_DIR + s[0] + "TauTauAnalysis.%s%s.root" % (s[1],mylabel) )
         N_tot = file.Get("histogram_mutau/cutflow_mutau").GetBinContent(7)
-        scale = lumi * sigma * 1000 / N_tot        
-        print ">>> %12i %26s  %14.2f %12.2f" % (N_tot,s[2].ljust(22),sigma,scale)
+        N_tot_unweighted = file.Get("histogram_mutau/cutflow_mutau").GetBinContent(1)
+        scale = lumi * sigma * 1000 / N_tot
+        print ">>> %12i  %12i  %26s  %18.2f  %12.2f" % (N_tot,N_tot_unweighted,s[2].ljust(22),sigma,scale)
         samplesB[i] = ( s[0], s[1], s[2], N_tot, s[3], scale )
         
     # SIGNAL
     for i, s in enumerate(samplesS):
-        sigma = s[3]
+        N_exp = s[3] # expected yield
         file = TFile( OUT_DIR + s[0] + "TauTauAnalysis.%s%s.root" % (s[1],mylabel) )
         N_tot = file.Get("histogram_mutau/cutflow_mutau").GetBinContent(7)
-        scale = lumi * sigma * 1000 / N_tot
-        print ">>> %12i %26s  %14.2f %12.2f" % (N_tot,s[2].ljust(22),sigma,scale)
-        samplesS[i] = ( s[0], s[1], s[2], N_tot, s[3], scale )
-    
+        N_tot_unweighted = file.Get("histogram_mutau/cutflow_mutau").GetBinContent(1)
+        scale = N_exp / N_tot
+        sigma = N_tot / ( lumi * 1000 )
+        print ">>> %12i  %12i  %26s  %18.2f  %12.2f" % (N_tot,N_tot_unweighted,s[2].ljust(22),sigma,scale)
+        samplesS[i] = ( s[0], s[1], s[2], N_tot, sigma, scale )
+        
     # DATA
     for channel, s in samplesD.items():
         file = TFile( OUT_DIR + s[0][0] + "TauTauAnalysis.%s%s.root" % (s[0][1],mylabel) )
         N_tot = file.Get("histogram_mutau/cutflow_mutau").GetBinContent(7)
-        print ">>> %12i %26s %18s" % ( N_tot, s[0][2].ljust(22), "L = %5.2f/fb" % lumi )
+        N_tot_unweighted = file.Get("histogram_mutau/cutflow_mutau").GetBinContent(1)
+        print ">>> %12i  %12i  %26s  %21s" % ( N_tot, N_tot_unweighted, s[0][2].ljust(22), "L = %5.2f/fb" % lumi )
+        
+        
+    
+    
+    
+    
+    ###############
+    # stack plots #
+    ###############
+
+def plotStacks(channel, **kwargs):
+    """Plot stacked histograms with data."""
+    header =  "%s channel: Stacked plots" % channel
+    print ">>>\n>>>"
+    print ">>>   ###"+'#'*(len(header)+3)
+    print ">>>   #  %s  #" % header
+    print ">>>   ###"+'#'*(len(header)+3)
+    
+    DIR = kwargs.get('DIR',"%s/%s" % (PLOTS_DIR,channel))
+    label = mylabel
+    variables = [ ]
+    samples = [ ]
+    treeName = "tree_%s" % channel
+    channeli = 0
+    weight = "weight" #(gen_match_2==5 ? 1.056 : 1.) #puweight*genweight*trigweight_1*idweight_1*isoweight_1
+    if "mutau" in channel:  channeli = 1
+    if "eletau" in channel: channeli = 2
+    
+    
+    # BACKGROUND
+    for dir, sample, name, N_tot, sigma, scale in samplesB:
+        file = OUT_DIR + dir + "TauTauAnalysis.%s%s.root" % (sample,label)
+        weightB = weight
+        #if "DYJetsToLL_M-10to50_nlo" in sample: weightB = "%s*%s" % (weightB,"(NUP==1 ? 0 : 1)*(NUP==2 ? 0 : 1)")
+        samples.append(Sample( file, name, sigma=sigma, N=N_tot, scale=scale, background=True, cuts="", weight=weightB, treeName=treeName ))
+    
+    
+    # MERGE
+    samples = mergeSamples(samples,"ST")
+    samples = mergeSamples(samples,["WW","WZ","ZZ"],name="diboson")
+    samples = mergeSamples(samples,"DY",label="M-10to50_nlo",name="Drell-Yan 10-50 NLO")
+    samples = stitchSamples(samples,"WJ",name_incl="WJets")
+    samples = stitchSamples(samples,"DY",label="M-50")
+
+
+    # READD BACKGROUND
+#     for dir, sample, name, N_tot, sigma, scale in samplesB:
+#         if "DYJetsToLL_M-10to50_nlo" not in sample: continue
+#         file = OUT_DIR + dir + "TauTauAnalysis.%s%s.root" % (sample,label)
+#         weightB = weight
+#         name += " incl. only"
+#         samples.append(Sample( file, name, sigma=sigma, N=N_tot, scale=scale, background=True, cuts="", weight=weightB, treeName=treeName ))
+    
+    
+    # SIGNAl
+    for dir, sample, name, N_tot, sigma, scale in samplesS:
+        file = OUT_DIR + dir + "TauTauAnalysis.%s%s.root" % (sample,label)
+        samples.append(Sample( file, name, sigma=sigma, N=N_tot, scale=scale, signal=True, cuts="", weight=weight, treeName=treeName ))
+    
+    
+    # DATA
+    if channel in samplesD:
+        for dir, sample, name in samplesD[channel]:
+            file = OUT_DIR + dir + "TauTauAnalysis.%s%s.root" % (sample,label)
+            samples.append(Sample( file, name, data=True, treeName=treeName )) #cuts="( m_vis < 15 || 30 < m_vis )"
+    
+    
+    # VARIABLES
+    variables.append(( "m_vis",         38, 0,  76 ))
+#     variables.append(( "m_vis",         35, 0, 140 ))
+#     variables.append(( "pfmt_1",        30, 0, 150 ))
+#     variables.append(( "met",           30, 0, 120 ))
+#     for n in [ "nbtag", "njets" ]:
+#        variables.append(( n,             6, 0,   6 ))
+#     for n in [ "ncbtag", "nfjets", "ncjets" ]:
+#        variables.append(( n,             5, 0,   5 ))
+#     for p in [ ("j",1), ("b",1), ("",1), ("",2), ("j",2), ("b",1) ]:
+#        variables.append(( "%spt_%i" % p,       30,  0, 150 ))
+#        ##variables.append(( "abs(%seta_%i)" % p, 25,  0,   5 ))
+#        variables.append(( "%seta_%i" % p,      30, -3,   3 ))
+#     variables.append(( "gen_match_2",    8, 0,   8 ))
+#     variables.append(( "NUP",            6, 0,   6 ))
+#     variables.append(( "pol_2",         25, -1.1, 1.1 ))
+#     variables.append(( "mt_1",          40, 0, 200 ))
+#     variables.append(( "npu",           21, 0,  42 ))
+#     variables.append(( "npv",           21, 0,  42 ))
+#     variables.append(( "met",           30, 0, 120 ))
+#     variables.append(( "met_old",       30, 0, 120 ))
+#     variables.append(( "puppimet",      30, 0, 120 ))
+#     variables.append(( "mvamet",        30, 0, 120 ))
+#     variables.append(( "dR_ll",         35, 0,   7 ))
+#     variables.append(( "dphi_ll_bj",    30, 0, 4.5 ))
+#     for n in [ "iso_2", "againstElectronVLooseMVA6_2", "againstMuonTight3_2" ]:
+#        variables.append(( n,             2, 0,   2 ))
+#     variables.append(( "iso_1",         10, 0, 0.2 ))
+#     variables.append(( "byIsolationMVA3oldDMwLTraw_2", 10, 0.4,   1 ))
+
+
+    # LOOP over SELECTIONS
+    for label, cuts in categories:
+        print ">>>\n>>> " + color("_%s:_%s_" % (channel.replace(' ','_'),label.replace(' ','_')),color = "yellow")
+        
+        if cuts: cuts = "channel==%i && %s" % (channeli, cuts )
+        else:    cuts = "channel==%i"       %  channeli
+        QCD = False
+        if "q_1" in cuts and "q_2" in cuts and stack:
+            QCD = True and doQCD
+        
+        
+        # RENORMALIZE WJ
+        if normalizeWJ and not "SS" in label and stack:
+           #renormcuts = "channel==%i && %s && %s && q_1*q_2<0" % (channeli, isocuts, vetos)
+           plot = Plot( samples, "pfmt_1", 100, 80, 180, cuts=cuts, QCD=QCD )
+           plot.renormalizeWJ()
+           #normalizeWJ = False # renormalize WJ once!
+        
+        
+        # RENORMALIZE Signal
+        for sample in samples:
+            if sample.isSignal:
+                if "category" in label: sample.scale = sample.scaleBU
+                else:                   sample.scale = sample.scaleBU * 20
+        
+        # RESET
+        norm = (not stack) and False # COMPARE: set to false to check normalization; True to check shape
+        if not stack and norm:
+            print ">>> Warning! Resetting all scales and normalization"
+            for sample in samples: sample.resetScalesAndWeights(weight="genweight")
+        
+        
+        # LOOP over VARIABLES
+        for var, nBins, a, b in variables:
+        
+        
+            # NAME
+            name = "%s/%s_%s%s.png" % (DIR,var,label,plotlabel)
+            if "m_vis" in var:
+                name = "%s/%s_%i_%s%s.png" % (DIR,var,b,label,plotlabel)
+                for sample in samples:
+                    if sample.isData: sample.cuts = "( 28 < m_vis )" #"( m_vis < 10 || 28 < m_vis )"
+            name = name.replace(" and ","-").replace(" ","").replace(",","-") #.replace("(","").replace(")","")
+            
+            
+            # TITLE
+            title = label
+    
+            
+            # WEIGHT
+            varweight = ""
+            #if "category" not in name and ("btag" in var or "bpt" in var or "beta" in var or "bphi" in var):
+            #    varweight = "weightbtag"
+            #    title = "%s (btag SF)" % title
+            
+            
+            # BINS
+            if "category" in label:
+                if "m_vis" in var: nBins = 100 #19 #100
+            
+            
+            # LEGEND POSITION
+            position = ""
+            logy = False
+            if "m_" in var or "iso_" in var or "against" in var:
+                position += "Left"
+                #if b == 120: position = "LeftLeft"
+            if "Iso" in var: # or "NUP" in var:
+                position += "Center"
+            if "jeta_" in var or "beta_" in var or "NUP" in var:
+                position += "Top"
+            if "jpt_1" in var and "category" in label:
+                position += "Left"
+            if "gen_match" in var:
+                position += "Left"
+            
+            
+            # SIGNAL CALCULATIONS
+            #def ():
+                #...
+            
+            
+            
+            # PLOT
+            plot = Plot( samples, var, nBins, a, b, cuts=cuts, QCD=QCD) #, weight=varweight)
+            plot.plot(stack=stack, position=position, title=title, staterror=stack, logy=logy, ratio=stack, norm=norm, errorbars=(not stack))
+            if "m_vis" in var and stack:
+                B = plot.integrateStack(0,28)
+                for signal in plot.histsS:
+                    mu  = signal.GetMean()
+                    sd  = signal.GetStdDev()
+                    N   = signal.GetEntries()
+                    Sw  = signal.GetSumOfWeights()
+                    low = mu-2*sd
+                    up  = mu+2*sd
+                    print ">>> signal mean = %.2f, sigma = %.2f for %i MC events (%.2f sum of weights), thus signal region should be [ %.2f, %.2f ]" % (mu,sd,N,Sw,low, up)
+                print ">>> integral signal region %s: %.2f MC events" % (var,B)
+            plot.saveAs(name)
+            
+            if "m_vis" in var:
+                for sample in samples:
+                    if sample.isData: sample.cuts = ""
 
 
 
@@ -138,7 +351,7 @@ def mergeSamples(sample_list,names,**kwargs):
     print ">>>"
     
     if not isinstance(names,list): names = [names]
-    name0       = kwargs.get('name',names[0])
+    name0       = kwargs.get('name',names[0]) #+ " merged"
     signal      = kwargs.get('signal',False)
     background  = kwargs.get('background',True) and not signal
     label       = kwargs.get('label',"")
@@ -236,176 +449,39 @@ def stitchSamples(sample_list,name0,**kwargs):
     
     # merge
     return mergeSamples(sample_list,name0,label=label, name=name)
-    
-        
-    
-    
-    
-    
-    ###############
-    # stack plots #
-    ###############
-
-def plotStacks(channel, **kwargs):
-    """Plot stacked histograms with data."""
-    header =  "%s channel: Stacked plots" % channel
-    print ">>>\n>>>"
-    print ">>>   ###"+'#'*(len(header)+3)
-    print ">>>   #  %s  #" % header
-    print ">>>   ###"+'#'*(len(header)+3)
-    
-    DIR = kwargs.get('DIR',"%s/%s" % (PLOTS_DIR,channel))
-    label = mylabel
-    variables = [ ]
-    samples = [ ]
-    treeName = "tree_%s" % channel
-    channeli = 0
-    weight = "weight" #(gen_match_2==5 ? 1.056 : 1.) #puweight*genweight*trigweight_1*idweight_1*isoweight_1
-    if "mutau" in channel:  channeli = 1
-    if "eletau" in channel: channeli = 2
-    
-    
-    # BACKGROUND
-    for dir, sample, name, N_tot, sigma, scale in samplesB:
-        file = OUT_DIR + dir + "TauTauAnalysis.%s%s.root" % (sample,label)
-        weightB = weight
-        #if "DYJetsToLL_M-10to50_nlo" in name: weightB = "%s*%s" % (weightB,"(NUP==0 ? 1 : 0)")
-        samples.append(Sample( file, name, sigma=sigma, N=N_tot, scale=scale, background=True, cuts="", weight=weightB, treeName=treeName ))
-    
-    
-    # MERGE
-    samples = stitchSamples(samples,"DY",label="M-50")
-    samples = stitchSamples(samples,"WJ",name_incl="WJets")
-    #samples = mergeSamples(samples,"DY",label="M-10to50_nlo",name="Drell-Yan 10-50 NLO")
-    samples = mergeSamples(samples,"ST")
-    samples = mergeSamples(samples,["WW","WZ","ZZ"],name="diboson")    
-    
-    # SIGNAl
-    for dir, sample, name, N_tot, sigma, scale in samplesS:
-        file = OUT_DIR + dir + "TauTauAnalysis.%s%s.root" % (sample,label)
-        samples.append(Sample( file, name, sigma=sigma, N=N_tot, scale=scale, signal=True, cuts="", weight=weight, treeName=treeName ))
-    
-    
-    # DATA
-    if channel in samplesD:
-        for dir, sample, name in samplesD[channel]:
-            file = OUT_DIR + dir + "TauTauAnalysis.%s%s.root" % (sample,label)
-            samples.append(Sample( file, name, data=True, treeName=treeName )) #cuts="( m_vis < 15 || 30 < m_vis )"
-    
-    
-    # VARIABLES
-    variables.append(( "m_vis", 35, 0, 70 ))
-    variables.append(( "m_vis", 35, 0, 140 ))
-#     variables.append(( "gen_match_2", 8, 0, 8 ))
-#     variables.append(( "NUP", 6, 0, 6 ))
-    variables.append(( "pol_2", 25, -1.1, 1.1 ))
-#     variables.append(( "mt_1", 40, 0, 200 ))
-    variables.append(( "pfmt_1", 30, 0, 150 ))
-#     variables.append(( "mt_2", 30, 0, 150 ))
-#     variables.append(( "pfmt_1", 30, 0, 150 ))
-#     variables.append(( "npu", 50, 0, 50 ))
-#     variables.append(( "npv", 50, 0, 50 ))
-    variables.append(( "met", 30, 0, 120 ))
-    variables.append(( "met_old", 30, 0, 120 ))
-#     variables.append(( "puppimet", 30, 0, 120 ))
-#     variables.append(( "mvamet", 30, 0, 120 ))
-#     variables.append(( "dR_ll", 45, 0, 7 ))
-#     variables.append(( "dphi_ll_bj", 45, 0, 7 ))
-#     for n in [ "nbtag", "njets" ]:
-#        variables.append( (n,6,0,6) )
-#     for n in [ "ncbtag", "nfjets", "ncjets" ]:
-#        variables.append( (n,5,0,5) )
-#     for p in [ ("j",1), ("b",1), ("",1), ("",2), ("j",1), ("j",2), ("b",1) ]:
-#        variables.append(( "%spt_%i"  % p, 50,   0, 150 ))
-#        variables.append(( "abs(%seta_%i)" % p,  25,  0,  5 ))
-#     for n in [ "iso_2", "againstElectronVLooseMVA6_2", "againstMuonTight3_2" ]:
-#        variables.append( (n,2,0,2) )
-#     variables.append(( "iso_1", 20, 0, 1.0 ))
-#     variables.append(( "byIsolationMVA3oldDMwLTraw_2", 25, -1, 1 ))
 
 
-    # LOOP over SELECTIONS
-    WJnormalized = False # renormalize WJ once!
-    for label, cuts in categories:
-        
-        print ">>>\n>>> %s: %s" % (channel, label)
-        
-        stack = True # COMPARE: set to false
-        if cuts: cuts = "channel==%i && %s" % (channeli, cuts )
-        else:    cuts = "channel==%i"       %  channeli
-        QCD = False
-        if "q_1" in cuts and "q_2" in cuts and stack:
-            QCD = True
-        
-        
-        # RENORMALIZE WJ
-        if not WJnormalized and not "SS" in label and stack:
-           #renormcuts = "channel==%i && %s && %s && q_1*q_2<0" % (channeli, isocuts, vetos)
-           plot = Plot( samples, "pfmt_1", 100, 80, 180, cuts=cuts, QCD=QCD )
-           plot.renormalizeWJ()
-           #WJnormalized = True
-        
-        
-        # RESET
-        norm = (not stack) and False # COMPARE: set to false to check normalization; True to check shape
-        if not stack and norm:
-            for sample in samples: sample.resetScalesAndWeights(weight="genweight")
-        
-        
-        # LOOP over VARIABLES
-        for var, nBins, a, b in variables:
-        
-        
-            # NAME
-            name = "%s/%s_%s%s.png" % (DIR,var,label,plotlabel)
-            if "m_vis" in var:
-                name = "%s/%s_%i_%s%s.png" % (DIR,var,b,label,plotlabel)
-                for sample in samples:
-                    if sample.isData: sample.cuts = "( m_vis < 10 || 25 < m_vis )"
-            name = name.replace(" and ","-").replace(" ","").replace(",","-") #.replace("(","").replace(")","")
-            
-            
-            # TITLE
-            title = label
-    
-            
-            # WEIGHT
-            varweight = ""
-            #if "category" not in name and ("btag" in var or "bpt" in var or "beta" in var or "bphi" in var):
-            #    varweight = "weightbtag"
-            #    title = "%s (btag SF)" % title
-            
-            
-            # BINS
-            if "category" in label:
-                if "m_vis" in var: nBins = 20
-            
-            
-            # LEGEND POSITION
-            position = ""
-            logy = False
-            if "m_" in var or "iso_" in var or "against" in var:
-                position += "Left"
-                #if b == 120: position = "LeftLeft"
-            if "Iso" in var or "NUP" in var:
-                position += "Center"
-            if "jeta_" in var or "beta_" in var or "NUP" in var:
-                position += "Top"
-            if "jpt_1" in var and "category" in label:
-                position += "Left"
-            if "gen_match" in var:
-                position += "Left"
-            
-            
-            # PLOT
-            plot = Plot( samples, var, nBins, a, b, cuts=cuts, QCD=QCD) #, weight=varweight)
-            plot.plot(stack=stack, position=position, title=title, staterror=stack, logy=logy, ratio=stack, norm=norm)
-            if "m_vis" in var and stack: print ">>> integral signal region %s: %s MC events" % (var,plot.integrateStack(15,30))
-            plot.saveAs(name)
 
-            if "m_vis" in var:
-                for sample in samples:
-                    if sample.isData: sample.cuts = ""
+
+
+    #########
+    # color #
+    #########
+
+def color(string,**kwargs):
+    """Color"""
+    # http://stackoverflow.com/questions/287871/print-in-terminal-with-colors-using-python
+
+    text_color_dict = {         "black"     : "0;30;",
+                                "red"       : "0;31;",
+                                "green"     : "0;32;",
+                                "yellow"    : "0;33;",
+                                "blue"      : "0;34;",
+                                "purple"    : "0;35;",
+                                "magenta"   : "0;36;",
+                                "gray"      : "0;37;",  }
+    background_color_dict = {   "black"     : "40",
+                                "red"       : "41",
+                                "green"     : "42",
+                                "yellow"    : "43",
+                                "blue"      : "44",
+                                "purple"    : "45",
+                                "magenta"   : "46",
+                                "gray"      : "47",     }
+                                
+    color_code = text_color_dict[kwargs.get("color","red")] + background_color_dict[kwargs.get("background","black")]
+
+    return "\x1b[%sm%s\x1b[0m" % ( color_code, string )
 
 
 
@@ -462,7 +538,7 @@ def main():
     
     if args.category > -1:
         selectCategory(args.category)
-    
+        
     for channel in [ "mutau",
                      #"eletau",
                     ]:

@@ -23,6 +23,8 @@ const std::string TauTauAnalysis::kCutName[ TauTauAnalysis::kNumCuts ] = {
   "Lepton",                // C4
   "LepTau",                // C6
   "BeforeCutsWeighted",    // C7
+  "DeltaR_before",         // C8
+  "DeltaR",                // C8
 };
 
 
@@ -39,8 +41,8 @@ TauTauAnalysis::TauTauAnalysis() : SCycleBase()
    , m_puppimissingEt( this )
    , m_mvamissingEt( this )
    , m_genParticle( this )
-   , m_pileupReweightingTool( this )
-   , m_bTaggingScaleTool( this )
+   , m_PileupReweightingTool( this )
+   , m_BTaggingScaleTool( this )
    , m_ScaleFactorTool( this )
    , m_RecoilCorrector( this )
 {
@@ -266,7 +268,7 @@ void TauTauAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
   m_logger << INFO << "JSONName:             " <<             m_jsonName << SLogger::endmsg;
   
 
-  if (!m_isData) m_pileupReweightingTool.BeginInputData( id );
+  if (!m_isData) m_PileupReweightingTool.BeginInputData( id );
 
  
   if (m_isData) {
@@ -425,9 +427,12 @@ void TauTauAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
   Book( TH1F("pt_gentau1",      "gen tau 1 pt",     150, 0, 150 ), "checks");
   Book( TH1F("pt_gentau2",      "gen tau 2 pt",     150, 0, 150 ), "checks");
   Book( TH1F("pt_muon",         "gen muon pt",      100, 0, 100 ), "checks");
-  Book( TH1F("DeltaR_tautau",   "DeltaR_tautau",    100, 0,   5 ), "checks");
-
-  m_bTaggingScaleTool.BeginInputData( id );
+  Book( TH1F("DeltaR_tautau",   "DeltaR_tautau",    100, 0,   3 ), "checks");
+  Book( TH1F("DeltaR_taumu",    "DeltaR_taumu",     100, 0,   3 ), "checks");
+  Book( TH1F("M_tautau",        "M_tautau",         100, 0,  60 ), "checks");
+  Book( TH1F("DeltaR_taumu_reco", "DeltaR_taumu_reco", 100, 0,  3 ), "checks");
+  
+  m_BTaggingScaleTool.BeginInputData( id );
   m_ScaleFactorTool.BeginInputData( id );
   m_RecoilCorrector.BeginInputData( id );
 
@@ -513,7 +518,7 @@ void TauTauAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError )
   //b_weight["mutau"]  = 1.;
   //b_weight["eletau"] = 1.;
   
-    
+  
   
   // Cut 0: no cuts
   for (auto ch: channels_){
@@ -521,6 +526,7 @@ void TauTauAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError )
     b_channel[ch] = 0;
   }
   if (m_isSignal) checks(); // checks
+  
   
   
   // Cut 1: check for data if run/lumiblock in JSON
@@ -637,11 +643,15 @@ void TauTauAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError )
     
   // For mu-tau
   std::vector<ltau_pair> mutau_pair;
+  bool passedDeltaRCut = false; // check
   for(int imuon=0; imuon < (int)goodMuons.size(); imuon++){
     if(trigger_result == "ele") break; // trigger
     for(int itau=0; itau < (int)goodTaus.size(); itau++){
 
-      if(goodMuons[imuon].tlv().DeltaR(goodTaus[itau].tlv()) < 0.5) continue;
+      float dR = goodMuons[imuon].tlv().DeltaR(goodTaus[itau].tlv());
+      //if(goodMuons[imuon].tlv().DeltaR(goodTaus[itau].tlv()) < 0.5) continue;
+      if(dR > 0.5) passedDeltaRCut = true; // check
+      Hist("DeltaR_taumu_reco", "checks" )->Fill( dR ); // check
       
       Float_t mupt = goodMuons[imuon].pt();
       Float_t reliso = goodMuons[imuon].SemileptonicPFIso() / mupt;
@@ -652,8 +662,15 @@ void TauTauAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError )
     }
   }
   
+  // check delta R cut 
+  if(mutau_pair.size()!=0){
+    fillCutflow("cutflow_mutau", "histogram_mutau", kDeltaR_before, 1);
+    if(passedDeltaRCut) fillCutflow("cutflow_mutau", "histogram_mutau", kDeltaR, 1);
+  }
+  
   // For ele-tau
   std::vector<ltau_pair> eletau_pair;
+  
   for(int ielectron=0; ielectron < (int)goodElectrons.size(); ielectron++){
     if(trigger_result == "mu") break; // trigger
     for(int itau=0; itau < (int)goodTaus.size(); itau++){
@@ -668,8 +685,7 @@ void TauTauAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError )
       eletau_pair.push_back(pair);
     }
   }
-  
-  
+    
   if(mutau_pair.size()==0 && eletau_pair.size()==0){
     throw SError( SError::SkipEvent );
   }
@@ -872,9 +888,9 @@ TString TauTauAnalysis::passTrigger() {
     }
   }
 
-  if(flag_mu_trigger == true && flag_ele_trigger == true) return "both";
-  if(flag_mu_trigger == true && flag_ele_trigger == false) return "mu";
-  if(flag_mu_trigger == false && flag_ele_trigger == true) return "ele";
+  if(flag_mu_trigger == true && flag_ele_trigger  == true)  return "both";
+  if(flag_mu_trigger == true && flag_ele_trigger  == false) return "mu";
+  if(flag_mu_trigger == false && flag_ele_trigger == true)  return "ele";
 
   return "none";
   
@@ -943,7 +959,7 @@ void TauTauAnalysis::getEventWeight() {
     
     if ( (*m_eventInfo.bunchCrossing)[v] == 0 ) {
       b_npu_ = (*m_eventInfo.actualIntPerXing)[v]; // averageIntPerXing
-      b_puweight_ = m_pileupReweightingTool.getPileUpweight( b_npu_ );
+      b_puweight_ = m_PileupReweightingTool.getPileUpweight( b_npu_ );
       m_logger << VERBOSE << "Weight: " << b_puweight_ << " for true: " << b_npu_ << SLogger::endmsg;
       break;
     }
@@ -1114,7 +1130,7 @@ void TauTauAnalysis::FillBranches(const std::string& channel, const std::vector<
   
   b_pol_2[ch]       = -9;
   if (tau.chargedPionPt() > 0 && tau.neutralPionPt() > 0)
-    b_pol_2[ch]       = (tau.chargedPionPt() - tau.neutralPionPt()) / (tau.chargedPionPt() + tau.neutralPionPt());
+    b_pol_2[ch]     = (tau.chargedPionPt() - tau.neutralPionPt()) / (tau.chargedPionPt() + tau.neutralPionPt());
   
   b_againstElectronVLooseMVA6_2[ch]     = tau.againstElectronVLooseMVA6();
   b_againstElectronLooseMVA6_2[ch]      = tau.againstElectronLooseMVA6();
@@ -1130,11 +1146,11 @@ void TauTauAnalysis::FillBranches(const std::string& channel, const std::vector<
   b_neutralIsoPtSum_2[ch]               = tau.neutralIsoPtSum();
   b_puCorrPtSum_2[ch]                   = tau.puCorrPtSum();
   b_decayModeFindingOldDMs_2[ch]        = tau.decayModeFinding();
-  if (m_isData)  b_gen_match_2[ch]      = -1;
+  if (m_isData)  b_gen_match_2[ch]      = 1;
   else{
     b_gen_match_2[ch]                   = genMatch(b_eta_2[ch], b_phi_2[ch]);
     b_genmatchweight[ch]                = genMatchSF(b_gen_match_2[ch],b_eta_2[ch]); // leptons faking taus and real taus ID eff
-    b_weight[ch]                        = b_weight[ch]*b_genmatchweight[ch];
+    b_weight[ch]                        = b_weight[ch] * b_genmatchweight[ch];
   }
   b_decayMode_2[ch]                     = tau.decayMode();
   
@@ -1176,7 +1192,7 @@ void TauTauAnalysis::FillBranches(const std::string& channel, const std::vector<
     b_iso_1[ch]     = electron.SemileptonicPFIso() / electron.pt();
     b_id_e_mva_nt_loose_1[ch]           = electron.nonTrigMVA();
     lep_lv.SetPtEtaPhiM(b_pt_1[ch], b_eta_1[ch], b_phi_1[ch], b_m_1[ch]);
-    b_channel[ch]       = 2;
+    b_channel[ch]   = 2;
     if (!m_isData){
       b_trigweight_1[ch]    = m_ScaleFactorTool.get_Efficiency_EleTrig(lep_lv.Pt(),fabs(lep_lv.Eta()));
       b_idisoweight_1[ch]   = m_ScaleFactorTool.get_ScaleFactor_EleIdIso(lep_lv.Pt(),fabs(lep_lv.Eta()));
@@ -1187,8 +1203,8 @@ void TauTauAnalysis::FillBranches(const std::string& channel, const std::vector<
   if (m_isData) b_gen_match_1[ch]  = -1;
   else{
     b_weightbtag[ch]    = b_weightbtag_; // do not apply b tag weight when using promote-demote method !!!
-    //b_weightbtag[ch]    = m_bTaggingScaleTool.getScaleFactor_veto(Jet); // getScaleFactor_veto for AK4, getScaleFactor for AK8
-    b_weight[ch]        = b_weight[ch] * b_trigweight_1[ch] * b_idisoweight_1[ch] * b_idisoweight_2[ch]; // * b_weightbtag[ch]
+    //b_weightbtag[ch]    = m_BTaggingScaleTool.getScaleFactor_veto(Jet); // getScaleFactor_veto for AK4, getScaleFactor for AK8
+    b_weight[ch]        = b_weight[ch] * b_trigweight_1[ch] * b_idisoweight_1[ch] * b_trigweight_2[ch] * b_idisoweight_2[ch]; // * b_weightbtag[ch]
     b_gen_match_1[ch]   = genMatch(b_eta_1[ch], b_phi_1[ch]);
   }
   
@@ -1712,9 +1728,9 @@ bool TauTauAnalysis::getBTagWeight_promote_demote( const UZH::Jet& jet ) {
   TRandom3* generator = new TRandom3( (int) ((jet.eta()+5)*100000) );
   double rand = generator->Uniform(1.);
   
-  double BTag_SF  = m_bTaggingScaleTool.getScaleFactor_noWeight(jet);
-  double BTag_eff = m_bTaggingScaleTool.getEfficiency(jet,"jet_ak4");
-  double BTag_SFweight  = m_bTaggingScaleTool.getScaleFactor_veto(jet);
+  double BTag_SF  = m_BTaggingScaleTool.getScaleFactor_noWeight(jet);
+  double BTag_eff = m_BTaggingScaleTool.getEfficiency(jet,"jet_ak4");
+  double BTag_SFweight  = m_BTaggingScaleTool.getScaleFactor_veto(jet);
   b_weightbtag_ *= BTag_SFweight;
   
   if (BTag_SF == 1) return isBTagged; // no correction
@@ -1741,6 +1757,7 @@ void TauTauAnalysis::checks() {
   /// GEN TAUS
   std::vector<UZH::GenParticle> taus;
   std::vector<UZH::GenParticle> muons;
+//   std::vector<UZH::GenParticle> quarks;
   for ( int p = 0; p < (m_genParticle.N); ++p ) {
     UZH::GenParticle mygoodGenPart( &m_genParticle, p );
     Int_t pdgID = fabs(mygoodGenPart.pdgId());
@@ -1756,6 +1773,11 @@ void TauTauAnalysis::checks() {
     else if ( pdgID == 13 && mygoodGenPart.isDirectPromptTauDecayProduct()){
       muons.push_back(mygoodGenPart);
     }
+//     else if ( pdgID < 5 ){
+//       quarks.push_back(mygoodGenPart);
+//     }
+//     
+//     if (muons.size() > 1) break;
   }
   
   if(taus.size() < 2)      std::cout << "Warning: taus.size() < 2" << std::endl;
@@ -1769,14 +1791,42 @@ void TauTauAnalysis::checks() {
       pt_tau2 = pt;
     }
     
-    Hist("pt_gentaus", "checks" )->Fill( pt_tau1 );
-    Hist("pt_gentaus", "checks" )->Fill( pt_tau2 );
-    Hist("pt_gentau1", "checks" )->Fill( pt_tau1 );
-    Hist("pt_gentau2", "checks" )->Fill( pt_tau2 );
-    Hist("DeltaR_tautau", "checks" )->Fill( taus.at(0).tlv().DeltaR(taus.at(1).tlv()) );
     
+    Hist("pt_gentaus",      "checks" )->Fill( pt_tau1 );
+    Hist("pt_gentaus",      "checks" )->Fill( pt_tau2 );
+    Hist("pt_gentau1",      "checks" )->Fill( pt_tau1 );
+    Hist("pt_gentau2",      "checks" )->Fill( pt_tau2 );
+    Hist("DeltaR_tautau",   "checks" )->Fill( taus.at(0).tlv().DeltaR(taus.at(1).tlv()) );
+    Hist("M_tautau",        "checks" )->Fill( (taus.at(0).tlv()+taus.at(1).tlv()).M() );
+    
+    if (muons.size()<1) return;
     for( int i = 0; i < (int)muons.size(); ++i ){
       Hist("pt_muon", "checks" )->Fill( muons.at(i).pt() );
+    }
+    
+    // find hadronic tau
+    int itau_h = -1; // hadronic tau index
+    int ntau_h = 0; // hadronic tau number
+    for( int i = 0; i < 2; ++i ){
+      bool isLeptonic = false;
+      for(int daughter=0; daughter < (int)taus.at(i).nDau(); daughter++){
+        Int_t pdgID = abs(taus.at(i).dau()[daughter]);
+        if(pdgID > 10 && pdgID < 15 ){ // find leptons
+          isLeptonic = true;
+          break;
+        }
+      }
+      if (!isLeptonic){ // save hadronic tau index 
+          itau_h = i;
+          ntau_h += 1;
+          //std::cout << ">>> assigning indixes itau_h = " << itau_h << std::endl;
+      }
+    }
+    
+    if (ntau_h == 1 && itau_h > -1 && muons.size() == 1){
+      //TLorentzVector muon;
+      //muon.SetPtEtaPhiE(muons.at(0).pt(),muons.at(0).eta(),muons.at(0).phi(),muons.at(0).e());
+      Hist("DeltaR_taumu",    "checks" )->Fill( taus.at(itau_h).tlv().DeltaR(muons.at(0).tlv()) );
     }
     
   }

@@ -13,14 +13,17 @@ CMS_lumi.outOfFrame = True
 CMS_lumi.lumi_13TeV = "%s fb^{-1}" % lumi
 tdrstyle.setTDRStyle()
 
-# other
 # https://root.cern.ch/doc/master/classTColor.html
+# http://imagecolorpicker.com/nl
+# TColor::GetColor(R,B,G)
 legendTextSize = 0.028 #0.036
 colors     = [ kAzure+4,
                kRed+3, kAzure+4, kOrange-6, kGreen+3, kMagenta+3, kYellow+2,
                kRed-7, kAzure-4, kOrange+6, kGreen-2, kMagenta-3, kYellow-2 ]
-fillcolors = [ kRed-2, kAzure+5, kOrange-5, kGreen-2, kMagenta-3, kYellow-3,
-               kRed-7, kAzure-9, kOrange+6, kGreen+3, kMagenta-2, kYellow-2 ]
+fillcolors = [ kRed-2, kAzure+5, kMagenta-3, kYellow+771, kOrange-5,  kGreen-2,
+               kRed-7, kAzure-9, kOrange+382,  kGreen+3,  kViolet+5, kYellow-2 ]
+               #kYellow-3
+               
 varlist = [ ("jpt_1", "leading jet pt"),   ("jpt_2", "leading jet pt"),
             ("bpt_1", "leading b jet pt"), ("bpt_2", "sub-leading b jet pt"),
             ("abs(jeta_1)", "leading jet abs(eta)"),   ("abs(jeta_2)", "sub-leading jet abs(eta)"),
@@ -186,12 +189,12 @@ class Samples(object):
         self.cuts       = kwargs.get('cuts', "")
         self.weight     = kwargs.get('weight', False)
         self.scale      = kwargs.get('scale', 1.0)
-        self.sigma      = kwargs.get('sigma', 0.0)
         self.scaleBU    = self.scale # BU scale to overwrite previous renormalizations (WJ)
+        self.sigma      = kwargs.get('sigma', 0.0)
         self.isData     = kwargs.get('data', False)
         self.isBackground = kwargs.get('background', False)
         self.isSignal   = kwargs.get('signal', False)
-        self.blind      = kwargs.get('blind', "")
+        self.blind      = kwargs.get('blind', { })
         filename = label
         if self.samples: filename = self.samples[0].filename
         self.filename   = kwargs.get('filename', filename)
@@ -205,14 +208,17 @@ class Samples(object):
     
     
     def hist(self, var, nBins, a, b, **kwargs):
-        name   = kwargs.get('name',  makeHistName(self.label, var))
-        title  = kwargs.get('title', self.label)
+        name    = kwargs.get('name',  makeHistName(self.label+"_merged", var))
+        title   = kwargs.get('title', self.label)
+        
+        if 'scale' in kwargs: kwargs['scale'] = self.scale * kwargs.get('scale', 1.0)
+        else:                 kwargs['scale'] = self.scale
         
         #print ">>> Samples - hist: name = %s" % name
-        hist = TH1F(name+"_merged", title, nBins, a, b)
+        hist = TH1F(name, title, nBins, a, b)
         for sample in self.samples:
             if 'name' in kwargs: # prevent memory leaks
-                kwargs["name"] = makeHistName(sample.label,name.replace(self.label+"_",""))
+                kwargs['name']  = makeHistName(sample.label,name.replace(self.label+"_",""))    
             hist.Add( sample.hist(var, nBins, a, b, **kwargs) )
         
         return hist
@@ -249,15 +255,16 @@ class Sample(object):
         self.cuts       = kwargs.get('cuts', "")
         self.weight     = kwargs.get('weight', "")
         self.scale      = kwargs.get('scale', 1.0)
+        self.scaleBU    = self.scale # BU scale to overwrite previous renormalizations (WJ)
         self.sigma      = kwargs.get('sigma', 0.0)
         self.N          = kwargs.get('N', 0)
-        self.scaleBU    = self.scale # BU scale to overwrite previous renormalizations (WJ)
         self.isData     = kwargs.get('data', False)
         self.isBackground = kwargs.get('background', False)
         self.isSignal   = kwargs.get('signal', False)
         self.tree       = kwargs.get('treeName', None)
         self.treeName   = kwargs.get('treeName', "tree")
-        # TODO improve blinding: only blind for m_vis variable!
+        self.blind      = kwargs.get('blind', { })
+        # TODO: only blind for m_vis variable!
         # TODO: rewrite class with tree method, applycut method, ...
     
 
@@ -267,15 +274,22 @@ class Sample(object):
         
         scale  = kwargs.get('scale', 1.0) * self.scale
         tree   = self.file.Get(self.treeName)
-        weight = combineWeights(self.weight, kwargs.get('weight', ""))
-        cuts   = combineCuts(self.cuts, kwargs.get('cuts', ""), weight=weight)
         name   = kwargs.get('name',  makeHistName(self.label, var))
         title  = kwargs.get('title', self.label)
+        
+        blindcuts = ""
+        if var in self.blind:
+            blindcuts = self.blind[var]
+            print ">>> var in blind" 
+        weight = combineWeights(self.weight, kwargs.get('weight', ""))
+        cuts   = combineCuts(self.cuts, kwargs.get('cuts', ""), blindcuts, weight=weight)
         
         hist = TH1F(name, title, nBins, a, b)
         tree.Draw("%s >> %s" % (var,name), cuts, "gOff")
         if scale is not 1.0:
             hist.Scale(scale)
+        if scale is  0:
+            print "Warning: scale of %s is 0!" % self.label
         #print hist.GetEntries()
         #gDirectory.Delete(label)
         return hist
@@ -353,7 +367,8 @@ class Plot(object):
         self.samples    = samples
         self.var        = var
         self.nBins      = nBins
-        self.a = a; self.b = b
+        self.a          = a
+        self.b          = b
         self.cuts       = kwargs.get('cuts', "")
         self.weight     = kwargs.get('weight', "")
         
@@ -404,13 +419,13 @@ class Plot(object):
     
         # https://root.cern.ch/doc/master/classTHStack.html
         # https://root.cern.ch/doc/master/classTHistPainter.html#HP01e
-        stack = kwargs.get('stack', False)
-        residue = kwargs.get('residue', False) and self.histsD
-        ratio = kwargs.get('ratio', False) and self.histsD
-        errorbars = kwargs.get('errorbars', False)
-        staterror = kwargs.get('staterror', False)
-        norm = kwargs.get('norm', False)
-        option = 'hist'
+        stack       = kwargs.get('stack', False)
+        residue     = kwargs.get('residue', False) and self.histsD
+        ratio       = kwargs.get('ratio', False) and self.histsD
+        errorbars   = kwargs.get('errorbars', False)
+        staterror   = kwargs.get('staterror', False)
+        norm        = kwargs.get('norm', False)
+        option      = 'hist' #+ kwargs.get('option', '')
         if errorbars: option = 'E0 '+option
         
         # CANVAS
@@ -595,7 +610,7 @@ class Plot(object):
 
         if hists:
             if entries:
-                for hist, entry in zip( hists, entries ):
+                for hist, entry in zip( hists, entries ): #reversed
                     style = styleB
                     if hist in histsD: style = styleD
                     if hist in histsS: style = styleS
@@ -892,14 +907,14 @@ class Plot(object):
            and return a histogram of the difference."""
         #print ">>> estimating QCD for variable %s" % (self.var)
         
-        cuts = self.cuts
-        weight = self.weight
-        var = self.var
-        nBins = self.nBins
-        a = self.a
-        b = self.b
+        cuts    = self.cuts
+        weight  = self.weight
+        var     = self.var
+        nBins   = self.nBins
+        a       = self.a
+        b       = self.b
         samples = self.samples
-        scale = 1.06 # scale up QCD 6% in OS region
+        scale   = 1.06 # scale up QCD 6% in OS region
         
         if "q_1 * q_2 < 0" in cuts or "q_1*q_2<0" in cuts or "q_1*q_2 < 0" in cuts:
             cuts = cuts.replace("q_1 * q_2 < 0","q_1 * q_2 > 0").replace("q_1*q_2 < 0","q_1 * q_2 > 0").replace("q_1*q_2<0","q_1 * q_2 > 0")        
@@ -915,8 +930,8 @@ class Plot(object):
         histsMC_SS = [ ]
         histsD_SS  = [ ]
         for sample in samples:
-            name = makeHistName(sample.label+"_SS_QCD", var)
-            if sample.isBackground or sample.isSignal:
+            name = makeHistName(sample.label+"_SS", var)
+            if sample.isBackground:
                 histsMC_SS.append(sample.hist(var, nBins, a, b, cuts=cuts, weight=weight, name=name))
             elif sample.isData:
                 histsD_SS.append(sample.hist(var, nBins, a, b, cuts=cuts, name=name))
@@ -982,7 +997,9 @@ class Plot(object):
         
         # STACK
         stack = THStack("stack","")
-        for hist in self.histsMC: stack.Add(hist)
+        for hist in self.histsMC:
+            stack.Add(hist)
+            if "QCD" in hist.GetName(): print ">>> renormalizing with QCD included"
         self.stack = stack
         
         # CHECK MC and DATA
@@ -1014,7 +1031,7 @@ class Plot(object):
         WJ = None
         WJs = [ ]
         for sample in samples:
-            print sample.label
+            #print sample.label
             if "WJ" in sample.label or "W + jets" in sample.label or "W + Jets" in sample.label:
                 WJs.append(sample)
         if   len(WJs) == 1:
@@ -1030,7 +1047,7 @@ class Plot(object):
         histWJ = None
         histsWJ = [ ]
         for hist in self.histsMC:
-            print hist.GetName()
+            #print hist.GetName()
             if "WJ" in hist.GetName() or "W-jets" in hist.GetName() or "W-Jets" in hist.GetName():
                 histsWJ.append(hist)
         if   len(histsWJ) == 1:
@@ -1046,9 +1063,9 @@ class Plot(object):
         I_MC = self.stack.GetStack().Last().Integral()
         I_D  = self.histsD[0].Integral()
         I_WJ = histWJ.Integral()
-        print ">>> I_D = %s"  % I_D
-        print ">>> I_MC = %s" % I_MC
-        print ">>> I_WJ = %s" % I_WJ
+        #print ">>> I_D  = %.2f" % I_D
+        #print ">>> I_MC = %.2f" % I_MC
+        #print ">>> I_WJ = %.2f" % I_WJ
         if I_MC < 10:
             print ">>> Warning! Could not renormalize WJ: integral of MC is %s < 10!" % I_MC
             return
@@ -1065,7 +1082,7 @@ class Plot(object):
             scale = 1 # use BU scale to overwrite previous renormalizations
             print ">>> Warning! Could not renormalize WJ: scale < 0"
         WJ.scale = WJ.scaleBU * scale
-        print ">>> renormalization scale = %s" % scale
+        print ">>> WJ renormalization scale = %.3f (new total scale = %.3f)" % (scale, WJ.scale)
         self.close()
         
         

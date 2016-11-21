@@ -85,6 +85,8 @@ public:
     kLepton,                // C4
     kLepTau,                // C6
     kBeforeCutsWeighted,    // C7
+    kDeltaR_before,         // C8
+    kDeltaR,                // C9
     kNumCuts                // last!
   } SelectionCuts;
   
@@ -174,15 +176,15 @@ private:
   //
   // Input variable objects:
   //
-  Ntuple::JetNtupleObject         m_jetAK4;            ///< jet container
-  Ntuple::EventInfoNtupleObject   m_eventInfo; ///< event info container
-  Ntuple::ElectronNtupleObject    m_electron;            ///< electron container
-  Ntuple::MuonNtupleObject        m_muon;            ///< muon container
+  Ntuple::JetNtupleObject         m_jetAK4;         ///< jet container
+  Ntuple::EventInfoNtupleObject   m_eventInfo;      ///< event info container
+  Ntuple::ElectronNtupleObject    m_electron;       ///< electron container
+  Ntuple::MuonNtupleObject        m_muon;           ///< muon container
   Ntuple::TauNtupleObject         m_tau;            ///< tau container
-  Ntuple::MissingEtNtupleObject   m_missingEt;            ///< missing E_T container
-  Ntuple::MissingEtNtupleObject   m_puppimissingEt;            ///< missing E_T container
-  Ntuple::MissingEtNtupleObject   m_mvamissingEt;            ///< missing E_T container
-  Ntuple::GenParticleNtupleObject m_genParticle;            ///< gen particle container
+  Ntuple::MissingEtNtupleObject   m_missingEt;      ///< missing E_T container
+  Ntuple::MissingEtNtupleObject   m_puppimissingEt; ///< missing E_T container
+  Ntuple::MissingEtNtupleObject   m_mvamissingEt;   ///< missing E_T container
+  Ntuple::GenParticleNtupleObject m_genParticle;    ///< gen particle container
 
   //  UZH::MissingEt *Met;
   //  UZH::MissingEt *PuppiMet;
@@ -192,14 +194,14 @@ private:
   // Further objects
   //
   Root::TGoodRunsList m_grl;
-  PileupReweightingTool m_pileupReweightingTool;
-  BTaggingScaleTool m_bTaggingScaleTool;
+  PileupReweightingTool m_PileupReweightingTool;
+  BTaggingScaleTool m_BTaggingScaleTool;
   ScaleFactorTool m_ScaleFactorTool;
   RecoilCorrectorTool m_RecoilCorrector;
 
-  //  TLorentzVector applySVFitSemileptonic    (float cov00, float cov10, float cov11, float met, float met_phi, TLorentzVector lep1 , TLorentzVector lep2);
-  //  TLorentzVector applySVFitHadronic    (float cov00, float cov10, float cov11, float met, float met_phi, TLorentzVector lep1 , TLorentzVector lep2);
-  //  TLorentzVector applySVFit    (float cov00, float cov10, float cov11, float met, float met_phi, TLorentzVector lep1 , TLorentzVector lep2);
+  //  TLorentzVector applySVFitSemileptonic (float cov00, float cov10, float cov11, float met, float met_phi, TLorentzVector lep1 , TLorentzVector lep2);
+  //  TLorentzVector applySVFitHadronic     (float cov00, float cov10, float cov11, float met, float met_phi, TLorentzVector lep1 , TLorentzVector lep2);
+  //  TLorentzVector applySVFit             (float cov00, float cov10, float cov11, float met, float met_phi, TLorentzVector lep1 , TLorentzVector lep2);
   float applySVFit(float cov00, float cov10, float cov11, float met, float met_phi, TLorentzVector lep1 , TLorentzVector lep2, const std::string& channel);
   
   void extraLeptonVetos(const std::string& channel, const UZH::Muon& muon, const UZH::Electron& electron);
@@ -208,18 +210,18 @@ private:
   // XML settings for TauTauAnalysis
   //
   // naming
-  std::string m_recoTreeName;       ///< name of tree with reconstructed objects in ntuple
-  // std::string m_outputTreeName;    ///< name of output tree
-  std::vector<std::string> m_outputTreeName_ch_; ///< name of output trees for analysis
+  std::string m_recoTreeName;                       ///< name of tree with reconstructed objects in ntuple
+  // std::string m_outputTreeName;                     ///< name of output tree
+  std::vector<std::string> m_outputTreeName_ch_;    ///< name of output trees for analysis
   std::vector<std::string> channels_;
 
-  int m_ntupleLevel;               ///< cut at which branches for ntuple are written out
-  std::string m_jetAK4Name;            ///< name of AK4 jet collection in tree with reconstructed objects
+  int m_ntupleLevel;                ///< cut at which branches for ntuple are written out
+  std::string m_jetAK4Name;         ///< name of AK4 jet collection in tree with reconstructed objects
   std::string m_electronName;       ///< name of electron collection in tree with reconstructed objects
-  std::string m_muonName;       ///< name of muon collection in tree with reconstructed objects
-  std::string m_tauName;       ///< name of tau collection in tree with reconstructed objects
-  std::string m_missingEtName;       ///< name of missing E_T collection in tree with reconstructed objects
-  std::string m_genParticleName;       ///< name of gen particle collection in tree with reconstructed objects
+  std::string m_muonName;           ///< name of muon collection in tree with reconstructed objects
+  std::string m_tauName;            ///< name of tau collection in tree with reconstructed objects
+  std::string m_missingEtName;      ///< name of missing E_T collection in tree with reconstructed objects
+  std::string m_genParticleName;    ///< name of gen particle collection in tree with reconstructed objects
   
   // flags
   bool      m_isData;
