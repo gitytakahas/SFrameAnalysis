@@ -1827,8 +1827,7 @@ void TauTauAnalysis::checks() {
 
 void TauTauAnalysis::cutflowCheck(const std::string& ch){
   //std::cout << "cutflowCheck" << std::endl;
-// https://twiki.cern.ch/twiki/bin/viewauth/CMS/HiggsToTauTauWorking2016#MC_Matching
-//
+  
 // int genMatch(eta,phi) returns:
 //  1: prompt electron
 //  2: prompt muon
@@ -1836,7 +1835,9 @@ void TauTauAnalysis::cutflowCheck(const std::string& ch){
 //  4. tau -> mu
 //  5: tau -> hadr.
 //  6: fake jet / PU
-
+// https://twiki.cern.ch/twiki/bin/viewauth/CMS/HiggsToTauTauWorking2016#MC_Matching
+  
+  
   if( ch == "eletau" ) return;
   
    
