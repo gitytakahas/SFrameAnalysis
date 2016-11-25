@@ -423,6 +423,10 @@ void TauTauAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
   Book( TH1F("M_tautau",        "M_tautau",         100, 0,  60 ), "checks");
   Book( TH1F("N_tau_std",       "N_tau_std",          5, 0,   5 ), "checks");
   Book( TH1F("N_tau_bst",       "N_tau_bst",          5, 0,   5 ), "checks");
+  Book( TH1F("gen_match_tau_std", "gen_match_tau_std", 8, 0,  8 ), "checks");
+  Book( TH1F("gen_match_tau_bst", "gen_match_tau_bst", 8, 0,  8 ), "checks");
+  Book( TH1F("DeltaR_gentau_recotau_std", "DeltaR_gentau_recotau_std", 100, 0, 5 ), "checks");
+  Book( TH1F("DeltaR_gentau_recotau_bst", "DeltaR_gentau_recotau_bst", 100, 0, 5 ), "checks");
   
   m_BTaggingScaleTool.BeginInputData( id );
   m_ScaleFactorTool.BeginInputData( id );
@@ -1824,6 +1828,8 @@ void TauTauAnalysis::checks() {
 void TauTauAnalysis::cutflowCheck(const std::string& ch){
   //std::cout << "cutflowCheck" << std::endl;
 // https://twiki.cern.ch/twiki/bin/viewauth/CMS/HiggsToTauTauWorking2016#MC_Matching
+//
+// int genMatch(eta,phi) returns:
 //  1: prompt electron
 //  2: prompt muon
 //  3: tau -> e
@@ -1832,6 +1838,26 @@ void TauTauAnalysis::cutflowCheck(const std::string& ch){
 //  6: fake jet / PU
 
   if( ch == "eletau" ) return;
+  
+   
+  // GET GEN PARTICLES
+  std::vector<UZH::GenParticle> genTauhs;
+  for ( int p = 0; p < (m_genParticle.N); ++p ) {
+    UZH::GenParticle mygoodGenPart( &m_genParticle, p );
+    Int_t pdgId = abs(mygoodGenPart.pdgId());
+    
+    // only take taus
+    if(!(mygoodGenPart.status()==2 && pdgId==15 && mygoodGenPart.isPrompt() > 0.5)) continue;
+    bool isHadronic = true;
+    for(int daughter=0; daughter < (int)mygoodGenPart.nDau(); daughter++){
+      //std::cout << "\t" << "parent " << pdgId << "(pt = " << pt << ") daughter : " << mygoodGenPart.dau()[daughter] << std::endl;
+      Int_t daughter_pdgId = abs(mygoodGenPart.dau()[daughter]);
+      if(daughter_pdgId==11 || daughter_pdgId==13) isHadronic = false;
+    }
+    
+    if(isHadronic)
+        genTauhs.push_back(mygoodGenPart);
+  }
   
   
   // LEPTON MATCHING
@@ -1849,15 +1875,24 @@ void TauTauAnalysis::cutflowCheck(const std::string& ch){
   int Ntau2 = 0;
   for ( int i = 0; i < (m_tau.N); ++i ) {
     UZH::Tau mytau( &m_tau, i );
+    int gen_match = genMatch(mytau.eta(),mytau.phi());
     
+    // standard ID
     if(mytau.TauType()==1){
       Ntau1++;
-      if( genMatch(mytau.eta(),mytau.phi()) == 5 )
+      Hist("gen_match_tau_std", "checks")->Fill( gen_match );
+      for(int itau=0; itau<(int)genTauhs.size(); itau++)
+        Hist("DeltaR_gentau_recotau_std", "checks")->Fill( genTauhs[itau].tlv().DeltaR(mytau.tlv()) );
+      if( gen_match == 5 )
         matchedTaus_std.push_back(mytau);
     }
+    // boosted ID
     else if(mytau.TauType()==2){
       Ntau2++;
-      if( genMatch(mytau.eta(),mytau.phi()) == 5 )
+      Hist("gen_match_tau_bst", "checks")->Fill( gen_match );
+      for(int itau=0; itau<(int)genTauhs.size(); itau++)
+        Hist("DeltaR_gentau_recotau_bst", "checks")->Fill( genTauhs[itau].tlv().DeltaR(mytau.tlv()) );
+      if( gen_match == 5 )
         matchedTaus_bst.push_back(mytau);
     }
   }
@@ -1948,15 +1983,6 @@ void TauTauAnalysis::cutflowCheck(const std::string& ch){
   
   return;
 }
-
-
-
-
-
-
-
-
-
 
 
 
