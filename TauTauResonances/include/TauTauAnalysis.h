@@ -277,6 +277,7 @@ class TauTauAnalysis : public SCycleBase {
     double b_puweight_;
     double b_weightbtag_;
     double b_npu_;
+    double b_dR_ll_gen_ = -1;
     Int_t b_isData_;
     
     bool b_dilepton_veto_;
@@ -421,6 +422,7 @@ class TauTauAnalysis : public SCycleBase {
     std::map<std::string,Double_t> b_m_sv; 
     std::map<std::string,Double_t> b_m_sv_pfmet;
     std::map<std::string,Double_t> b_dR_ll;
+    std::map<std::string,Double_t> b_dR_ll_gen;
     std::map<std::string,Double_t> b_dphi_ll_bj;
     std::map<std::string,Double_t> b_pt_tt;
     std::map<std::string,Double_t> b_mt_tot;
