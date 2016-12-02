@@ -419,34 +419,47 @@ void TauTauAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
   }
   
   // Checks
-  Book( TH1F("pt_gentaus",      "gen taus pt",      150, 0, 150 ), "checks");
-  Book( TH1F("pt_gentau1",      "gen tau 1 pt",     150, 0, 150 ), "checks");
-  Book( TH1F("pt_gentau2",      "gen tau 2 pt",     150, 0, 150 ), "checks");
-  Book( TH1F("pt_genmuon",      "gen muon pt",      100, 0, 100 ), "checks");
-  Book( TH1F("DeltaR_tautau",   "DeltaR_tautau",    150, 0,   5 ), "checks");
-  Book( TH1F("DeltaR_taumu",    "DeltaR_taumu",     150, 0,   5 ), "checks");
-  Book( TH1F("M_tautau",        "M_tautau",         200, 0,  60 ), "checks");
-  Book( TH1F("N_tauh_gen",      "N_tauh_gen",         5, 0,   5 ), "checks");
-  Book( TH1F("N_tau_gen",       "N_tau_gen",          5, 0,   5 ), "checks");
-  Book( TH1F("N_tauh_18_2p3_gen", "N_tauh_18_2p3_gen", 5, 0,  5 ), "checks");
-  Book( TH1F("N_tau_reco",      "N_tau_reco",         5, 0,   5 ), "checks");
-  Book( TH1F("tau_type",        "tau_type",           5, 0,   5 ), "checks");
-  Book( TH1F("N_tau_std",       "N_tau_std",          5, 0,   5 ), "checks");
-  Book( TH1F("N_tau_bst",       "N_tau_bst",          5, 0,   5 ), "checks");
-  Book( TH1F("N_tau_18_2p3_std", "N_tau_18_2p3_std",  5, 0,   5 ), "checks");
-  Book( TH1F("N_tau_18_2p3_1ctauh_std", "N_tau_18_2p3_1ctauh_std",  5, 0,   5 ), "checks");
-  Book( TH1F("gen_match_tau_std", "gen_match_tau_std", 8, 0,  8 ), "checks");
-  Book( TH1F("gen_match_tau_bst", "gen_match_tau_bst", 8, 0,  8 ), "checks");
-  Book( TH1F("N_gen_match0p30_tau_std", "N_gen_match0p30_tau_std", 5, 0,  5 ), "checks");
-  Book( TH1F("N_gen_match0p30_tau_bst", "N_gen_match0p30_tau_bst", 5, 0,  5 ), "checks");
-  Book( TH1F("N_gen_match0p30_1ctauh_tau_std",  "N_gen_match0p30_1ctauh_tau_std", 5, 0,  5 ), "checks");
-  Book( TH1F("N_gen_match0p30_0tauh_tau_std",   "N_gen_match0p30_0tauh_tau_std",  5, 0,  5 ), "checks");
-  Book( TH1F("N_gen_match_tau_1cjet_bst",       "N_gen_match_tau_1cjet_bst",      5, 0,  5 ), "checks");
-  Book( TH1F("N_gen_match0p30_18_2p3_tau_std",  "N_gen_match0p30_18_2p3_tau_std", 5, 0,  5 ), "checks");
-  Book( TH1F("DeltaR_gen_reco_tau_std", "DeltaR_gen_reco_tau_std", 100, 0, 5 ), "checks");
-  Book( TH1F("DeltaR_gen_reco_tau_bst", "DeltaR_gen_reco_tau_bst", 100, 0, 5 ), "checks");
-  Book( TH1F("DeltaR_gen_reco_tau_min_1ctauh_std",  "DeltaR_gen_reco_tau_min_1ctauh_std", 100, 0, 5 ), "checks");
-  Book( TH1F("DeltaR_gen_reco_tau_min_0tauh_std",   "DeltaR_gen_reco_tau_min_0tauh_std", 100, 0, 5 ), "checks");
+  if(m_isSignal){
+  
+    Book( TH1F("pt_gentaus",      "gen taus pt",      150, 0, 150 ), "checks");
+    Book( TH1F("pt_gentau1",      "gen tau 1 pt",     150, 0, 150 ), "checks");
+    Book( TH1F("pt_gentau2",      "gen tau 2 pt",     150, 0, 150 ), "checks");
+    Book( TH1F("pt_genmuon",      "gen muon pt",      100, 0, 100 ), "checks");
+    Book( TH1F("DeltaR_tautau",   "DeltaR_tautau",    150, 0,   5 ), "checks");
+    Book( TH1F("DeltaR_taumu",    "DeltaR_taumu",     150, 0,   5 ), "checks");
+    Book( TH1F("M_tautau",        "M_tautau",         200, 0,  60 ), "checks");
+    
+    Book( TH1F("N_tauh_gen",      "N_tauh_gen",         5, 0,   5 ), "checks");
+    Book( TH1F("N_tau_gen",       "N_tau_gen",          5, 0,   5 ), "checks");
+    Book( TH1F("N_tauh_18_2p3_gen", "N_tauh_18_2p3_gen", 5, 0,  5 ), "checks");
+    Book( TH1F("N_tau_reco",      "N_tau_reco",         5, 0,   5 ), "checks");
+    Book( TH1F("N_tau_reco_18_2p3", "N_tau_reco_18_2p3", 5, 0,   5 ), "checks");
+    Book( TH1F("tau_type",        "tau_type",           5, 0,   5 ), "checks");
+    Book( TH1F("N_tau_std",       "N_tau_std",          5, 0,   5 ), "checks");
+    Book( TH1F("N_tau_bst",       "N_tau_bst",          5, 0,   5 ), "checks");
+    Book( TH1F("N_tau_18_2p3_std", "N_tau_18_2p3_std",  5, 0,   5 ), "checks");
+    Book( TH1F("N_tau_18_2p3_1ctauh_std", "N_tau_18_2p3_1ctauh_std",  5, 0,   5 ), "checks");
+    Book( TH1F("gen_match_tau_std", "gen_match_tau_std", 8, 0,  8 ), "checks");
+    Book( TH1F("gen_match_tau_bst", "gen_match_tau_bst", 8, 0,  8 ), "checks");
+    Book( TH1F("N_gen_match0p30_tau_std", "N_gen_match0p30_tau_std", 5, 0,  5 ), "checks");
+    Book( TH1F("N_gen_match0p30_tau_bst", "N_gen_match0p30_tau_bst", 5, 0,  5 ), "checks");
+    Book( TH1F("N_gen_match0p30_1ctauh_tau_std",  "N_gen_match0p30_1ctauh_tau_std", 5, 0,  5 ), "checks");
+    Book( TH1F("N_gen_match0p30_0tauh_tau_std",   "N_gen_match0p30_0tauh_tau_std",  5, 0,  5 ), "checks");
+    Book( TH1F("N_gen_match_tau_1cjet_bst",       "N_gen_match_tau_1cjet_bst",      5, 0,  5 ), "checks");
+    Book( TH1F("N_gen_match0p30_18_2p3_tau_std",  "N_gen_match0p30_18_2p3_tau_std", 5, 0,  5 ), "checks");
+    Book( TH1F("DeltaR_gen_reco_tau_std", "DeltaR_gen_reco_tau_std", 100, 0, 5 ), "checks");
+    Book( TH1F("DeltaR_gen_reco_tau_bst", "DeltaR_gen_reco_tau_bst", 100, 0, 5 ), "checks");
+    Book( TH1F("DeltaR_gen_reco_tau_min_1ctauh_std",  "DeltaR_gen_reco_tau_min_1ctauh_std", 100, 0, 5 ), "checks");
+    Book( TH1F("DeltaR_gen_reco_tau_min_0tauh_std",   "DeltaR_gen_reco_tau_min_0tauh_std", 100, 0, 5 ), "checks");
+    Book( TH1F("eta_tau_reco",    "eta_tau_reco",     100, -5, 5 ), "checks");
+    Book( TH1F("pt_tau_reco",     "pt_tau_reco",      100, 0, 100 ), "checks");
+    Book( TH1F("DeltaDeltaR",     "DeltaDeltaR",      100, -1,  5 ), "checks"); // abs(dR_TLV - dR_function)
+    Book( TH1F("decayModeFinding", "decayModeFinding",   2,  0,  2 ), "checks");
+    
+    Book( TH1F("pt_tt_vis",         "pt_tt_vis",      100, 0, 200 ), "checks");
+    Book( TH1F("pt_tt_vis_ltau",    "pt_tt_vis_ltau", 100, 0, 200 ), "checks");
+    
+  }
   
   m_BTaggingScaleTool.BeginInputData( id );
   m_ScaleFactorTool.BeginInputData( id );
@@ -569,7 +582,10 @@ void TauTauAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError )
   }
   if (m_isSignal){
     checks();
-    for (auto ch: channels_) cutflowCheck(ch);
+    visiblePTCheck();
+    for (auto ch: channels_){
+      cutflowCheck(ch);
+    }
   }
   
   
@@ -1160,7 +1176,7 @@ void TauTauAnalysis::FillBranches(const std::string& channel, const std::vector<
   b_nbtag20[ch]     = nbtag20;
   b_nfbtag20[ch]    = nfbtag20;
   b_ncbtag20[ch]    = ncbtag20;
-
+  
   // For taus
   b_pt_2[ch]        = tau.tlv().Pt();
   b_eta_2[ch]       = tau.tlv().Eta();
@@ -1926,6 +1942,9 @@ void TauTauAnalysis::cutflowCheck(const std::string& ch){
     ntau_reco++;
     if(abs(mytau.eta())<2.3 && mytau.pt()>18) ntau_reco_18_2p3++;
     Hist("tau_type", "checks")->Fill( mytau.TauType() );
+    Hist("eta_tau_reco", "checks")->Fill( mytau.eta() );
+    Hist("pt_tau_reco",  "checks")->Fill( mytau.pt() );
+    Hist("decayModeFinding", "checks")->Fill( mytau.decayModeFinding() );
     
     // standard ID
     if(mytau.TauType()==1){
@@ -1935,6 +1954,7 @@ void TauTauAnalysis::cutflowCheck(const std::string& ch){
       for(int itau=0; itau<(int)genTauhs.size(); itau++){
         float dR = genTauhs[itau].tlv().DeltaR(mytau.tlv());
         Hist("DeltaR_gen_reco_tau_std", "checks")->Fill( dR );
+        Hist("DeltaDeltaR", "checks")->Fill(abs( dR - deltaR(mytau.eta()-genTauhs[itau].eta(), deltaPhi(mytau.phi(), genTauhs[itau].phi())) ));
         if(dR<0.3){
           N_match0p30_std++;
           matchedTaus_std.push_back(mytau);
@@ -1966,6 +1986,7 @@ void TauTauAnalysis::cutflowCheck(const std::string& ch){
   }
   
   Hist("N_tau_reco", "checks")->Fill( ntau_reco );
+  Hist("N_tau_reco_18_2p3", "checks")->Fill( ntau_reco_18_2p3 );
   Hist("N_tau_std",  "checks")->Fill( ntau1 );
   Hist("N_tau_bst",  "checks")->Fill( ntau2 );
   Hist("N_tau_18_2p3_std", "checks")->Fill( ntau1_18_2p3 );
@@ -2126,6 +2147,100 @@ void TauTauAnalysis::cutflowCheck(const std::string& ch){
   
   return;
 }
+
+
+
+
+
+void TauTauAnalysis::visiblePTCheck(){
+  //std::cout << "visiblePTCheck" << std::endl;
+  
+  // Retrieve visible pT of the taus ! 
+  // Should be done in Ntuplizer level from next time.
+  std::map<int, TLorentzVector> gennus;
+  std::map<int, TLorentzVector> genleptons;
+  std::map<int, TLorentzVector> gentauhs;
+  for ( int p = 0; p < (m_genParticle.N); ++p ) {
+    UZH::GenParticle mygoodGenPart( &m_genParticle, p );
+    
+    Float_t pt = mygoodGenPart.pt();
+    Float_t eta = mygoodGenPart.eta();
+    Float_t phi = mygoodGenPart.phi();
+    Float_t energy = mygoodGenPart.e();
+    Int_t pdgId = mygoodGenPart.pdgId();
+    Int_t abspdgId = abs(mygoodGenPart.pdgId());
+    Int_t isPrompt = mygoodGenPart.isPrompt();
+    Int_t isDirectPromptTauDecayProduct = mygoodGenPart.isDirectPromptTauDecayProduct();
+    
+    Int_t mother = -999;
+    if(mygoodGenPart.nMoth() !=0){
+      mother = abs(mygoodGenPart.mother()[0]);
+    }
+    
+    // save gen tau neutrino + gen leptons from tau decay
+    if(mygoodGenPart.status()==1 && abspdgId==16 && mother==15){ 
+      TLorentzVector genNeutrino;
+      genNeutrino.SetPtEtaPhiE(pt,eta,phi,energy);
+      gennus[pdgId] = genNeutrino;
+    }
+    else if( mygoodGenPart.status()==1 && (abspdgId==11 || abspdgId==13) && (isDirectPromptTauDecayProduct > 0.5) ){
+      TLorentzVector genLeptons;
+      genLeptons.SetPtEtaPhiE(pt,eta,phi,energy);
+      genleptons[pdgId] = genLeptons;
+      continue;
+    }
+    
+    // skip if not tau
+    if(!(mygoodGenPart.status()==2 && abspdgId==15 && isPrompt > 0.5)) continue;
+    
+    bool isleptonic = false;
+    for(int daughter=0; daughter < (int)mygoodGenPart.nDau(); daughter++){
+      //std::cout << "\t" << "parent " << pdgId << "(pt = " << pt << ") daughter : " << mygoodGenPart.dau()[daughter] << std::endl;
+      Int_t daughter_pdgId = abs(mygoodGenPart.dau()[daughter]);
+      if(daughter_pdgId==11 || daughter_pdgId==13) isleptonic = true;
+      if(daughter_pdgId==15){
+        std::cout << "Tau decays into taus !!!" << std::endl;
+        isleptonic = true;
+      }
+    }
+    
+    if(isleptonic==false){
+      TLorentzVector genPt;
+      genPt.SetPtEtaPhiE(pt,eta,phi,energy);
+      gentauhs[pdgId] = genPt;
+    }
+  }
+  
+  // if tau decays hadronically: loop over gentaus, gennus
+  // substract gennu pt from gentau pt
+  for(std::map<int, TLorentzVector>::iterator it = gentauhs.begin(); it!=gentauhs.end(); ++it){
+    Int_t pdg = (*it).first;
+    for(std::map<int, TLorentzVector>::iterator itn = gennus.begin(); itn!=gennus.end(); ++itn){
+      Int_t nu = (*itn).first;
+      if(pdg==15){
+        if(nu==16) (*it).second -= (*itn).second;
+      }else if(pdg==-15){
+        if(nu==-16) (*it).second -= (*itn).second;
+      }else{
+	  std::cout << "Impossible!!!" << std::endl;
+      }
+    }
+  }
+  
+  if(gentauhs.size()==1 && genleptons.size()==1){
+    Hist("pt_tt_vis_ltau", "checks")->Fill( (gentauhs.begin()->second + genleptons.begin()->second).Pt() );
+    if(gentauhs.begin()->first * genleptons.begin()->first > 0){
+      std::cout << "Impossible!!! gentauhs.begin()->first * genleptons.begin()->first > 0" << std::endl;
+    }
+  }
+  else if( (gentauhs.size()+genleptons.size())!=2 ){
+    std::cout << "Impossible!!! (gentauhs.size()+genleptons.size())!=2" << std::endl;
+  }
+  
+}
+
+
+
 
 
 
