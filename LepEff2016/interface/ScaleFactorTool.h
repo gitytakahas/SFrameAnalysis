@@ -4,14 +4,11 @@
 #include "../interface/ScaleFactor.h"
 #include "TROOT.h"
 #include "TFile.h"
-//#include "TH1.h"
-//#include "TH2.h"
-//#include "TAxis.h"
-//#include "TGraphAsymmErrors.h"
 #include <iostream>
 #include <map>
 #include <cmath>
 #include <string>
+
 // SFrame include(s):
 #include "core/include/SError.h"
 #include "plug-ins/include/SToolBase.h"
