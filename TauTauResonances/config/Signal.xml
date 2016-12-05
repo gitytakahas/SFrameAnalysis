@@ -8,6 +8,7 @@
   <Library Name="libTauTauResonances" />
   <Library Name="libScaleFactorTool"/>
   <Library Name="libRecoilCorrector"/>
+  <Library Name="libSVFitTool"/>
 
   <Package Name="SFrameCore.par" />
   <Package Name="NtupleVariables.par" />
@@ -17,6 +18,7 @@
   <Package Name="TauTauResonances.par" />
   <Package Name="ScaleFactorTool.par" />
   <Package Name="RecoilCorrector.par" />
+  <Package Name="SVFitTool.par" />
 
   <Cycle Name="TauTauAnalysis" OutputDirectory="./" PostFix="" ProofServer="lite" ProofWorkDir="" RunMode="LOCAL" TargetLumi="1.0">
     <InputData Lumi="0.0" NEventsMax="-1" Type="Signal" Version="UZH" SkipValid="True">

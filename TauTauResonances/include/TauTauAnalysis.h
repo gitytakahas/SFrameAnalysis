@@ -144,6 +144,7 @@ class TauTauAnalysis : public SCycleBase {
     // checks
     virtual void checks();
     virtual void cutflowCheck(const std::string& channel);
+    virtual void visiblePTCheck();
     
     /// fill cut flow
     //virtual void fillCutflow( const std::string histName, const std::string dirName, const Int_t id, const Double_t weight = 1.);

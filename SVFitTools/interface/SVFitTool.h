@@ -1,7 +1,7 @@
 #ifndef SVFitTool_h
 #define SVFitTool_h
 
-#include "../interface/SVFitTool.h"
+//#include "../interface/SVFitTool.h"
 #include "../interface/SVfitStandaloneAlgorithm.h"
 #include "../interface/SVfitStandaloneLikelihood.h"
 #include "../interface/SVfitStandaloneMarkovChainIntegrator.h"
@@ -43,6 +43,10 @@ class SVFitTool : public SToolBase {
     double getSVFitMass( const double measuredMETx, const double measuredMETy,
                          const double covMET00, const double covMET01, const double covMET11,
                          unsigned int verbosity = 0 );
+    void getSVFitMassAndPT( double& mass, double& pt,
+                            const double measuredMETx, const double measuredMETy,
+                            const double covMET00, const double covMET01, const double covMET11,
+                            unsigned int verbosity = 0 );
     
     bool verbose = true;
     TFile* m_ResoFile;
