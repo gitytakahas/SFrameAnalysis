@@ -4,7 +4,7 @@ import ROOT
 from ROOT import TFile, TH1D
 import os, sys
 import PlotTools
-from PlotTools import Sample, Samples, Plot
+from PlotTools import Sample, Samples, Plot, color, warning, error
 ROOT.gROOT.SetBatch(ROOT.kTRUE)
 
 
@@ -27,7 +27,7 @@ PLOTS_DIR = os.path.expandvars("/shome/ineuteli/analysis/SFrameAnalysis/plots/")
 samplesB = [
             ("TT/", "TT_TuneCUETP8M1",                      "ttbar",                    831.76  ),
             #("DY/", "DYJetsToLL_M-10to50_TuneCUETP8M1",     "Drell-Yan 10-50",        18610.0   ),
-            ("DY/", "DYJetsToLL_M-10to50_nlo",              "Drell-Yan 10-50",    18610.0   ), # 18610 https://cmsweb.cern.ch/das/request?input=dataset%3D%2FDYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8%2FRunIISummer15GS-MCRUN2_71_V1-v1%2FGEN-SIM&instance=prod%2Fglobal
+#             ("DY/", "DYJetsToLL_M-10to50_nlo",              "Drell-Yan 10-50",    18610.0   ), # 18610 https://cmsweb.cern.ch/das/request?input=dataset%3D%2FDYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8%2FRunIISummer15GS-MCRUN2_71_V1-v1%2FGEN-SIM&instance=prod%2Fglobal
             ##("DY/", "DY1JetsToLL_M-10to50_nlo",             "Drell-Yan 1J 10-50 NLO",   421.5   ), # 421.5 https://cmsweb.cern.ch/das/request?input=dataset%3D%2FDY1JetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8%2FRunIISummer15GS-MCRUN2_71_V1-v1%2FGEN-SIM&instance=prod%2Fglobal
             ##("DY/", "DY2JetsToLL_M-10to50_nlo",             "Drell-Yan 2J 10-50 NLO",   184.3   ), # 184.3 https://cmsweb.cern.ch/das/request?input=dataset%3D%2FDY2JetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8%2FRunIISummer15GS-MCRUN2_71_V1-v1%2FGEN-SIM&instance=prod%2Fglobal
             ("DY/", "DYJetsToLL_M-50_TuneCUETP8M1",         "Drell-Yan 50",            4954.0   ), # LO 4954.0; NLO 5765.4
@@ -64,6 +64,8 @@ samplesD = {
                 "mutau"  :  [( "SingleMuon/",     "SingleMuon_Run2016",     "single muon"     )],
                 #"eletau" :  [( "SingleElectron/", "SingleElectron_Run2016", "single electron" )],
             }
+#samples = [ ]
+
 
 # LUMI
 lumi = 12.9 #24.5
@@ -81,6 +83,13 @@ normalizeWJ = stack and True
 doQCD       = True
 
 
+# BLIND REGION
+blindlimits = { "m_vis":( 0,30),
+                "m_sv" :(20,35),  } 
+blindcuts   = { "m_vis":"( m_vis < %i || %i < m_vis )" % blindlimits["m_vis"],
+                "m_sv" :"( m_sv  < %i || %i < m_sv  )" % blindlimits["m_sv" ],}
+
+
 # CATEGORIES / SELECTIONS
 vetos   = "dilepton_veto == 0 && extraelec_veto == 0 && extramuon_veto == 0 && againstElectronVLooseMVA6_2 == 1 && againstMuonTight3_2 == 1"
 isocuts = "iso_1 < 0.15 && iso_2 == 1"
@@ -89,10 +98,10 @@ categories = [
                 #("isolation",           "%s" % (isocuts)),
                 #("lepton vetos",        "%s" % (vetos)),
 #                 ("iso, lepton vetos",   "%s && %s" % (isocuts, vetos)),
-#                 ("iso, vetos, OS",      "%s && %s && q_1*q_2<0" % (isocuts, vetos)),
+                ("iso, vetos, OS",      "%s && %s && q_1*q_2<0" % (isocuts, vetos)),
 #                 ("iso, vetos, SS",      "%s && %s && q_1*q_2>0" % (isocuts, vetos)),
 #                 ("category 1",          "%s && %s && q_1*q_2<0 && ncbtag > 0 && ncjets == 1 && nfjets  > 0" % (isocuts, vetos)),
-                ("category 2",          "%s && %s && q_1*q_2<0 && ncbtag > 0 && ncjets  > 1 && nfjets == 0 && dphi_ll_bj > 2" % (isocuts, vetos)), # && met < 60
+#                 ("category 2",          "%s && %s && q_1*q_2<0 && ncbtag > 0 && ncjets  > 1 && nfjets == 0 && dphi_ll_bj > 2 && met < 60" % (isocuts, vetos)), # && met < 60
               ]
 
 
@@ -111,25 +120,25 @@ def getScales():
     print ">>> %12s  %12s  %26s  %18s  %12s" % ("events", "sum weights", "sample".ljust(22), "cross section (pb)", "norm. scale" )
     
     # BACKGROUND
-    for i, s in enumerate(samplesB):
-        sigma = s[3]
-        file = TFile( OUT_DIR + s[0] + "TauTauAnalysis.%s%s.root" % (s[1],mylabel) )
+    for i, (subdir, sample, name, sigma) in enumerate(samplesB):
+        file = TFile( OUT_DIR + subdir + "TauTauAnalysis.%s%s.root" % (sample,mylabel) )
         N_tot = file.Get("histogram_mutau/cutflow_mutau").GetBinContent(7)
         N_tot_unweighted = file.Get("histogram_mutau/cutflow_mutau").GetBinContent(1)
         scale = lumi * sigma * 1000 / N_tot
-        print ">>> %12i  %12i  %26s  %18.2f  %12.2f" % (N_tot,N_tot_unweighted,s[2].ljust(22),sigma,scale)
-        samplesB[i] = ( s[0], s[1], s[2], N_tot, s[3], scale )
+        print ">>> %12i  %12i  %26s  %18.2f  %12.2f" % (N_tot,N_tot_unweighted,name.ljust(22),sigma,scale)
+        #samples.append(Sample( file, name, sigma=sigma, N=N_tot, scale=scale, background=True, cuts="channel>0", weight=weightB ))
+        samplesB[i] = ( subdir, sample, name, N_tot, sigma, scale )
         
     # SIGNAL
-    for i, s in enumerate(samplesS):
-        N_exp = s[3] # expected yield
-        file = TFile( OUT_DIR + s[0] + "TauTauAnalysis.%s%s.root" % (s[1],mylabel) )
+    for i, (subdir, sample, name, N_exp) in enumerate(samplesS):
+        file = TFile( OUT_DIR + subdir + "TauTauAnalysis.%s%s.root" % (sample,mylabel) )
         N_tot = file.Get("histogram_mutau/cutflow_mutau").GetBinContent(7)
         N_tot_unweighted = file.Get("histogram_mutau/cutflow_mutau").GetBinContent(1)
         scale = N_exp / N_tot
         sigma = N_tot / ( lumi * 1000 )
-        print ">>> %12i  %12i  %26s  %18.2f  %12.2f" % (N_tot,N_tot_unweighted,s[2].ljust(22),sigma,scale)
-        samplesS[i] = ( s[0], s[1], s[2], N_tot, sigma, scale )
+        print ">>> %12i  %12i  %26s  %18.2f  %12.2f" % (N_tot,N_tot_unweighted,name.ljust(22),sigma,scale)
+        #samples.append(Sample( file, name, sigma=sigma, N=N_tot, scale=scale, signal=True, cuts="channel>0", weight=weight, treeName=treeName ))
+        samplesS[i] = ( subdir, sample, name, N_tot, sigma, scale )
         
     # DATA
     for channel, s in samplesD.items():
@@ -137,6 +146,7 @@ def getScales():
         N_tot = file.Get("histogram_mutau/cutflow_mutau").GetBinContent(7)
         N_tot_unweighted = file.Get("histogram_mutau/cutflow_mutau").GetBinContent(1)
         print ">>> %12i  %12i  %26s  %21s" % ( N_tot, N_tot_unweighted, s[0][2].ljust(22), "L = %5.2f/fb" % lumi )
+        #samples.append(Sample( file, name, data=True, cuts ="channel>0" treeName=treeName, blind=blindcuts ))
         
         
     
@@ -160,10 +170,7 @@ def plotStacks(channel, **kwargs):
     variables = [ ]
     samples = [ ]
     treeName = "tree_%s" % channel
-    channeli = 0
     weight = "weight" #(gen_match_2==5 ? 1.056 : 1.) #puweight*genweight*trigweight_1*idweight_1*isoweight_1
-    if "mutau" in channel:  channeli = 1
-    if "eletau" in channel: channeli = 2
     
     
     # BACKGROUND
@@ -171,17 +178,17 @@ def plotStacks(channel, **kwargs):
         file = OUT_DIR + dir + "TauTauAnalysis.%s%s.root" % (sample,label)
         weightB = weight
         #if "DYJetsToLL_M-10to50_nlo" in sample: weightB = "%s*%s" % (weightB,"(NUP==1 ? 0 : 1)*(NUP==2 ? 0 : 1)")
-        samples.append(Sample( file, name, sigma=sigma, N=N_tot, scale=scale, background=True, cuts="", weight=weightB, treeName=treeName ))
+        samples.append(Sample( file, name, sigma=sigma, N=N_tot, scale=scale, background=True, cuts="channel>0", weight=weightB, treeName=treeName ))
     
     
     # MERGE
     samples = mergeSamples(samples,"ST")
     samples = mergeSamples(samples,["WW","WZ","ZZ"],name="diboson")
-    samples = mergeSamples(samples,"DY",label="M-10to50_nlo",name="Drell-Yan 10-50 NLO")
+    #samples = mergeSamples(samples,"DY",label="M-10to50_nlo",name="Drell-Yan 10-50 NLO")
     samples = stitchSamples(samples,"WJ",name_incl="WJets")
     samples = stitchSamples(samples,"DY",label="M-50")
-
-
+    
+    
     # READD BACKGROUND
 #     for dir, sample, name, N_tot, sigma, scale in samplesB:
 #         if "DYJetsToLL_M-10to50_nlo" not in sample: continue
@@ -194,19 +201,21 @@ def plotStacks(channel, **kwargs):
     # SIGNAl
     for dir, sample, name, N_tot, sigma, scale in samplesS:
         file = OUT_DIR + dir + "TauTauAnalysis.%s%s.root" % (sample,label)
-        samples.append(Sample( file, name, sigma=sigma, N=N_tot, scale=scale, signal=True, cuts="", weight=weight, treeName=treeName ))
+        samples.append(Sample( file, name, sigma=sigma, N=N_tot, scale=scale, signal=True, cuts="channel>0", weight=weight, treeName=treeName ))
     
     
     # DATA
     if channel in samplesD:
         for dir, sample, name in samplesD[channel]:
             file = OUT_DIR + dir + "TauTauAnalysis.%s%s.root" % (sample,label)
-            samples.append(Sample( file, name, data=True, treeName=treeName )) #cuts="( m_vis < 15 || 30 < m_vis )"
+            samples.append(Sample( file, name, data=True, cuts ="channel>0", treeName=treeName, blind=blindcuts ))
     
     
     # VARIABLES
-    variables.append(( "m_vis",         38, 0,  76 ))
+    variables.append(( "m_vis",         35, 0,  70 ))
 #     variables.append(( "m_vis",         35, 0, 140 ))
+#     variables.append(( "m_sv",          35, 0,  70 ))
+#     variables.append(( "m_sv",          30, 0, 150 ))
 #     variables.append(( "pfmt_1",        30, 0, 150 ))
 #     variables.append(( "met",           30, 0, 120 ))
 #     for n in [ "nbtag", "njets" ]:
@@ -237,10 +246,8 @@ def plotStacks(channel, **kwargs):
 
     # LOOP over SELECTIONS
     for label, cuts in categories:
-        print ">>>\n>>> " + color("_%s:_%s_" % (channel.replace(' ','_'),label.replace(' ','_')),color = "yellow")
+        print ">>>\n>>> " + color("_%s:_%s_" % (channel.replace(' ','_'),label.replace(' ','_')),color = "magenta")
         
-        if cuts: cuts = "channel==%i && %s" % (channeli, cuts )
-        else:    cuts = "channel==%i"       %  channeli
         QCD = False
         if "q_1" in cuts and "q_2" in cuts and stack:
             QCD = True and doQCD
@@ -248,10 +255,10 @@ def plotStacks(channel, **kwargs):
         
         # RENORMALIZE WJ
         if normalizeWJ and not "SS" in label and stack:
-           #renormcuts = "channel==%i && %s && %s && q_1*q_2<0" % (channeli, isocuts, vetos)
-           plot = Plot( samples, "pfmt_1", 100, 80, 180, cuts=cuts, QCD=QCD )
-           plot.renormalizeWJ()
-           #normalizeWJ = False # renormalize WJ once!
+            #renormcuts = "channel==%i && %s && %s && q_1*q_2<0" % (channeli, isocuts, vetos)
+            plot = Plot( samples, "pfmt_1", 100, 80, 180, cuts=cuts, QCD=QCD, reset=True )
+            plot.renormalizeWJ()
+            plot.close()
         
         
         # RENORMALIZE Signal
@@ -263,7 +270,7 @@ def plotStacks(channel, **kwargs):
         # RESET
         norm = (not stack) and False # COMPARE: set to false to check normalization; True to check shape
         if not stack and norm:
-            print ">>> Warning! Resetting all scales and normalization"
+            print warning("Resetting all scales and normalization")
             for sample in samples: sample.resetScalesAndWeights(weight="genweight")
         
         
@@ -273,10 +280,12 @@ def plotStacks(channel, **kwargs):
         
             # NAME
             name = "%s/%s_%s%s.png" % (DIR,var,label,plotlabel)
-            if "m_vis" in var:
+            if "m_vis" in var or "m_sv" in var:
                 name = "%s/%s_%i_%s%s.png" % (DIR,var,b,label,plotlabel)
-                for sample in samples:
-                    if sample.isData: sample.cuts = "( 28 < m_vis )" #"( m_vis < 10 || 28 < m_vis )"
+#                 for sample in samples:
+#                     if sample.isData:
+#                         if "m_vis" in var: sample.cuts = "( 28 < m_vis )" #"( m_vis < 10 || 28 < m_vis )"
+#                         if "m_sv"  in var: sample.cuts = "( m_sv < 15 || 30 < m_sv )"
             name = name.replace(" and ","-").replace(" ","").replace(",","-") #.replace("(","").replace(")","")
             
             
@@ -293,7 +302,16 @@ def plotStacks(channel, **kwargs):
             
             # BINS
             if "category" in label:
-                if "m_vis" in var: nBins = 100 #19 #100
+                if "m_vis" in var or "m_sv" in var:
+                    if b < 110:
+                        a = 2
+                        b = 76 + a
+                    nBins = 19 #100
+            elif "m_vis" in var or "m_sv" in var:
+                if b is 140:
+                    a = 2
+                    b = 140 + a
+            #nBins = 100
             
             
             # LEGEND POSITION
@@ -311,32 +329,40 @@ def plotStacks(channel, **kwargs):
             if "gen_match" in var:
                 position += "Left"
             
-            
-            # SIGNAL CALCULATIONS
-            #def ():
-                #...
-            
-            
-            
             # PLOT
             plot = Plot( samples, var, nBins, a, b, cuts=cuts, QCD=QCD) #, weight=varweight)
             plot.plot(stack=stack, position=position, title=title, staterror=stack, logy=logy, ratio=stack, norm=norm, errorbars=(not stack))
-            if "m_vis" in var and stack:
-                B = plot.integrateStack(0,28)
-                for signal in plot.histsS:
-                    mu  = signal.GetMean()
-                    sd  = signal.GetStdDev()
-                    N   = signal.GetEntries()
-                    Sw  = signal.GetSumOfWeights()
-                    low = mu-2*sd
-                    up  = mu+2*sd
-                    print ">>> signal mean = %.2f, sigma = %.2f for %i MC events (%.2f sum of weights), thus signal region should be [ %.2f, %.2f ]" % (mu,sd,N,Sw,low, up)
-                print ">>> integral signal region %s: %.2f MC events" % (var,B)
+            checksignal(plot)
             plot.saveAs(name)
             
-            if "m_vis" in var:
-                for sample in samples:
-                    if sample.isData: sample.cuts = ""
+            # RESET CUTS
+#             if "m_vis" in var or "m_sv" in var:
+#                 for sample in samples:
+#                     if sample.isData: sample.cuts = ""
+            
+
+
+
+
+    ###############
+    # checksignal #
+    ###############
+
+def checksignal(plot):
+    var = plot.var
+    if ("m_vis" in var or "m_sv" in var) and plot.stack != None:
+        for signal in plot.histsS:
+            mu  = signal.GetMean()
+            sd  = signal.GetStdDev()
+            N   = signal.GetEntries()
+            Sw  = signal.GetSumOfWeights()
+            print ">>> " + color("%i signal events and sum of weights = %.2f"   % (N,Sw), color="grey")
+            print ">>> " + color(" signal mean = %.2f, sigma = %.2f"                 % (mu,sd), color="grey")
+            print ">>> " + color(" thus 1-sigma signal region should be [ %4.1f, %4.1f ]" % (mu-1*sd,mu+1*sd), color="grey")
+            print ">>> " + color(" thus 2-sigma signal region should be [ %4.1f, %4.1f ]" % (mu-2*sd,mu+2*sd), color="grey")
+        (aa,bb) = blindlimits[var]
+        B = plot.integrateStack(aa,bb)
+        print ">>> " + color("%.1f background events in signal region %s(%i,%i)" % (B,var,aa,bb), color="grey")
 
 
 
@@ -364,7 +390,7 @@ def mergeSamples(sample_list,names,**kwargs):
     
     # check if sample list of contains to-be-stitched-sample
     if len(merge_list) < 2:
-        print ">>> Warning! Could not stitch %s: less than two %s samples" % (name,name)
+        print warning("Could not stitch %s: less than two %s samples" % (name,name))
         return sample_list
     fill = max([ len(s.label) for s in merge_list ])
     
@@ -412,7 +438,7 @@ def stitchSamples(sample_list,name0,**kwargs):
     
     # check if sample list of contains to-be-stitched-sample
     if len(stitch_list) < 2:
-        print ">>> Warning! Could not stitch %s: less than two %s samples" % (name0,name0)
+        print warning("Could not stitch %s: less than two %s samples" % (name0,name0))
         for s in stitch_list: print ">>>   %s" % s.label
         return sample_list
     fill        = max([ len(s.label) for s in stitch_list ])
@@ -428,7 +454,7 @@ def stitchSamples(sample_list,name0,**kwargs):
         if name_incl in sample.filename:
             N_incl = N_tot
         elif not N_incl:
-            print ">>> Warning! Could not stitch %s: N_incl == 0!" % name0
+            print warning("Could not stitch %s: N_incl == 0!" % name0)
             return sample_list
         else:
             N = N_tot + N_incl*sigma/sigmaLO # effective luminosity
@@ -449,39 +475,6 @@ def stitchSamples(sample_list,name0,**kwargs):
     
     # merge
     return mergeSamples(sample_list,name0,label=label, name=name)
-
-
-
-
-
-    #########
-    # color #
-    #########
-
-def color(string,**kwargs):
-    """Color"""
-    # http://stackoverflow.com/questions/287871/print-in-terminal-with-colors-using-python
-
-    text_color_dict = {         "black"     : "0;30;",
-                                "red"       : "0;31;",
-                                "green"     : "0;32;",
-                                "yellow"    : "0;33;",
-                                "blue"      : "0;34;",
-                                "purple"    : "0;35;",
-                                "magenta"   : "0;36;",
-                                "gray"      : "0;37;",  }
-    background_color_dict = {   "black"     : "40",
-                                "red"       : "41",
-                                "green"     : "42",
-                                "yellow"    : "43",
-                                "blue"      : "44",
-                                "purple"    : "45",
-                                "magenta"   : "46",
-                                "gray"      : "47",     }
-                                
-    color_code = text_color_dict[kwargs.get("color","red")] + background_color_dict[kwargs.get("background","black")]
-
-    return "\x1b[%sm%s\x1b[0m" % ( color_code, string )
 
 
 
@@ -516,7 +509,7 @@ def selectCategory(category):
         print ">>> select selection category %i" % category
         categories = [categories[category]]
     else:
-        print ">>> ERROR: category %i does not exist!" % category
+        print error("Category %i does not exist!" % category)
         sys.exit(1)
 
 

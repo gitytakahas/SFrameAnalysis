@@ -1,4 +1,4 @@
-from ROOT import * #TFile, TCanvas, TH1F, TH2F, THStack, TAxis, TGaxis...
+from ROOT import * #TFile, TCanvas, TH1F, TH2F, THStack, TAxis, TGaxis, TGraph...
 import CMS_lumi, tdrstyle
 from math import sqrt, pow
 
@@ -20,7 +20,8 @@ legendTextSize = 0.028 #0.036
 colors     = [ kAzure+4,
                kRed+3, kAzure+4, kOrange-6, kGreen+3, kMagenta+3, kYellow+2,
                kRed-7, kAzure-4, kOrange+6, kGreen-2, kMagenta-3, kYellow-2 ]
-fillcolors = [ kRed-2, kAzure+5, kMagenta-3, kYellow+771, kOrange-5,  kGreen-2,
+fillcolors = [ kRed-2, #kAzure+5,
+               kMagenta-3, kYellow+771, kOrange-5,  kGreen-2,
                kRed-7, kAzure-9, kOrange+382,  kGreen+3,  kViolet+5, kYellow-2 ]
                #kYellow-3
                
@@ -139,6 +140,66 @@ def combineCuts(*cuts,**kwargs):
 
     #print cuts
     return cuts
+
+
+
+
+
+def color(string,**kwargs):
+    """Color"""
+    # http://stackoverflow.com/questions/287871/print-in-terminal-with-colors-using-python
+    text_color_dict = { "black"     : "0;30;",  "red"       : "1;31;",
+                        "green"     : "0;32;",  "yellow"    : "1;33;", "orange"    : "1;33;",
+                        "blue"      : "1;34;",  "purple"    : "0;35;",
+                        "magenta"   : "1;36;",  "grey"      : "0;37;",  }
+    background_color_dict = {   "black"     : "40", "red"       : "41",
+                                "green"     : "42", "yellow"    : "43", "orange"    : "43",
+                                "blue"      : "44", "purple"    : "45",
+                                "magenta"   : "46", "grey"      : "47", }                  
+    color_code = text_color_dict[kwargs.get("color","red")] + background_color_dict[kwargs.get("background","black")]
+    return kwargs.get('prepend',"") + "\x1b[%sm%s\x1b[0m" % ( color_code, string )
+
+def warning(string,**kwargs):
+    return color("Warning! "+string, color="yellow", prepend=">>> ")
+    
+def error(string,**kwargs):
+    return color("ERROR! "+string, color="red", prepend=">>> ")
+
+
+
+
+
+def makeCanvas(self,**kwargs):
+    """Make canvas and pads for ratio plots."""
+    
+    square = kwargs.get('square', False)
+    scaleleftmargin  = kwargs.get('scaleleftmargin', 1)
+    scalerightmargin = kwargs.get('scalerightmargin', 1)
+    scaletopmargin = kwargs.get('scaletopmargin', 1)
+    residue = kwargs.get('residue', False)
+    ratio = kwargs.get('ratio', False)
+    
+    W = 800; H  = 600
+    if square:
+        W = 800; H  = 800
+        scalerightmargin = 3.5*scalerightmargin
+    
+    T = 0.08*H*scaletopmargin
+    B = 0.12*H
+    L = 0.12*W*scaleleftmargin
+    R = 0.04*W*scalerightmargin
+    
+    canvas = TCanvas("canvas","canvas",100,100,W,H)
+    canvas.SetFillColor(0)
+    canvas.SetBorderMode(0)
+    canvas.SetFrameFillStyle(0)
+    canvas.SetFrameBorderMode(0)
+    canvas.SetLeftMargin( L/W )
+    canvas.SetRightMargin( R/W )
+    canvas.SetTopMargin( T/H )
+    canvas.SetBottomMargin( B/H )
+
+    return canvas
 
 
 
@@ -278,9 +339,7 @@ class Sample(object):
         title  = kwargs.get('title', self.label)
         
         blindcuts = ""
-        if var in self.blind:
-            blindcuts = self.blind[var]
-            print ">>> var in blind" 
+        if var in self.blind: blindcuts = self.blind[var]
         weight = combineWeights(self.weight, kwargs.get('weight', ""))
         cuts   = combineCuts(self.cuts, kwargs.get('cuts', ""), blindcuts, weight=weight)
         
@@ -289,7 +348,7 @@ class Sample(object):
         if scale is not 1.0:
             hist.Scale(scale)
         if scale is  0:
-            print "Warning: scale of %s is 0!" % self.label
+            print warning("Scale of %s is 0!" % self.label)
         #print hist.GetEntries()
         #gDirectory.Delete(label)
         return hist
@@ -371,6 +430,7 @@ class Plot(object):
         self.b          = b
         self.cuts       = kwargs.get('cuts', "")
         self.weight     = kwargs.get('weight', "")
+        self.reset      = kwargs.get('reset', False)
         
         self.histsS     = [ ]
         self.histsB     = [ ]
@@ -381,16 +441,17 @@ class Plot(object):
         self.ratio      = None
         
         for sample in samples:
-            if sample.isSignal:
+            if self.reset: sample.scale = sample.scaleBU
+            if sample.isSignal and kwargs.get('signal', True):
                 self.histsS.append(sample.hist(var, nBins, a, b, cuts=self.cuts, weight=self.weight))
-            elif sample.isBackground:
+            elif sample.isBackground and kwargs.get('background', True):
                 self.histsB.append(sample.hist(var, nBins, a, b, cuts=self.cuts, weight=self.weight))
-            elif sample.isData:
+            elif sample.isData and kwargs.get('data', True):
                 self.histsD.append(sample.hist(var, nBins, a, b, cuts=self.cuts))
         if kwargs.get('QCD', False):
             histQCD = self.QCD()
             if histQCD: self.histsB.append(histQCD)
-            
+        
         self.stack = None
         self.canvas = None
         self.pads = [ ]
@@ -411,6 +472,18 @@ class Plot(object):
 
     @histsMC.setter
     def histsMC(self, value): self._histsMC = value
+
+
+
+    def get(self,name,**kwargs):
+        """Method to get all sample corresponding to some name."""
+        matches = [ ]
+        label = kwargs.get('label',"") # extra search label
+        filename = kwargs.get('filename',"")
+        for sample in self.samples:
+            if name in sample.label and label in sample.label and filename in sample.filename:
+                matches.append(sample)
+        return matches
 
 
 
@@ -502,8 +575,7 @@ class Plot(object):
         """Close canvas and delete the histograms."""
         
         if self.canvas: self.canvas.Close()
-        for hist in self.hists:
-            gDirectory.Delete(hist.GetName())
+        for hist in self.hists: gDirectory.Delete(hist.GetName())
 
 
 
@@ -839,7 +911,7 @@ class Plot(object):
         """Calculate the error on a ratio a/b given errors ea on a and eb on b"""
         
         if b == 0:
-            print ">>> Warning in ratioError: cannot divide by zero!"
+            print warning("ratioError: cannot divide by zero!")
             return ea
         elif a == 0:
             return ea
@@ -902,6 +974,56 @@ class Plot(object):
 
 
 
+    def integrateStack(self,*args,**kwargs):
+        """Integrate stack."""
+        
+        a = kwargs.get('a',0)
+        b = kwargs.get('b',0)
+        
+        if   len(args) == 1:
+            stack = args[0].GetStack().Last()
+        elif len(args) == 2:
+            stack = self.stack.GetStack().Last()
+            a = args[0]
+            b = args[1]
+        elif len(args) == 3:
+            stack = args[0].GetStack().Last()
+            a = args[1]
+            b = args[2]
+        else:
+            stack = self.stack.GetStack().Last()
+        
+        integral = 0
+        if a < b: integral = stack.Integral(stack.FindBin(a), stack.FindBin(b))
+        else:     integral = stack.Integral(stack.FindBin(b), stack.FindBin(a))
+        return integral
+
+
+
+    def integrateHist(self,*args,**kwargs):
+        """Integrate histogram."""
+        
+        a = kwargs.get('a',0)
+        b = kwargs.get('b',0)
+        
+        if   len(args) == 1:
+            hist = args[0]
+            if not a and not b: return hist.Integral()
+        elif len(args) == 3:
+            hist = args[0].GetStack().Last()
+            a = args[1]
+            b = args[2]
+        else:
+            print warning("Could not integrate!")
+            return 0
+        
+        integral = 0
+        if a < b: integral = hist.Integral(hist.FindBin(a), hist.FindBin(b))
+        else:     integral = hist.Integral(hist.FindBin(b), hist.FindBin(a))
+        return integral
+
+
+
     def QCD(self,**kwargs):
         """Substract MC from data with same sign (SS) selection of a lepton - tau pair
            and return a histogram of the difference."""
@@ -936,7 +1058,7 @@ class Plot(object):
             elif sample.isData:
                 histsD_SS.append(sample.hist(var, nBins, a, b, cuts=cuts, name=name))
         if not histsD_SS:
-            print ">>> Warning! No data to make DATA driven QCD!"
+            print warning("No data to make DATA driven QCD!")
             return None 
         
         stack_SS = THStack("stack_SS","stack_SS")
@@ -947,36 +1069,6 @@ class Plot(object):
         for hist in histsMC_SS + histsD_SS:
             gDirectory.Delete(hist.GetName())
         return histQCD
-
-
-
-    def integrateStack(self,*args,**kwargs):
-        """Integrate stack."""
-        
-        a = kwargs.get('a',0)
-        b = kwargs.get('b',0)
-        
-        if   len(args) == 1:
-            stack = args[0].GetStack().Last()
-        elif len(args) == 2:
-            stack = self.stack.GetStack().Last()
-            a = args[0]
-            b = args[1]
-        elif len(args) == 3:
-            stack = args[0].GetStack().Last()
-            a = args[1]
-            b = args[2]
-        else:
-            stack = self.stack.GetStack().Last()
-        
-        #print ">>> a = %s" % a
-        #print ">>> b = %s" % b
-        
-        integral = 0
-        if a < b: integral = stack.Integral(stack.FindBin(a), stack.FindBin(b))
-        else:     integral = stack.Integral(stack.FindBin(a), stack.FindBin(b))
-        
-        return integral
 
 
 
@@ -1004,27 +1096,27 @@ class Plot(object):
         
         # CHECK MC and DATA
         if not self.histsMC:
-            print ">>> Warning! Could not renormalize WJ: no MC!"
+            print warning("Could not renormalize WJ: no MC!")
             return
         if not self.stack:
-            print ">>> Warning! Could not renormalize WJ: no stack!"
+            print warning("Could not renormalize WJ: no stack!")
             return
         if not self.histsD:
-            print ">>> Warning! Could not renormalize WJ: no data!"
+            print warning("Could not renormalize WJ: no data!")
             return
         
         # CHECK mt
         for v in [ "mt", "mT", "m_T", "MT", "M_T" ]:
             if v in var: break
         else:
-            print ">>> Warning! Could not renormalize WJ: Plot object has no transverse mass variable!"
+            print warning("Could not renormalize WJ: Plot object has no transverse mass variable!")
             return
         
         # CHECK a, b    
         if a is not 80:
-            print ">>> Warning! Renormalizing WJ with mt > %s GeV, instead of mt > 80 GeV!" % a
+            print warning("Renormalizing WJ with mt > %s GeV, instead of mt > 80 GeV!" % a)
         if b < 100:
-            print ">>> Warning! Renormalizing WJ with mt < %s GeV < 100 GeV!" % b
+            print warning("Renormalizing WJ with mt < %s GeV < 100 GeV!" % b)
             return
         
         # GET WJ
@@ -1038,9 +1130,9 @@ class Plot(object):
             WJ = WJs[0]
         elif len(WJs)  > 1:
             WJ = WJs[0]
-            print ">>> Warning! More than one WJ sample, renormalizing with first instance (%s)!" % (WJ.label)
+            print warning("More than one WJ sample, renormalizing with first instance (%s)!" % (WJ.label))
         else:
-            print ">>> Warning! Could not renormalize WJ: no WJ sample!"
+            print warning("Could not renormalize WJ: no WJ sample!")
             return
                 
         # GET WJ HIST
@@ -1054,10 +1146,15 @@ class Plot(object):
             histWJ = histsWJ[0]
         elif len(histsWJ)  > 1:
             histWJ = histsWJ[0]
-            print ">>> Warning! More than one WJ sample, renormalizing with first instance (%s)!" % (histWJ.GetName())
+            print warning("More than one WJ sample, renormalizing with first instance (%s)!" % (histWJ.GetName()))
         else:
-            print ">>> Warning! Could not renormalize WJ: no WJ sample!"
+            print warning("Could not renormalize WJ: no WJ sample!")
             return
+        
+        # RESET SCALE
+        #if WJ.scale and WJ.scaleBU:
+        #    histWJ.Scale(WJ.scaleBU/WJ.scale)
+        #WJ.scale = WJ.scaleBU
         
         # INTEGRATE
         I_MC = self.stack.GetStack().Last().Integral()
@@ -1067,23 +1164,108 @@ class Plot(object):
         #print ">>> I_MC = %.2f" % I_MC
         #print ">>> I_WJ = %.2f" % I_WJ
         if I_MC < 10:
-            print ">>> Warning! Could not renormalize WJ: integral of MC is %s < 10!" % I_MC
+            print warning("Could not renormalize WJ: integral of MC is %s < 10!" % I_MC)
             return
         if I_D < 10:
-            print ">>> Warning! Could not renormalize WJ: integral of data is %s < 10!" % I_D
+            print warning("Could not renormalize WJ: integral of data is %s < 10!" % I_D)
             return
         if I_WJ < 10:
-            print ">>> Warning! Could not renormalize WJ: integral of WJ is %s < 10!" % I_WJ
+            print warning("Could not renormalize WJ: integral of WJ is %s < 10!" % I_WJ)
             return
         
         # SET WJ SCALE
         scale = ( I_D - I_MC + I_WJ ) / I_WJ # renormalize WJ such that #(MC) = #(data)
         if scale < 0:
             scale = 1 # use BU scale to overwrite previous renormalizations
-            print ">>> Warning! Could not renormalize WJ: scale < 0"
+            print warning("Could not renormalize WJ: scale < 0")
         WJ.scale = WJ.scaleBU * scale
         print ">>> WJ renormalization scale = %.3f (new total scale = %.3f)" % (scale, WJ.scale)
-        self.close()
+
+
+
+    def efficiencyScan(self,*args,**kwargs):
+        """Scans range of some variable, applying a cut, integrating the signal and background histograms,
+           calculating the S/(1+sqrt(B)) and finally drawing a histogram with these values."""
+        # assume this Plot object has:
+        #   - the appropriate backgrounds (WJ renormalization, QCD if necessary)
+        #   - the appropriate cuts, selections, weights, etc.
+        
+        samples = self.samples
+        cuts    = self.cuts
+        var     = self.var
+        nBins   = self.nBins
+        a       = self.a
+        b       = self.b
+        samples = self.samples
+        
+        # CHECK MC and DATA
+        if not self.histsB:
+            print warning("Could not calculate efficiency: no background MC samples!")
+            return
+        if not self.stack:
+            print warning("Could not calculate efficiency: no stack!")
+            return
+        if not self.histsS:
+            print warning("Could not calculate efficiency: no signal MC samples!")
+            return 
+        
+        # SET UP
+        if len(args) is 2: kwargs['range'] = args
+        range       = kwargs.get('range',(a,b))     # range to make cuts
+        N           = kwargs.get('N',10)            # number of cuts in range
+        up          = not kwargs.get("down",False)  # up = ( var > cut ), down = ( var < cut )
+        signal      = self.histS[0]
+        stack       = self.stack
+        graph_sigma = TGraph(N)
+        
+        # TODO: CHECKS
+        if not N: N = 10
+        if a_cut < a: a_cut = a
+        if b_cut > b: b_cut = b
+        
+        # INTEGRATE
+        (a_cut,b_cut)   = range
+        cut = 0
+        width           = abs(b_cut-a_cut)
+        #N_totB          = stack.GetStack().Last().GetSumOfWeights()
+        #N_totS          = signal.GetSumOfWeights()
+        for i in range(N): # 0, ..., N
+            if up: # scan up on lower limit
+                a_cut = a + i*width/N
+                cut = a_cut
+            else: # scan up on upper limit
+                b_cut = b - (N-i)*width/N
+                cut = b_cut
+            B = self.integrateStack(stack,a_cut,b_cut)
+            S = self.integrateHist(signal,a_cut,b_cut)
+            graph_sigma.SetPoint(i,cut,S/sqrt(1+B))
+        
+        # DRAW
+        #self.canvas.cd()
+        frame = c.DrawFrame(1.4, 0.001, 4.1, 10)
+        frame.GetYaxis().CenterTitle()
+        frame.GetYaxis().SetTitleSize(0.05)
+        frame.GetXaxis().SetTitleSize(0.05)
+        frame.GetXaxis().SetLabelSize(0.04)
+        frame.GetYaxis().SetLabelSize(0.04)
+        frame.GetYaxis().SetTitleOffset(0.9)
+        frame.GetXaxis().SetNdivisions(508)
+        frame.GetYaxis().CenterTitle(True)
+        frame.GetYaxis().SetTitle("S/(1+#sqrt{B})")
+        frame.GetXaxis().SetTitle("cut on %s" % var)
+        frame.SetMinimum(0)
+        frame.SetMaximum(max(up2s)*1.05)
+        frame.GetXaxis().SetLimits(min(values),max(values))
+        median.SetLineColor(1)
+        median.SetLineWidth(2)
+        median.SetLineStyle(2)
+        median.Draw('L')
+        CMS_lumi.CMS_lumi(self.canvas,13,0)
+        ROOT.gPad.SetTicks(1,1)
+        ROOT.gPad.SetGrid(1,1)
+        frame.Draw('sameaxis')
+        
+        return
         
         
         
