@@ -6,16 +6,16 @@ cycleName="TauTauAnalysis"
 nEventsMax=-1
 #nEventsMax=200
 nProcesses=1
-nFiles=5
+nFiles=4
 hCPU="03:30:00"
 hVMEM="5000M"
 postFix = ""
 label = "_ICHEP" #"_triggerless"
 dataSets = [
                 
-               ##############
-               #  M-10to50  #
-               ##############
+                ##############
+                #  M-10to50  #
+                ##############
                
                ["DYJetsToLL_M-10to50_TuneCUETP8M1"+label,
                 [   "DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_HLT1_0000_0.xml",
@@ -90,7 +90,7 @@ dataSets = [
 userItems = [ 
                 ["IsData","false"],
                 ["IsSignal","false"],
-                ["doSVFit","false"],
+                #["doSVFit","true"],
                 ["doRecoilCorr","true"],
                 ["OutputTreeName_mutau", "tree_mutau" ],
                 ["OutputTreeName_eletau","tree_eletau"],

@@ -4,10 +4,10 @@ loadLibs=[
     "libGoodRunsLists",
     "libPileupReweightingTool",
     "libBTaggingTools",
-#    "libVHTausResonances",
     "libTauTauResonances",
-    "libSVFit",
+   "libSVFitTool",
     "libScaleFactorTool",
+    "libRecoilCorrector",
 
   ]
 
@@ -18,10 +18,10 @@ loadPacks=[
     "GoodRunsLists.par",
     "PileupReweightingTool.par",
     "BTaggingTools.par",
-#    "VHTausResonances.par",
     "TauTauResonances.par",
-    "SVFit.par",
+    "SVFitTool.par",
     "ScaleFactorTool.par",
+    "RecoilCorrector.par",
 	   ]
 
 compilePacks=[
@@ -29,15 +29,16 @@ compilePacks=[
   "../GoodRunsLists",
   "../PileupReweightingTool",
   "../BTaggingTools",
-  "../SVFit",
-#  "../VHTausResonances",
+  "../SVFitTool",
   "../TauTauResonances",
   "../LepEff2016",
+  "../RecoilCorrections",
   ]
 
 AddUserItems = [
    #general settings
    ["RecoTreeName","tree"], 
+   ["doSVFit","true"], 
 #   ["JetPtCut", "120."]
    ]
 

@@ -6,7 +6,7 @@ cycleName="TauTauAnalysis"
 nEventsMax=-1
 #nEventsMax=200
 nProcesses=1
-nFiles=5
+nFiles=4
 hCPU="03:30:00"
 hVMEM="5000M"
 postFix = ""
@@ -442,7 +442,7 @@ dataSets = [
 userItems = [ 
                 ["IsData","false"],
                 ["IsSignal","false"],
-                ["doSVFit","false"],
+                #["doSVFit","true"],
                 ["doRecoilCorr","false"],
                 ["OutputTreeName_mutau", "tree_mutau" ],
                 ["OutputTreeName_eletau","tree_eletau"],

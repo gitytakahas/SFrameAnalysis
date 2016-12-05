@@ -6,20 +6,20 @@ cycleName="TauTauAnalysis"
 nEventsMax=-1
 #nEventsMax=200
 nProcesses=1
-nFiles=5
+nFiles=4
 hCPU="03:30:00"
 hVMEM="5000M"
 postFix = ""
 label = "_ICHEP" #"_triggerless"
 dataSets = [
                 
-               [ "WWTo1L1Nu2Q"+label,
-                [   "WWTo1L1Nu2Q_13TeV_amcatnloFXFX_madspin_pythia8_HLT1_0000.xml", ]],
+#                [ "WWTo1L1Nu2Q"+label,
+#                 [   "WWTo1L1Nu2Q_13TeV_amcatnloFXFX_madspin_pythia8_HLT1_0000.xml", ]],
                     
-               [ "WWTo4Q_4f"+label,
-                [   "WWTo4Q_4f_13TeV_amcatnloFXFX_madspin_pythia8_HLT1_0000_0.xml",
-                    "WWTo4Q_4f_13TeV_amcatnloFXFX_madspin_pythia8_HLT1_0000_1.xml",
-                    "WWTo4Q_4f_13TeV_amcatnloFXFX_madspin_pythia8_HLT1_0000_2.xml", ]],
+#                [ "WWTo4Q_4f"+label,
+#                 [   "WWTo4Q_4f_13TeV_amcatnloFXFX_madspin_pythia8_HLT1_0000_0.xml",
+#                     "WWTo4Q_4f_13TeV_amcatnloFXFX_madspin_pythia8_HLT1_0000_1.xml",
+#                     "WWTo4Q_4f_13TeV_amcatnloFXFX_madspin_pythia8_HLT1_0000_2.xml", ]],
                     
                [ "WW_TuneCUETP8M1"+label,
                 [   "WW_TuneCUETP8M1_13TeV-pythia8_HLT1_0000.xml", ]],
@@ -29,7 +29,7 @@ dataSets = [
 userItems = [ 
                 ["IsData","false"],
                 ["IsSignal","false"],
-                ["doSVFit","false"],
+                #["doSVFit","true"],
                 ["doRecoilCorr","false"],
                 ["OutputTreeName_mutau", "tree_mutau" ],
                 ["OutputTreeName_eletau","tree_eletau"],

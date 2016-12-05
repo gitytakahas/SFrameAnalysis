@@ -6,20 +6,20 @@ cycleName="TauTauAnalysis"
 nEventsMax=-1
 #nEventsMax=200
 nProcesses=1
-nFiles=5
-hCPU="03:30:00"
+nFiles=3
+hCPU="03:00:00"
 hVMEM="5000M"
 postFix = ""
 label = "_ICHEP" #"_triggerless" # _nocuts
 dataSets = [
                 ["LowMass_30GeV_DiTauResonance"+label,
-                 [  "LowMass_30GeV_DiTauResonance_RunIISpring16MiniAODv2_PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1.xml", ]],
+                 [  "LowMass_30GeV_DiTauResonance_RunIISpring16MiniAODv2_PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v2.xml", ]],
            ]
 
 userItems = [ 
                 ["IsData","false"],
                 ["IsSignal","true"],
-                ["doSVFit","false"],
+                #["doSVFit","true"],
                 ["doRecoilCorr","false"],
                 ["OutputTreeName_mutau", "tree_mutau" ],
                 ["OutputTreeName_eletau","tree_eletau"],

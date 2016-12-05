@@ -51,6 +51,7 @@ class RecoilCorrector {
 					                            float visVPx,   float visVPy,
                                                 int njets);
 
+
   
   private:
   
@@ -186,6 +187,7 @@ class RecoilCorrector {
 class RecoilCorrectorTool : public SToolBase {
 
   public:
+  
     RecoilCorrectorTool(SCycleBase* parent, const char* name = "RecoilCorrector");
     void BeginInputData( const SInputData& id ) throw( SError );
     ~RecoilCorrectorTool();
@@ -201,12 +203,15 @@ class RecoilCorrectorTool : public SToolBase {
      					                            float genVPx,   float genVPy,
 					                                float visVPx,   float visVPy,
                                                     int njets);
-                                                    
-  private:
 
     std::string m_name;
     std::string m_PFMETFile;
     std::string m_MVAMETFile;
+  
+  
+                                   
+  private:
+  
     RecoilCorrector* m_PFMETCorrector;
     RecoilCorrector* m_MVAMETCorrector;
     
