@@ -122,7 +122,7 @@ class BatchScript(object):
     self.batchScript+="date\n"
     self.batchScript+="hostname\n"
     self.batchScript+="uname -a\n"
-    self.batchScript+="df -h\n"
+#    self.batchScript+="df -h\n"
     self.batchScript+="cd %s/..\n" %(path2sframe)
     # setup ROOT and python
     if (socket.gethostname()).find("psi.ch") >=0:

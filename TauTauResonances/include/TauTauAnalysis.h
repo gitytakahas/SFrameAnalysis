@@ -145,7 +145,7 @@ public:
   /// Function to book tree branches
   //  virtual void FillBranches(const std::string& channel,  const std::vector<UZH::Jet>& Jet, const UZH::Tau& tau, const  TLorentzVector& lepton, const UZH::MissingEt& met );
   virtual void FillBranches(const std::string& channel, const std::vector<UZH::Jet>& Jet,
-                            const UZH::Tau& tau, const UZH::Muon& muon, const UZH::Electron& electron,
+                            const UZH::Tau& tau, const int taugen, const UZH::Muon& muon, const UZH::Electron& electron,
                             const UZH::MissingEt& met, const UZH::MissingEt& puppimet, const UZH::MissingEt& mvamet);
 
 
@@ -422,6 +422,9 @@ private:
   //std::map<std::string,Double_t> b_pt_sv; 
   //std::map<std::string,Double_t> b_eta_sv; 
   //std::map<std::string,Double_t> b_phi_sv;
+  std::map<std::string,Int_t> b_gen_mother;
+  std::map<std::string,Int_t> b_gen_mass;
+  std::map<std::string,Int_t> b_gen_pt;
   
   // Macro adding the functions for dictionary generation
   ClassDef( TauTauAnalysis, 0 );

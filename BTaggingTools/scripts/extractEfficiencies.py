@@ -1,5 +1,7 @@
 #!/usr/bin/env python
-
+#python extractEfficiencies.py ../../AnalysisOutput/Nak8_v0/*root -w Loose -p jet_  -r
+#python extractEfficiencies.py ../../AnalysisOutput/Nak8_v0/*root -w Medium -p jet_ak4_ 
+#python extractEfficiencies.py ../../AnalysisOutput/Nak8_v0/*root -w Loose -p subjet_softdrop_  
 import os
 import sys
 from optparse import OptionParser
@@ -57,15 +59,19 @@ def main():
     flavNomHist = 0
     flavDenomHist = 0
     for i,file in enumerate(files):
+      
       baseHistName = "%s/%s%s" %(directory, prefix, flavour)
       baseHistNameNoDir = "%s%s" %(prefix, flavour)
       print "Getting histograms for ",baseHistNameNoDir,"in file",file
+     
       if (i == 0):
+        print "file.Get(%s%s)).Clone(%s%s%03d)"%(baseHistName, nominator,baseHistNameNoDir, nominator, i)
         nomHist = file.Get("%s%s" %(baseHistName, nominator)).Clone("%s%s%03d" %(baseHistNameNoDir, nominator, i))
         denomHist = file.Get("%s%s" %(baseHistName, denominator)).Clone("%s%s%03d" %(baseHistNameNoDir, denominator, i))
         flavNomHist = nomHist.Clone("%s%s_sum" %(baseHistNameNoDir, nominator))
         flavDenomHist = denomHist.Clone("%s%s_sum" %(baseHistNameNoDir, denominator))
       else:
+     
         nomHist = file.Get("%s%s" %(baseHistName, nominator)).Clone("%s%s%03d" %(baseHistNameNoDir, nominator, i))
         denomHist = file.Get("%s%s" %(baseHistName, denominator)).Clone("%s%s%03d" %(baseHistNameNoDir, denominator, i))
         flavNomHist.Add(nomHist)
