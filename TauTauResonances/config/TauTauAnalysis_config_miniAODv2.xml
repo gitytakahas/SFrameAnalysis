@@ -32,22 +32,19 @@
 
 <!--          <In FileName="/shome/ytakahas/work/TauTau/CMSSW_8_0_11/src/EXOVVNtuplizerRunII/Ntuplizer/flatTuple.root" Lumi="1.0" />  -->
 
-  <InputTree Name="ntuplizer/tree" />
-		
-<!--			<OutputTree Name="tree_mutau" />
-			<OutputTree Name="tree_eletau" /> -->
+      <InputTree Name="ntuplizer/tree" />		
+      <OutputTree Name="tree_mutau" />
+      <OutputTree Name="tree_eletau" />
 <!--			<OutputTree Name="eletau" /> -->
 			<!--<OutputTree Name="tree_tautau" />-->
-		</InputData>
-		<UserConfig>
-			<Item Name="RecoTreeName" Value="tree"/>
-			<Item Name="doSVFit" Value="False"/>
-
-<!--			<Item Name="OutputTreeName_eletau"    Value="tree_eletau"/> 
-			<Item Name="OutputTreeName_mutau"     Value="tree_mutau"/> -->
-   			<!--Item Name="OutputTreeName_tautau"    Value="tree_tautau"/> -->
+    </InputData>
+    <UserConfig>
+      <Item Name="RecoTreeName" Value="tree"/>
+      <Item Name="doSVFit" Value="False"/>
+      <Item Name="OutputTreeName_eletau"    Value="tree_eletau"/>
+      <Item Name="OutputTreeName_mutau"     Value="tree_mutau"/>
 <!--      <Item Name="JetPtCut" Value="200."/> -->
-                        <Item Name="IsSignal" Value="True"/>
-		</UserConfig>
-	</Cycle>
+      <Item Name="IsSignal" Value="True"/>
+    </UserConfig>
+  </Cycle>
 </JobConfiguration>

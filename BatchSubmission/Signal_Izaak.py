@@ -10,15 +10,18 @@ nFiles=1
 hCPU="03:30:00"
 hVMEM="5000M"
 postFix = ""
+label = "_ICHEP" #"_triggerless" # _nocuts
 dataSets = [
-               ["SUSYGluGluToHToTauTau_M-160",
-               ["SUSYGluGluToHToTauTau_M-160_TuneCUETP8M1_13TeV-pythia8.xml"]],
+                ["LowMass_30GeV_DiTauResonance"+label,
+                 [  "LowMass_30GeV_DiTauResonance_RunIISpring16MiniAODv2_PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1.xml", ]],
            ]
 
 userItems = [ 
                 ["IsData","false"],
                 ["IsSignal","true"],
                 ["doSVFit","false"],
+                ["OutputTreeName_mutau", "tree_mutau" ],
+                ["OutputTreeName_eletau","tree_eletau"],
              ]
 
 jobOptionsFile2=open("AnalysisOptions.py", 'r')
@@ -31,4 +34,4 @@ exec command2
 userItems += AddUserItems
 
 inputTrees=["ntuplizer/tree"]
-outputTrees=["tree"]
+outputTrees=["tree_mutau","tree_eletau"]

@@ -1,0 +1,54 @@
+//------------//
+  Instructions
+//------------//
+
+----- How to set up the Lepton Efficiency Interface ------
+
+1. Go to your CMSSW area, and do 
+
+cmsenv
+
+2. Then, do the following to clone the repositories (we will clone the repository with the ROOT files in the "data" folder). 
+
+cd ${CMSSW_BASE}/src
+git clone https://github.com/CMS-HTT/LeptonEff-interface.git HTT-utilities 
+cd HTT-utilities/LepEffInterface/
+git clone https://github.com/CMS-HTT/LeptonEfficiencies.git data 
+
+3. Compile 
+
+cd ${CMSSW_BASE}/src
+scram b 
+
+
+----- How to use the Lepton Efficiency Interface in your analysis -----
+
+The interface provides a class, called ScaleFactor, whose .cc and .h files are located under 
+LepEffInterface/src and LepEffInterface/interface, respectively. 
+
+To use it in your analysis code, you should first perform the steps described above for the "set up". 
+Then, in your analysis code, you should:
+
+- include the header of the class
+
+>> #include "HTT-utilities/LepEffInterface/interface/ScaleFactor.h"
+
+- create the ScaleFactor object 
+
+>> ScaleFactor * myScaleFactor = new ScaleFator();
+
+- initialise the object, providing the full path to the ROOT file containing the efficiency you are interested in. 
+(The ROOT files are located in the folders ${CMSSW_BASE}/src/HTT-utilities/LepEffInterface/data/ ). 
+
+>> myScaleFactor->init_ScaleFactor("pathToRootFile/fileName.root");
+ 
+- now, you can call the methods that return the efficiency in data, MC and the scale factor for a given (pt,eta). The (pt,eta) arguments passed should be double, and 
+must be passed in the right order (pt first, then eta). E.g.:
+>> double efficiency_data = myScaleFactor->get_EfficiencyData(pt, eta);
+>> double efficiency_MC = myScaleFactor->get_EfficiencyMC(pt,eta);
+>> double scaleFactor = myScaleFactor->get_ScaleFactor(pt,eta);
+
+- last, you should include this line in your BuildFile.xml
+>>  <use name="HTT-utilities/LepEffInterface"/>
+
+

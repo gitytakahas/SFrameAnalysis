@@ -38,7 +38,7 @@ def main():
                     dest="maxFiles", default="500",
                     help="Maximum number of files [default = %default]")
   parser.add_option("-o", "--outDir", action="store",
-                    dest="outDir", default="xmls_15p9",
+                    dest="outDir", default="xmls_Izaak",
                     help="Output directory for xml files [default = %default]")
 
 

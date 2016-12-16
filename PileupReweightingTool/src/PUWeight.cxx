@@ -9,6 +9,7 @@
 PUWeight::Scenario PUWeight::toScenario(const std::string& str) {
   PUWeight::Scenario sc = Winter15_25ns;
   if( str == "PUS25ns" ) sc = Winter15_25ns;
+  else if ( str == "Spring16_25ns" ) sc = Spring16_25ns;
   else {
     std::cerr << "\n\nERROR unknown scenario '" << str << "'" << std::endl;
     throw std::exception();
@@ -22,6 +23,7 @@ PUWeight::Scenario PUWeight::toScenario(const std::string& str) {
 std::string PUWeight::toString(const PUWeight::Scenario sc) {
   std::string str;
   if( sc == Winter15_25ns ) str = "PUS25ns";
+  else if ( sc == Spring16_25ns ) str = "Spring16_25ns";
   else {
     std::cerr << "\n\nERROR unknown scenario '" << sc << "'" << std::endl;
     throw std::exception();
@@ -97,12 +99,8 @@ std::vector<double> PUWeight::generateWeights(const PUWeight::Scenario sc, const
   unsigned int nPUMax = 0;
   double *npuProbs = 0;
 
-  //if( sc == Winter15_25ns ) {
-  
+  if( sc == Winter15_25ns ) {
     nPUMax = 52;
-
-
-
     double npuWinter15_25ns[52] = {
       0.000829312873542,
       0.00124276120498,
@@ -210,8 +208,31 @@ std::vector<double> PUWeight::generateWeights(const PUWeight::Scenario sc, const
       //                         1.21378E-07,
       //                         4.8551E-08};
     npuProbs = npuWinter15_25ns;
-
-  //}
+  }
+  else if( sc == Spring16_25ns ) {
+    nPUMax = 600;
+    
+    // Get data distribution from file
+    TString mcPath = "$SFRAME_DIR/../PileupReweightingTool/histograms/";
+    TString mcFileName = mcPath + "MC_Spring16_PU25ns_V1.root";
+    TString mcHistName = "pileup";
+    TFile file(mcFileName, "READ");
+    TH1* mcHist = NULL;
+    file.GetObject(mcHistName,mcHist);
+    if( mcHist == NULL ) {
+      std::cerr << "\n\nERROR in PUWeight: Histogram " << mcHistName << " does not exist in file '" << mcFileName << "'\n.";
+      throw std::exception();
+    }
+    
+    double npuSpring16_25ns[nPUMax];
+    for(unsigned int npu = 0; npu < nPUMax; ++npu) {
+      const double npuProb = mcHist->GetBinContent(mcHist->GetXaxis()->FindBin(npu));
+      npuSpring16_25ns[npu] = npuProb;
+    }
+    file.Close();
+    npuProbs = npuSpring16_25ns;
+    
+   }
 
 
   // Check that binning of data-profile matches MC scenario
