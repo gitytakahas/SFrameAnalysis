@@ -209,6 +209,7 @@ class TauTauAnalysis : public SCycleBase {
     bool      m_applyMETFilters;
     bool      m_doSVFit;
     bool      m_doRecoilCorr;
+    bool      m_doZpt;
 
     ///
     /// CUTS
@@ -303,6 +304,7 @@ class TauTauAnalysis : public SCycleBase {
     std::map<std::string,Double_t> b_puweight;
     std::map<std::string,Double_t> b_weightbtag;
     std::map<std::string,Double_t> b_genmatchweight;
+    std::map<std::string,Double_t> b_zptweight;
     std::map<std::string,Int_t>    b_channel;  // 1 mutau; 2 eletau;
     std::map<std::string,Int_t>    b_isData;
     

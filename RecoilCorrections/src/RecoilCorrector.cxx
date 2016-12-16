@@ -12,6 +12,7 @@ RecoilCorrectorTool::RecoilCorrectorTool(SCycleBase* parent, const char* name ) 
   SetLogName( name );
   DeclareProperty(  m_name+"PFMETFile",     m_PFMETFile     = std::string (std::getenv("SFRAME_DIR")) + "/../RecoilCorrections/data/TypeIPFMET_2016BCD.root" );
   DeclareProperty(  m_name+"MVAMETFile",    m_MVAMETFile    = std::string (std::getenv("SFRAME_DIR")) + "/../RecoilCorrections/data/MvaMET_2016BCD.root" );
+  DeclareProperty(  m_name+"ZPTFile",       m_ZPTFile       = std::string (std::getenv("SFRAME_DIR")) + "/../RecoilCorrections/data/Zpt_weights.root" );
 }
 
 
@@ -23,12 +24,18 @@ void RecoilCorrectorTool::BeginInputData( const SInputData& ) throw( SError ) {
   m_logger << INFO << "Initializing RecoilCorrector for lepons" << SLogger::endmsg;
   m_logger << INFO << "Efficiency file PF MET: " << m_PFMETFile << SLogger::endmsg;
   m_logger << INFO << "Efficiency file MVA MET: " << m_MVAMETFile << SLogger::endmsg;
+  m_logger << INFO << "Efficiency file for Z pT: " << m_ZPTFile << SLogger::endmsg;
 
   m_PFMETCorrector  = new RecoilCorrector(m_PFMETFile);
   m_logger << INFO <<"RecoilCorrector for PF MET initialised"<< SLogger:: endmsg;
 
   m_MVAMETCorrector = new RecoilCorrector(m_MVAMETFile);
   m_logger << INFO <<"RecoilCorrector for MVA MET initialised"<< SLogger:: endmsg;
+
+  TString ZPTFilePath(m_ZPTFile);
+  TFile* zptfile = new TFile(ZPTFilePath, "read");
+  m_ZPTHist = (TH1F*)zptfile->Get("zptmass_histo");
+  m_logger << INFO <<"Z pT histogram initialised"<< SLogger:: endmsg;
   
   return;
 }
@@ -456,11 +463,19 @@ TLorentzVector RecoilCorrectorTool::CorrectPFMETByMeanResolution(   float MetPx,
 TLorentzVector RecoilCorrectorTool::CorrectMVAMETByMeanResolution(  float MetPx,    float MetPy,
 					                                                float genVPx,   float genVPy,
 					                                                float visVPx,   float visVPy,
-					                                                int njets) {
+					                                                int njets ) {
   return m_MVAMETCorrector->CorrectByMeanResolution( MetPx,  MetPy,
                                                      genVPx, genVPy,
 					                                 visVPx, visVPy, njets );
 }
+
+
+
+float RecoilCorrectorTool::ZptWeight( float genVM, float genVPt ){
+    // https://twiki.cern.ch/twiki/bin/view/CMS/MSSMAHTauTauEarlyRun2#Z_reweighting
+    return m_ZPTHist->GetBinContent(m_ZPTHist->GetXaxis()->FindBin(genVM),m_ZPTHist->GetYaxis()->FindBin(genVPt));
+}
+
 
 
 

@@ -203,10 +203,14 @@ class RecoilCorrectorTool : public SToolBase {
      					                            float genVPx,   float genVPy,
 					                                float visVPx,   float visVPy,
                                                     int njets);
+	
+	// Z pt corrections
+    float ZptWeight( float genVM, float genVPt );
 
     std::string m_name;
     std::string m_PFMETFile;
     std::string m_MVAMETFile;
+    std::string m_ZPTFile;
   
   
                                    
@@ -214,6 +218,7 @@ class RecoilCorrectorTool : public SToolBase {
   
     RecoilCorrector* m_PFMETCorrector;
     RecoilCorrector* m_MVAMETCorrector;
+    TH1F* m_ZPTHist;
     
 };
 

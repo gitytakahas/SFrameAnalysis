@@ -46,46 +46,47 @@ TauTauAnalysis::TauTauAnalysis() : SCycleBase()
   }
   
   DeclareProperty( "OutputTreeName_mutau" , m_outputTreeName_ch_[0]);
-  DeclareProperty( "OutputTreeName_eletau" , m_outputTreeName_ch_[1]);
+  DeclareProperty( "OutputTreeName_eletau", m_outputTreeName_ch_[1]);
 
-  DeclareProperty( "JetAK4Name",           m_jetAK4Name            = "jetAK4" );
-  DeclareProperty( "ElectronName",         m_electronName          = "el" );
-  DeclareProperty( "MuonName",             m_muonName              = "mu" );
-  DeclareProperty( "TauName",              m_tauName               = "tau" );
-  DeclareProperty( "MissingEtName",        m_missingEtName         = "MET" );
-  DeclareProperty( "GenParticleName",      m_genParticleName       = "genParticle" );
+  DeclareProperty( "JetAK4Name",            m_jetAK4Name            = "jetAK4" );
+  DeclareProperty( "ElectronName",          m_electronName          = "el" );
+  DeclareProperty( "MuonName",              m_muonName              = "mu" );
+  DeclareProperty( "TauName",               m_tauName               = "tau" );
+  DeclareProperty( "MissingEtName",         m_missingEtName         = "MET" );
+  DeclareProperty( "GenParticleName",       m_genParticleName       = "genParticle" );
   
-  DeclareProperty( "IsData",               m_isData                = false );
-  DeclareProperty( "doSVFit",              m_doSVFit               = false );
-  DeclareProperty( "IsSignal",             m_isSignal              = false );
-  DeclareProperty( "doRecoilCorr",         m_doRecoilCorr          = false );
+  DeclareProperty( "IsData",                m_isData                = false );
+  DeclareProperty( "doSVFit",               m_doSVFit               = false );
+  DeclareProperty( "IsSignal",              m_isSignal              = false );
+  DeclareProperty( "doRecoilCorr",          m_doRecoilCorr          = false );
+  DeclareProperty( "doZpt",                 m_doZpt                 = false );
   
   // for SUSY https://twiki.cern.ch/twiki/bin/viewauth/CMS/HiggsToTauTauWorking2016
   // for comparison https://twiki.cern.ch/twiki/bin/viewauth/CMS/MSSMAHTauTauSummer2016#Baseline
   // for us https://twiki.cern.ch/twiki/bin/view/CMS/SMTauTau2016#Baseline_sync_selection
-  DeclareProperty( "AK4JetPtCut",          m_AK4jetPtCut           = 20.   );
-  DeclareProperty( "AK4JetEtaCut",         m_AK4jetEtaCut          = 4.7   );
-  DeclareProperty( "CSVWorkingPoint",      m_CSVWorkingPoint       = 0.8   ); // 0.8 is Medium
+  DeclareProperty( "AK4JetPtCut",           m_AK4jetPtCut           = 20.   );
+  DeclareProperty( "AK4JetEtaCut",          m_AK4jetEtaCut          = 4.7   );
+  DeclareProperty( "CSVWorkingPoint",       m_CSVWorkingPoint       = 0.8   ); // 0.8 is Medium
 
-  DeclareProperty( "ElectronPtCut",        m_electronPtCut         = 26.   );
-  DeclareProperty( "ElectronEtaCut",       m_electronEtaCut        = 2.1   );
-  DeclareProperty( "ElectronD0Cut",        m_electronD0Cut         = 0.045 );
-  DeclareProperty( "ElectronDzCut",        m_electronDzCut         = 0.2   );
-  DeclareProperty( "ElectronIsoCut",       m_electronIsoCut        = 0.1   );
+  DeclareProperty( "ElectronPtCut",         m_electronPtCut         = 26.   );
+  DeclareProperty( "ElectronEtaCut",        m_electronEtaCut        = 2.1   );
+  DeclareProperty( "ElectronD0Cut",         m_electronD0Cut         = 0.045 );
+  DeclareProperty( "ElectronDzCut",         m_electronDzCut         = 0.2   );
+  DeclareProperty( "ElectronIsoCut",        m_electronIsoCut        = 0.1   );
   
-  DeclareProperty( "MuonPtCut",            m_muonPtCut             = 20.   ); // 23
-  DeclareProperty( "MuonEtaCut",           m_muonEtaCut            = 2.4   ); // 2.4; 2.1
-  DeclareProperty( "MuonD0Cut",            m_muonD0Cut             = 0.045 );
-  DeclareProperty( "MuonDzCut",            m_muonDzCut             = 0.2   );
-  DeclareProperty( "MuonIsoCut",           m_muonIsoCut            = 0.15  );
+  DeclareProperty( "MuonPtCut",             m_muonPtCut             = 23.   ); // 23
+  DeclareProperty( "MuonEtaCut",            m_muonEtaCut            = 2.4   ); // 2.4; 2.1
+  DeclareProperty( "MuonD0Cut",             m_muonD0Cut             = 0.045 );
+  DeclareProperty( "MuonDzCut",             m_muonDzCut             = 0.2   );
+  DeclareProperty( "MuonIsoCut",            m_muonIsoCut            = 0.15  );
 
-  DeclareProperty( "TauPtCut",             m_tauPtCut              = 20.  ); // 20; 30
-  DeclareProperty( "TauEtaCut",            m_tauEtaCut             = 2.3  );
-  DeclareProperty( "TauDzCut",             m_tauDzCut              = 0.2  );
+  DeclareProperty( "TauPtCut",              m_tauPtCut              = 20.  ); // 20; 30
+  DeclareProperty( "TauEtaCut",             m_tauEtaCut             = 2.3  );
+  DeclareProperty( "TauDzCut",              m_tauDzCut              = 0.2  );
 
   // ICHEP: https://hypernews.cern.ch/HyperNews/CMS/get/physics-validation/2689.html
 //   DeclareProperty( "JSONName",             m_jsonName              = std::string (std::getenv("SFRAME_DIR")) + "/../GoodRunsLists/JSON/Cert_271036-280385_13TeV_PromptReco_Collisions16_JSON_NoL1T_v2.txt" );
-  DeclareProperty( "JSONName",             m_jsonName              = std::string (std::getenv("SFRAME_DIR")) + "/../GoodRunsLists/JSON/Cert_271036-276811_13TeV_PromptReco_Collisions16_JSON_ICHEP.txt" );
+  DeclareProperty( "JSONName",              m_jsonName              = std::string (std::getenv("SFRAME_DIR")) + "/../GoodRunsLists/JSON/Cert_271036-276811_13TeV_PromptReco_Collisions16_JSON_ICHEP.txt" );
   
 }
 
@@ -224,35 +225,36 @@ void TauTauAnalysis::EndCycle() throw( SError ) {
 void TauTauAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
 //   std::cout << "BeginInputData" << std::endl;
 
-  m_logger << INFO << "RecoTreeName:         " <<             m_recoTreeName << SLogger::endmsg;
-  m_logger << INFO << "JetAK4Name:           " <<             m_jetAK4Name << SLogger::endmsg;
-  m_logger << INFO << "ElectronName:         " <<             m_electronName << SLogger::endmsg;
-  m_logger << INFO << "MuonName:             " <<             m_muonName << SLogger::endmsg;
-  m_logger << INFO << "TauName:              " <<             m_tauName << SLogger::endmsg;
-  m_logger << INFO << "GenParticleName:      " <<             m_genParticleName << SLogger::endmsg;
+  m_logger << INFO << "RecoTreeName:        " <<            m_recoTreeName << SLogger::endmsg;
+  m_logger << INFO << "JetAK4Name:          " <<            m_jetAK4Name << SLogger::endmsg;
+  m_logger << INFO << "ElectronName:        " <<            m_electronName << SLogger::endmsg;
+  m_logger << INFO << "MuonName:            " <<            m_muonName << SLogger::endmsg;
+  m_logger << INFO << "TauName:             " <<            m_tauName << SLogger::endmsg;
+  m_logger << INFO << "GenParticleName:     " <<            m_genParticleName << SLogger::endmsg;
   
-  m_logger << INFO << "IsData:               " <<             (m_isData ? "TRUE" : "FALSE") << SLogger::endmsg;
-  m_logger << INFO << "IsSignal:             " <<             (m_isSignal ? "TRUE" : "FALSE") << SLogger::endmsg;
-  m_logger << INFO << "doSVFit:              " <<             (m_doSVFit ? "TRUE" : "FALSE") << SLogger::endmsg;
-  m_logger << INFO << "doRecoilCorr:         " <<             (m_doRecoilCorr ? "TRUE" : "FALSE") << SLogger::endmsg;
+  m_logger << INFO << "IsData:              " <<            (m_isData ?     "TRUE" : "FALSE") << SLogger::endmsg;
+  m_logger << INFO << "IsSignal:            " <<            (m_isSignal ?   "TRUE" : "FALSE") << SLogger::endmsg;
+  m_logger << INFO << "doSVFit:             " <<            (m_doSVFit ?    "TRUE" : "FALSE") << SLogger::endmsg;
+  m_logger << INFO << "doRecoilCorr:        " <<            (m_doRecoilCorr ? "TRUE" : "FALSE") << SLogger::endmsg;
+  m_logger << INFO << "doZpt:               " <<            (m_doZpt ?      "TRUE" : "FALSE") << SLogger::endmsg;
   
-  m_logger << INFO << "ElectronPtCut:        " <<             m_electronPtCut << SLogger::endmsg;
-  m_logger << INFO << "ElectronEtaCut:       " <<             m_electronEtaCut << SLogger::endmsg;
-  m_logger << INFO << "ElectronD0Cut:        " <<             m_electronD0Cut << SLogger::endmsg;
-  m_logger << INFO << "ElectronDzCut:        " <<             m_electronDzCut << SLogger::endmsg;
-  m_logger << INFO << "ElectronIsoCut:       " <<             m_electronIsoCut << SLogger::endmsg;
+  m_logger << INFO << "ElectronPtCut:       " <<            m_electronPtCut << SLogger::endmsg;
+  m_logger << INFO << "ElectronEtaCut:      " <<            m_electronEtaCut << SLogger::endmsg;
+  m_logger << INFO << "ElectronD0Cut:       " <<            m_electronD0Cut << SLogger::endmsg;
+  m_logger << INFO << "ElectronDzCut:       " <<            m_electronDzCut << SLogger::endmsg;
+  m_logger << INFO << "ElectronIsoCut:      " <<            m_electronIsoCut << SLogger::endmsg;
   
-  m_logger << INFO << "MuonPtCut:            " <<             m_muonPtCut << SLogger::endmsg;
-  m_logger << INFO << "MuonEtaCut:           " <<             m_muonEtaCut << SLogger::endmsg;
-  m_logger << INFO << "MuonD0Cut:            " <<             m_muonD0Cut << SLogger::endmsg;
-  m_logger << INFO << "MuonDzCut:            " <<             m_muonDzCut << SLogger::endmsg;
-  m_logger << INFO << "MuonIsoCut:           " <<             m_muonIsoCut << SLogger::endmsg;
+  m_logger << INFO << "MuonPtCut:           " <<            m_muonPtCut << SLogger::endmsg;
+  m_logger << INFO << "MuonEtaCut:          " <<            m_muonEtaCut << SLogger::endmsg;
+  m_logger << INFO << "MuonD0Cut:           " <<            m_muonD0Cut << SLogger::endmsg;
+  m_logger << INFO << "MuonDzCut:           " <<            m_muonDzCut << SLogger::endmsg;
+  m_logger << INFO << "MuonIsoCut:          " <<            m_muonIsoCut << SLogger::endmsg;
   
-  m_logger << INFO << "TauPtCut:             " <<             m_tauPtCut << SLogger::endmsg;
-  m_logger << INFO << "TauEtaCut:            " <<             m_tauEtaCut << SLogger::endmsg;
-  m_logger << INFO << "TauDzCut:             " <<             m_tauDzCut << SLogger::endmsg;
+  m_logger << INFO << "TauPtCut:            " <<            m_tauPtCut << SLogger::endmsg;
+  m_logger << INFO << "TauEtaCut:           " <<            m_tauEtaCut << SLogger::endmsg;
+  m_logger << INFO << "TauDzCut:            " <<            m_tauDzCut << SLogger::endmsg;
     
-  m_logger << INFO << "JSONName:             " <<             m_jsonName << SLogger::endmsg;
+  m_logger << INFO << "JSONName:            " <<            m_jsonName << SLogger::endmsg;
   
 
   if (!m_isData) m_PileupReweightingTool.BeginInputData( id );
@@ -278,6 +280,7 @@ void TauTauAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
     DeclareVariable( b_genweight[channels_[ch]],      "genweight",      treeName);
     DeclareVariable( b_puweight[channels_[ch]],       "puweight",       treeName);
     DeclareVariable( b_weightbtag[channels_[ch]],     "weightbtag",     treeName);
+    DeclareVariable( b_zptweight[channels_[ch]],      "zptweight",      treeName);
     DeclareVariable( b_channel[channels_[ch]],        "channel",        treeName);
     DeclareVariable( b_isData[channels_[ch]],         "isData",         treeName);
     DeclareVariable( b_run[channels_[ch]],            "run",            treeName);
@@ -520,12 +523,12 @@ void TauTauAnalysis::EndInputData( const SInputData& ) throw( SError ) {
       m_logger << INFO  << Form( "C%d\t%25.25s\t%6.0f\t%6.2f\t%6.2f", icut-1, kCutName[icut].c_str(), nevents, releff, abseff ) << SLogger::endmsg;
     }
     
-    if(m_isSignal and ch == "mutau"){
-      printCutFlow(ch,"lepton","lepton_"+ch,dirname,kCutNameLep);
-      printCutFlow(ch,"tau standard ID","tauh1_"+ch,dirname,kCutNameTau);
-      printCutFlow(ch,"tau boosted ID","tauh2_"+ch,dirname,kCutNameTau);
-      printCutFlow(ch,"jet","jet_"+ch,dirname,kCutNameJet);
-    }
+//     if(m_isSignal and ch == "mutau"){
+//       printCutFlow(ch,"lepton","lepton_"+ch,dirname,kCutNameLep);
+//       printCutFlow(ch,"tau standard ID","tauh1_"+ch,dirname,kCutNameTau);
+//       printCutFlow(ch,"tau boosted ID","tauh2_"+ch,dirname,kCutNameTau);
+//       printCutFlow(ch,"jet","jet_"+ch,dirname,kCutNameJet);
+//     }
 
     std::cout << std::endl;
   }
@@ -1288,11 +1291,13 @@ void TauTauAnalysis::FillBranches(const std::string& channel, const std::vector<
   }
   
   b_weightbtag[ch] = 1.;
+  b_zptweight[ch] = 1.;
+  if(m_doRecoilCorr) b_zptweight[ch] = m_RecoilCorrector.ZptWeight( boson_tlv.M(), boson_tlv.Pt() );
   if (m_isData) b_gen_match_1[ch]  = -1;
   else{
     b_weightbtag[ch]    = b_weightbtag_; // do not apply b tag weight when using promote-demote method !!!
     //b_weightbtag[ch]    = m_BTaggingScaleTool.getScaleFactor_veto(Jet); // getScaleFactor_veto for AK4, getScaleFactor for AK8
-    b_weight[ch]        = b_weight[ch] * b_trigweight_1[ch] * b_idisoweight_1[ch] * b_trigweight_2[ch] * b_idisoweight_2[ch]; // * b_weightbtag[ch]
+    b_weight[ch]        = b_weight[ch] * b_trigweight_1[ch] * b_idisoweight_1[ch] * b_trigweight_2[ch] * b_idisoweight_2[ch] * b_zptweight[ch]; // * b_weightbtag[ch]
     b_gen_match_1[ch]   = genMatch(b_eta_1[ch], b_phi_1[ch]);
   }
   
