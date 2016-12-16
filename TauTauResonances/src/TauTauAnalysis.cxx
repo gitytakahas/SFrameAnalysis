@@ -73,13 +73,13 @@ TauTauAnalysis::TauTauAnalysis() : SCycleBase()
   DeclareProperty( "ElectronDzCut",        m_electronDzCut         = 0.2   );
   DeclareProperty( "ElectronIsoCut",       m_electronIsoCut        = 0.1   );
   
-  DeclareProperty( "MuonPtCut",            m_muonPtCut             = 23.   );
+  DeclareProperty( "MuonPtCut",            m_muonPtCut             = 20.   ); // 23
   DeclareProperty( "MuonEtaCut",           m_muonEtaCut            = 2.4   ); // 2.4; 2.1
   DeclareProperty( "MuonD0Cut",            m_muonD0Cut             = 0.045 );
   DeclareProperty( "MuonDzCut",            m_muonDzCut             = 0.2   );
   DeclareProperty( "MuonIsoCut",           m_muonIsoCut            = 0.15  );
 
-  DeclareProperty( "TauPtCut",             m_tauPtCut              = 20   ); // 20; 30
+  DeclareProperty( "TauPtCut",             m_tauPtCut              = 20.  ); // 20; 30
   DeclareProperty( "TauEtaCut",            m_tauEtaCut             = 2.3  );
   DeclareProperty( "TauDzCut",             m_tauDzCut              = 0.2  );
 
@@ -146,11 +146,11 @@ void TauTauAnalysis::BeginCycle() throw( SError ) {
 //   m_triggerNames_mutau.push_back("HLT_IsoTkMu22_v3");
 //   m_triggerNames_mutau.push_back("HLT_IsoTkMu24_v"); // not pre-scaled
 //   m_triggerNames_mutau.push_back("HLT_IsoTkMu27_v4");
-//   m_triggerNames_mutau.push_back("HLT_IsoMu17_eta2p1_LooseIsoPFTau20_SingleL1_v5");
-//   m_triggerNames_mutau.push_back("HLT_IsoMu17_eta2p1_LooseIsoPFTau20_v5");
-//   m_triggerNames_mutau.push_back("HLT_IsoMu19_eta2p1_LooseIsoPFTau20_SingleL1_v2");
-//   m_triggerNames_mutau.push_back("HLT_IsoMu19_eta2p1_LooseIsoPFTau20_v2");
-//   m_triggerNames_mutau.push_back("HLT_IsoMu21_eta2p1_LooseIsoPFTau20_SingleL1_v2");
+//   m_triggerNames_mutau.push_back("HLT_IsoMu17_eta2p1_LooseIsoPFTau20_SingleL1_v5");  // pre-scaled
+//   m_triggerNames_mutau.push_back("HLT_IsoMu17_eta2p1_LooseIsoPFTau20_v5");           // pre-scaled
+//   m_triggerNames_mutau.push_back("HLT_IsoMu19_eta2p1_LooseIsoPFTau20_SingleL1_v2");  // not pre-scaled
+//   m_triggerNames_mutau.push_back("HLT_IsoMu19_eta2p1_LooseIsoPFTau20_v2");           // not pre-scaled
+//   m_triggerNames_mutau.push_back("HLT_IsoMu21_eta2p1_LooseIsoPFTau20_SingleL1_v2");  // not pre-scaled
 
 
   // electron triggers
@@ -188,20 +188,20 @@ struct ltau_pair
   Int_t itau;
   Float_t tau_iso;
   Float_t tau_pt;
-//   Float_t dR;
+  Float_t dR;
 
   //overload comparators
   bool operator<(const ltau_pair& another) const {
-//     if (dR > 0.5 && another.dR > 0.5 && dR != another.dR)
-//       return dR < another.dR;
+//     if (dR > 0.3 && another.dR > 0.3 && dR != another.dR)
+//       return dR < another.dR;           // take pair with lowest dR, if dR > 0.3
     if (lep_iso != another.lep_iso)
-      return lep_iso < another.lep_iso;
+      return lep_iso < another.lep_iso; // take pair with best (lowest) leption iso
     if (lep_pt != another.lep_pt)
-      return lep_pt > another.lep_pt; // take highest pt
+      return lep_pt > another.lep_pt;   // take pair with highest lepton pt
     if (tau_iso != another.tau_iso)
-      return tau_iso > another.tau_iso; // note that tau isolation is better if we have higher value ! 
+      return tau_iso > another.tau_iso; // take pair with best (highest) tau iso
     if (tau_pt != another.tau_pt)
-      return tau_pt > another.tau_pt; // take highest pt
+      return tau_pt > another.tau_pt;   // take pair with highest tau pt
     return ilepton < another.ilepton;
   }
 
@@ -268,8 +268,8 @@ void TauTauAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
   }
   
   
-  // MARK Branching ratio
-  std::cout << " declaring variables" << std::endl;
+  // MARK Branches
+  m_logger << INFO << "Declaring variables for branches" << SLogger::endmsg;
   for(int ch = 0; ch < (int)channels_.size(); ch++){
   
     const char* treeName = m_outputTreeName_ch_[ch].c_str();
@@ -389,12 +389,19 @@ void TauTauAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
     DeclareVariable( b_mvacov11[channels_[ch]],     "mvacov11",         treeName);
     
     DeclareVariable( b_m_vis[channels_[ch]],        "m_vis",            treeName);
+    DeclareVariable( b_pt_tt[channels_[ch]],        "pt_tt",            treeName);
+    DeclareVariable( b_pt_tt_vis[channels_[ch]],    "pt_tt_vis",        treeName);
+    DeclareVariable( b_R_pt_m_vis[channels_[ch]],   "R_pt_m_vis",       treeName);
+    DeclareVariable( b_R_pt_m_vis2[channels_[ch]],  "R_pt_m_vis2",      treeName);
+    
     DeclareVariable( b_m_sv[channels_[ch]],         "m_sv",             treeName);
-    DeclareVariable( b_m_sv_pfmet[channels_[ch]],   "m_sv_pfmet",       treeName);
+    //DeclareVariable( b_m_sv_pfmet[channels_[ch]],   "m_sv_pfmet",       treeName);
+    DeclareVariable( b_pt_tt_sv[channels_[ch]],     "pt_tt_sv",         treeName);
+    DeclareVariable( b_R_pt_m_sv[channels_[ch]],    "R_pt_m_sv",        treeName);
+    
     DeclareVariable( b_dR_ll[channels_[ch]],        "dR_ll",            treeName);
     DeclareVariable( b_dR_ll_gen[channels_[ch]],    "dR_ll_gen",        treeName);
     DeclareVariable( b_dphi_ll_bj[channels_[ch]],   "dphi_ll_bj",       treeName);
-    DeclareVariable( b_pt_tt[channels_[ch]],        "pt_tt",            treeName);
     DeclareVariable( b_mt_tot[channels_[ch]],       "mt_tot",           treeName);
     DeclareVariable( b_ht[channels_[ch]],           "ht",               treeName);
     
@@ -406,6 +413,10 @@ void TauTauAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
   
   
   // MARK Histograms
+  m_logger << INFO << "Declaring histograms" << SLogger::endmsg;
+  m_logger << INFO << "Izaak was hier!" << SLogger::endmsg;
+  
+  // histograms - cutflow
   for (auto ch: channels_){
     TString hname = "cutflow_" + ch;
     TString dirname = "histogram_" + ch;
@@ -416,50 +427,60 @@ void TauTauAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
     Book( TH1F("tauh1_"+tch,  "tauh1_"+tch,  20, 0.5, 20.5 ), dirname);
     Book( TH1F("tauh2_"+tch,  "tauh2_"+tch,  20, 0.5, 20.5 ), dirname);
     Book( TH1F("jet_"+tch,    "jet_"+tch,    20, 0.5, 20.5 ), dirname);
+    //Book( TH1F("N_match0p30_bst_std_"+tch, "N_match0p30_bst_std_"+tch, 5, 0,  5 ), dirname);
   }
   
-  // Checks
-  if(m_isSignal){
-  
-    Book( TH1F("pt_gentaus",      "gen taus pt",      150, 0, 150 ), "checks");
-    Book( TH1F("pt_gentau1",      "gen tau 1 pt",     150, 0, 150 ), "checks");
-    Book( TH1F("pt_gentau2",      "gen tau 2 pt",     150, 0, 150 ), "checks");
-    Book( TH1F("pt_genmuon",      "gen muon pt",      100, 0, 100 ), "checks");
-    Book( TH1F("DeltaR_tautau",   "DeltaR_tautau",    150, 0,   5 ), "checks");
-    Book( TH1F("DeltaR_taumu",    "DeltaR_taumu",     150, 0,   5 ), "checks");
-    Book( TH1F("M_tautau",        "M_tautau",         200, 0,  60 ), "checks");
-    
-    Book( TH1F("N_tauh_gen",      "N_tauh_gen",         5, 0,   5 ), "checks");
-    Book( TH1F("N_tau_gen",       "N_tau_gen",          5, 0,   5 ), "checks");
-    Book( TH1F("N_tauh_18_2p3_gen", "N_tauh_18_2p3_gen", 5, 0,  5 ), "checks");
-    Book( TH1F("N_tau_reco",      "N_tau_reco",         5, 0,   5 ), "checks");
-    Book( TH1F("N_tau_reco_18_2p3", "N_tau_reco_18_2p3", 5, 0,   5 ), "checks");
-    Book( TH1F("tau_type",        "tau_type",           5, 0,   5 ), "checks");
-    Book( TH1F("N_tau_std",       "N_tau_std",          5, 0,   5 ), "checks");
-    Book( TH1F("N_tau_bst",       "N_tau_bst",          5, 0,   5 ), "checks");
-    Book( TH1F("N_tau_18_2p3_std", "N_tau_18_2p3_std",  5, 0,   5 ), "checks");
-    Book( TH1F("N_tau_18_2p3_1ctauh_std", "N_tau_18_2p3_1ctauh_std",  5, 0,   5 ), "checks");
-    Book( TH1F("gen_match_tau_std", "gen_match_tau_std", 8, 0,  8 ), "checks");
-    Book( TH1F("gen_match_tau_bst", "gen_match_tau_bst", 8, 0,  8 ), "checks");
-    Book( TH1F("N_gen_match0p30_tau_std", "N_gen_match0p30_tau_std", 5, 0,  5 ), "checks");
-    Book( TH1F("N_gen_match0p30_tau_bst", "N_gen_match0p30_tau_bst", 5, 0,  5 ), "checks");
-    Book( TH1F("N_gen_match0p30_1ctauh_tau_std",  "N_gen_match0p30_1ctauh_tau_std", 5, 0,  5 ), "checks");
-    Book( TH1F("N_gen_match0p30_0tauh_tau_std",   "N_gen_match0p30_0tauh_tau_std",  5, 0,  5 ), "checks");
-    Book( TH1F("N_gen_match_tau_1cjet_bst",       "N_gen_match_tau_1cjet_bst",      5, 0,  5 ), "checks");
-    Book( TH1F("N_gen_match0p30_18_2p3_tau_std",  "N_gen_match0p30_18_2p3_tau_std", 5, 0,  5 ), "checks");
-    Book( TH1F("DeltaR_gen_reco_tau_std", "DeltaR_gen_reco_tau_std", 100, 0, 5 ), "checks");
-    Book( TH1F("DeltaR_gen_reco_tau_bst", "DeltaR_gen_reco_tau_bst", 100, 0, 5 ), "checks");
-    Book( TH1F("DeltaR_gen_reco_tau_min_1ctauh_std",  "DeltaR_gen_reco_tau_min_1ctauh_std", 100, 0, 5 ), "checks");
-    Book( TH1F("DeltaR_gen_reco_tau_min_0tauh_std",   "DeltaR_gen_reco_tau_min_0tauh_std", 100, 0, 5 ), "checks");
-    Book( TH1F("eta_tau_reco",    "eta_tau_reco",     100, -5, 5 ), "checks");
-    Book( TH1F("pt_tau_reco",     "pt_tau_reco",      100, 0, 100 ), "checks");
-    Book( TH1F("DeltaDeltaR",     "DeltaDeltaR",      100, -1,  5 ), "checks"); // abs(dR_TLV - dR_function)
-    Book( TH1F("decayModeFinding", "decayModeFinding",   2,  0,  2 ), "checks");
-    
-    Book( TH1F("pt_tt_vis",         "pt_tt_vis",      100, 0, 200 ), "checks");
-    Book( TH1F("pt_tt_vis_ltau",    "pt_tt_vis_ltau", 100, 0, 200 ), "checks");
-    
-  }
+  // histograms - checks
+//   if(m_isSignal){
+//   
+//     // gen level distributions checks
+//     Book( TH1F("pt_gentaus",      "gen taus pt",      150, 0, 150 ), "checks");
+//     Book( TH1F("pt_gentau1",      "gen tau 1 pt",     150, 0, 150 ), "checks");
+//     Book( TH1F("pt_gentau2",      "gen tau 2 pt",     150, 0, 150 ), "checks");
+//     Book( TH1F("pt_genmuon",      "gen muon pt",      100, 0, 100 ), "checks");
+//     Book( TH1F("pt_tt_gen",       "gen pt_tt",        150, 0, 200 ), "checks");
+//     Book( TH1F("DeltaR_tautau",   "DeltaR_tautau",    150, 0,   5 ), "checks");
+//     Book( TH1F("DeltaR_taumu",    "DeltaR_taumu",     150, 0,   5 ), "checks");
+//     Book( TH1F("M_tautau",        "M_tautau",         200, 0,  60 ), "checks");
+//     
+//     // cutflow checks
+//     Book( TH1F("N_tauh_gen",      "N_tauh_gen",         5, 0,   5 ), "checks");
+//     Book( TH1F("N_tau_gen",       "N_tau_gen",          5, 0,   5 ), "checks");
+//     Book( TH1F("N_tauh_18_2p3_gen", "N_tauh_18_2p3_gen", 5, 0,  5 ), "checks");
+//     Book( TH1F("N_tau_reco",      "N_tau_reco",         5, 0,   5 ), "checks");
+//     Book( TH1F("N_tau_reco_18_2p3", "N_tau_reco_18_2p3", 5, 0,   5 ), "checks");
+//     Book( TH1F("tau_type",        "tau_type",           5, 0,   5 ), "checks");
+//     Book( TH1F("N_tau_std",       "N_tau_std",          5, 0,   5 ), "checks");
+//     Book( TH1F("N_tau_bst",       "N_tau_bst",          5, 0,   5 ), "checks");
+//     Book( TH1F("N_tau_18_2p3_std", "N_tau_18_2p3_std",  5, 0,   5 ), "checks");
+//     Book( TH1F("N_tau_18_2p3_1ctauh_std", "N_tau_18_2p3_1ctauh_std",  5, 0,   5 ), "checks");
+//     Book( TH1F("gen_match_tau_std", "gen_match_tau_std", 8, 0,  8 ), "checks");
+//     Book( TH1F("gen_match_tau_bst", "gen_match_tau_bst", 8, 0,  8 ), "checks");
+//     Book( TH1F("N_gen_match0p30_tau_std", "N_gen_match0p30_tau_std", 5, 0,  5 ), "checks");
+//     Book( TH1F("N_gen_match0p30_tau_bst", "N_gen_match0p30_tau_bst", 5, 0,  5 ), "checks");
+//     Book( TH1F("N_gen_match0p30_1bst_tau_std", "N_gen_match0p30_1bst_tau_std", 5, 0,  5 ), "checks");
+//     Book( TH1F("N_gen_match0p30_1bst_18_2p3_tau_std", "N_gen_match0p30_1bst_18_2p3_tau_std", 5, 0,  5 ), "checks");
+//     Book( TH1F("N_gen_match0p30_1ctauh_tau_std",  "N_gen_match0p30_1ctauh_tau_std", 5, 0,  5 ), "checks");
+//     Book( TH1F("N_gen_match0p30_0tauh_tau_std",   "N_gen_match0p30_0tauh_tau_std",  5, 0,  5 ), "checks");
+//     Book( TH1F("N_gen_match_tau_1cjet_bst",       "N_gen_match_tau_1cjet_bst",      5, 0,  5 ), "checks");
+//     Book( TH1F("N_gen_match0p30_18_2p3_tau_std",  "N_gen_match0p30_18_2p3_tau_std", 5, 0,  5 ), "checks");
+//     Book( TH1F("DeltaR_gen_reco_tau_std", "DeltaR_gen_reco_tau_std", 100, 0, 5 ), "checks");
+//     Book( TH1F("DeltaR_gen_reco_tau_bst", "DeltaR_gen_reco_tau_bst", 100, 0, 5 ), "checks");
+//     Book( TH1F("DeltaR_gen_reco_tau_min_1ctauh_std",  "DeltaR_gen_reco_tau_min_1ctauh_std", 100, 0, 5 ), "checks");
+//     Book( TH1F("DeltaR_gen_reco_tau_min_0tauh_std",   "DeltaR_gen_reco_tau_min_0tauh_std", 100, 0, 5 ), "checks");
+//     Book( TH1F("eta_tau_reco",    "eta_tau_reco",     100, -5, 5 ), "checks");
+//     Book( TH1F("pt_tau_reco",     "pt_tau_reco",      100, 0, 100 ), "checks");
+//     Book( TH1F("DeltaDeltaR",     "DeltaDeltaR",      100, -1,  5 ), "checks"); // abs(dR_TLV - dR_function)
+//     Book( TH1F("decayModeFinding", "decayModeFinding",   2,  0,  2 ), "checks");
+//     
+//     // boosted regime checks
+//     Book( TH1F("pt_tt_vis",         "pt_tt_vis",      100, 0, 200 ), "checks");
+//     Book( TH1F("pt_tt_vis_ltau",    "pt_tt_vis_ltau", 100, 0, 200 ), "checks");
+//     Book( TH2F("DeltaR_pt_tt_vis_ltau",     "DeltaR_pt_tt_vis_ltau",     100, 0, 200, 100, 0,   5 ), "checks");
+//     Book( TH2F("DeltaR_pt_tt_vis_ltau_std", "DeltaR_pt_tt_vis_ltau_std", 100, 0, 200, 100, 0,   5 ), "checks");
+//     Book( TH2F("DeltaR_pt_tt_vis_ltau_bst", "DeltaR_pt_tt_vis_ltau_bst", 100, 0, 200, 100, 0,   5 ), "checks");
+//     
+//   }
   
   m_BTaggingScaleTool.BeginInputData( id );
   m_ScaleFactorTool.BeginInputData( id );
@@ -570,9 +591,6 @@ void TauTauAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError )
   b_weight_     =  1.;
   b_genweight_  =  1.;
   b_npu_        = -1.;
-  //b_weight["mutau"]  = 1.;
-  //b_weight["eletau"] = 1.;
-  
   
   
   // Cut 0: no cuts
@@ -580,13 +598,13 @@ void TauTauAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError )
     fillCutflow("cutflow_" + ch, "histogram_" + ch, kBeforeCuts, 1);
     b_channel[ch] = 0;
   }
-  if (m_isSignal){
-    checks();
-    visiblePTCheck();
-    for (auto ch: channels_){
-      cutflowCheck(ch);
-    }
-  }
+//   if (m_isSignal){
+//     checks();
+//     visiblePTCheck();
+//     for (auto ch: channels_){
+//       cutflowCheck(ch);
+//     }
+//   }
   
   
   // Cut 1: check for data if run/lumiblock in JSON
@@ -609,6 +627,7 @@ void TauTauAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError )
   // Cut 2: pass trigger
   TString trigger_result = "both";
   if(m_isData) trigger_result = passTrigger();
+  //trigger_result = passTrigger();
   if(trigger_result != "none") m_logger << VERBOSE << "Trigger pass" << SLogger::endmsg;
   else throw SError( SError::SkipEvent );
   
@@ -625,9 +644,9 @@ void TauTauAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError )
   for (auto ch: channels_){
     fillCutflow("cutflow_" + ch, "histogram_" + ch, kMetFilters, 1);
   }
- 
   
-    
+  
+  
   // Cut 4: lepton (muon)
   std::vector<UZH::Muon> goodMuons;
   for( int i = 0; i < m_muon.N; ++i ){
@@ -677,12 +696,12 @@ void TauTauAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError )
   std::vector<UZH::Tau> goodTaus;
   for ( int i = 0; i <   (m_tau.N); ++i ) {
     UZH::Tau mytau( &m_tau, i );
-    if(mytau.TauType()!=1) continue; // 2 for boosted
+    if(mytau.TauType()!=1) continue; // 1 for standard ID, 2 for boosted ID
     if(mytau.pt() < m_tauPtCut) continue;
     if(fabs(mytau.eta()) > m_tauEtaCut) continue;
     if(fabs(mytau.dz()) > m_tauDzCut) continue;
     if(mytau.decayModeFinding() < 0.5) continue;
-    if(fabs(mytau.charge()) != 1) continue; // remove for boosted ?
+    if(fabs(mytau.charge()) != 1) continue; // remove for boosted ID
     //if(mytau.byTightIsolationMVArun2v1DBoldDMwLT() < 0.5) continue;
 
 //     if(event_channel=="mutau"){
@@ -709,7 +728,7 @@ void TauTauAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError )
     for(int itau=0; itau < (int)goodTaus.size(); itau++){
 
       Float_t dR = goodMuons[imuon].tlv().DeltaR(goodTaus[itau].tlv());
-      if(dR < 0.5) continue;
+      if(dR < 0.5) continue; // remove or lower for boosted ID
       //if(dR > 0.5) passedDeltaRCut = true; // check
       //Hist("DeltaR_taumu_reco", "checks" )->Fill( dR ); // check
       
@@ -717,7 +736,7 @@ void TauTauAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError )
       Float_t reliso = goodMuons[imuon].SemileptonicPFIso() / mupt;
       Float_t taupt = goodTaus[itau].pt();
       Float_t tauiso = goodTaus[itau].byIsolationMVArun2v1DBoldDMwLTraw();
-      ltau_pair pair = {imuon, reliso, mupt, itau, tauiso, taupt}; //, dR};
+      ltau_pair pair = {imuon, reliso, mupt, itau, tauiso, taupt, dR};
       mutau_pair.push_back(pair);
     }
   }
@@ -736,7 +755,7 @@ void TauTauAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError )
     for(int itau=0; itau < (int)goodTaus.size(); itau++){
     
       Float_t dR = goodElectrons[ielectron].tlv().DeltaR(goodTaus[itau].tlv());
-      if(dR < 0.5) continue;
+      if(dR < 0.5) continue; // remove or lower for boosted ID
       
       Float_t elept = goodElectrons[ielectron].pt();
       Float_t reliso = goodElectrons[ielectron].SemileptonicPFIso() / elept;
@@ -750,7 +769,6 @@ void TauTauAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError )
   if(mutau_pair.size()==0 && eletau_pair.size()==0){
     throw SError( SError::SkipEvent );
   }
-  
   
   UZH::MissingEt Met( &m_missingEt, 0 );
   UZH::MissingEt PuppiMet( &m_puppimissingEt, 0 );
@@ -949,9 +967,9 @@ TString TauTauAnalysis::passTrigger() {
     }
   }
 
-  if(flag_mu_trigger == true && flag_ele_trigger  == true)  return "both";
-  if(flag_mu_trigger == true && flag_ele_trigger  == false) return "mu";
-  if(flag_mu_trigger == false && flag_ele_trigger == true)  return "ele";
+  if(flag_mu_trigger == true  && flag_ele_trigger == true ) return "both";
+  if(flag_mu_trigger == true  && flag_ele_trigger == false) return "mu";
+  if(flag_mu_trigger == false && flag_ele_trigger == true ) return "ele";
 
   return "none";
   
@@ -1205,11 +1223,22 @@ void TauTauAnalysis::FillBranches(const std::string& channel, const std::vector<
   b_neutralIsoPtSum_2[ch]               = tau.neutralIsoPtSum();
   b_puCorrPtSum_2[ch]                   = tau.puCorrPtSum();
   b_decayModeFindingOldDMs_2[ch]        = tau.decayModeFinding();
-  if (m_isData)  b_gen_match_2[ch]      = 1;
+  
+  if (m_isData)  b_gen_match_2[ch]      = -1;
   else{
     b_gen_match_2[ch]                   = genMatch(b_eta_2[ch], b_phi_2[ch]);
     b_genmatchweight[ch]                = genMatchSF(b_gen_match_2[ch],b_eta_2[ch]); // leptons faking taus and real taus ID eff
     b_weight[ch]                        = b_weight[ch] * b_genmatchweight[ch];
+    // MARK: check boosted tau ID matching standard ID
+//     if (b_gen_match_2[ch] == 5 && m_isSignal){
+//       int nMatch = 0;
+//       for( int i = 0; i < (m_tau.N); ++i ){
+//         UZH::Tau mytau( &m_tau, i );
+//         if(mytau.TauType()==1) if(tau.tlv().DeltaR(mytau.tlv()) < 0.3) nMatch++;
+//       }
+//       TString tch = ch; 
+//       Hist("N_match0p30_bst_std_"+tch, "histogram_"+tch)->Fill( nMatch );
+//     }
   }
   b_decayMode_2[ch]                     = tau.decayMode();
   
@@ -1279,6 +1308,7 @@ void TauTauAnalysis::FillBranches(const std::string& channel, const std::vector<
   TLorentzVector lmetCorr;
   TLorentzVector lmvametCorr;
   if(m_doRecoilCorr){
+    // TODO: https://twiki.cern.ch/twiki/bin/viewauth/CMS/MSSMAHTauTauEarlyRun2#Z_reweighting
     lmetCorr    =  m_RecoilCorrector.CorrectPFMETByMeanResolution(  lmet.Px(),          lmet.Py(),
 					                                                boson_tlv.Px(),     boson_tlv.Py(),
 					                                                boson_tlv_vis.Px(), boson_tlv_vis.Py(),
@@ -1293,6 +1323,10 @@ void TauTauAnalysis::FillBranches(const std::string& channel, const std::vector<
     lmetCorr = lmet;
     lmvametCorr = lmvamet;
   }
+  if( fmvamet < 1e-10 ){
+    std::cout << ">>> Warning! Set low valued fmvamet = " << fmvamet << " to 0" << std::endl;
+    fmvamet = 0.0;
+  }
   
   b_met[ch]         = fmet;
   b_metphi[ch]      = fmetphi;
@@ -1302,12 +1336,13 @@ void TauTauAnalysis::FillBranches(const std::string& channel, const std::vector<
   b_mvametphi[ch]   = fmvametphi;
   b_met_old[ch]     = met.et();
   b_mvamet_old[ch]  = mvamet.et();
+  
   b_metcov00[ch]    = met.cov00();
-  b_metcov01[ch]    = met.cov10(); // not typo. This is same for 10
+  b_metcov01[ch]    = met.cov10(); // not a typo. This is same for 10
   b_metcov10[ch]    = met.cov10();
   b_metcov11[ch]    = met.cov11();
   b_mvacov00[ch]    = mvamet.cov00();
-  b_mvacov01[ch]    = mvamet.cov10(); // not typo. This is same for 10
+  b_mvacov01[ch]    = mvamet.cov10(); // not a typo. This is same for 10
   b_mvacov10[ch]    = mvamet.cov10();
   b_mvacov11[ch]    = mvamet.cov11();
   
@@ -1319,12 +1354,18 @@ void TauTauAnalysis::FillBranches(const std::string& channel, const std::vector<
   b_pfmt_2[ch]      = TMath::Sqrt(2*b_pt_2[ch]*fmet*(       1-TMath::Cos(deltaPhi(b_phi_2[ch], fmetphi      ))));
   b_puppimt_2[ch]   = TMath::Sqrt(2*b_pt_2[ch]*fpuppimet*(  1-TMath::Cos(deltaPhi(b_phi_2[ch], fpuppimetphi ))));
   
-//  NSVfitStandalone::Vector measuredMET(fmet *TMath::Cos(met_phi), fmet *TMath::Sin(met_phi), 0);
   b_m_vis[ch]       = (lep_lv + tau.tlv()).M();
+  b_pt_tt[ch]       = (lep_lv + tau.tlv() + lmet).Pt();
+  b_pt_tt_vis[ch]   = (lep_lv + tau.tlv()).Pt();
+  b_R_pt_m_vis[ch]  = -1;
+  if(b_m_vis[ch] > 0){
+    b_R_pt_m_vis[ch] = b_pt_tt[ch]/b_m_vis[ch];
+    b_R_pt_m_vis2[ch] = b_pt_tt_vis[ch]/b_m_vis[ch];
+  }
+  
   b_dR_ll[ch]       = tau.tlv().DeltaR(lep_lv);
   b_dR_ll_gen[ch]   = b_dR_ll_gen_;
   b_mt_tot[ch]      = TMath::Sqrt(TMath::Power(b_mt_1[ch],2) + TMath::Power(b_mt_2[ch],2) + 2*lep_lv.Pt()*b_pt_2[ch]*(1-TMath::Cos(deltaPhi(lep_lv.Phi(), b_phi_2[ch]))));
-  b_pt_tt[ch]       = (lep_lv + tau.tlv() + lmet).Pt();
   b_ht[ch]          = ht + lep_lv.E() + tau.tlv().E();
   
   // Delta phi( lep+tau, bj+j ) if there is one central b jet and on central jet
@@ -1345,16 +1386,22 @@ void TauTauAnalysis::FillBranches(const std::string& channel, const std::vector<
   
   // SVFit
   //bool doSVfit= false;
+  double m_sv = -1;
+  double pt_tt_sv = -1;
+  double R_pt_m_sv = -1;
   // to save time, apply some extra cuts 
   if ( m_doSVFit && channel=="mutau" &&
        b_iso_1[ch] < 0.15 && b_iso_2[ch] == 1 &&
        b_againstElectronVLooseMVA6_2[ch] == 1 && b_againstMuonTight3_2[ch] == 1 &&
        b_dilepton_veto[ch] == 0 && b_extraelec_veto[ch] == 0 && b_extramuon_veto[ch] == 0 ){
-    //std::cout << ">>> SVFit" << std::endl;
     m_SVFitTool.addMeasuredLeptonTau(channel,lep_lv, tau.tlv());
-    b_m_sv[ch] = m_SVFitTool.getSVFitMass(lmetCorr.Px(),lmetCorr.Py(), met.cov00(),met.cov10(),met.cov11());
+    m_SVFitTool.getSVFitMassAndPT(m_sv,pt_tt_sv,lmetCorr.Px(),lmetCorr.Py(), met.cov00(),met.cov10(),met.cov11());
+    if(m_sv > 0) R_pt_m_sv = pt_tt_sv/m_sv;
   }
-
+  b_m_sv[ch] = m_sv;
+  b_pt_tt_sv[ch] = pt_tt_sv;
+  b_R_pt_m_sv[ch] = R_pt_m_sv;
+  
 }
 
 
@@ -1805,10 +1852,7 @@ void TauTauAnalysis::checks() {
     else if ( pdgID == 13 && mygoodGenPart.isDirectPromptTauDecayProduct()){
       muons.push_back(mygoodGenPart);
     }
-//     else if ( pdgID < 5 ){
-//       quarks.push_back(mygoodGenPart);
-//     }
-//     
+//     else if ( pdgID < 5 ) quarks.push_back(mygoodGenPart);
 //     if (muons.size() > 1) break;
   }
   
@@ -1828,6 +1872,7 @@ void TauTauAnalysis::checks() {
     Hist("pt_gentaus",      "checks" )->Fill( pt_tau2 );
     Hist("pt_gentau1",      "checks" )->Fill( pt_tau1 );
     Hist("pt_gentau2",      "checks" )->Fill( pt_tau2 );
+    Hist("pt_tt_gen",       "checks" )->Fill( (taus.at(0).tlv()+taus.at(1).tlv()).Pt() );
     Hist("DeltaR_tautau",   "checks" )->Fill( b_dR_ll_gen_ );
     Hist("M_tautau",        "checks" )->Fill( (taus.at(0).tlv()+taus.at(1).tlv()).M() );
     
@@ -2004,6 +2049,12 @@ void TauTauAnalysis::cutflowCheck(const std::string& ch){
     Hist("N_gen_match0p30_0tauh_tau_std",     "checks")->Fill( N_match0p30_std );
   }
   
+  if(N_match0p30_bst>0){
+    Hist("N_gen_match0p30_1bst_tau_std",     "checks")->Fill( N_match0p30_std );
+  }
+  if(N_match0p30_18_2p3_bst>0){
+    Hist("N_gen_match0p30_1bst_18_2p3_tau_std",     "checks")->Fill( N_match0p30_18_2p3_std );
+  }
   
   // JET COUNTING
   int ncjets = 0;
@@ -2155,8 +2206,17 @@ void TauTauAnalysis::cutflowCheck(const std::string& ch){
 void TauTauAnalysis::visiblePTCheck(){
   //std::cout << "visiblePTCheck" << std::endl;
   
-  // Retrieve visible pT of the taus ! 
-  // Should be done in Ntuplizer level from next time.
+  // count number of tau IDs
+  int ntau_std = 0;
+  int ntau_bst = 0;
+  for( int i = 0; i < (m_tau.N); ++i ){
+    UZH::Tau mytau( &m_tau, i );
+    if(mytau.TauType() == 1) ntau_std++;
+    else if(mytau.TauType() == 2) ntau_bst++;
+  }
+   
+      
+  // retrieve visible pT of the taus
   std::map<int, TLorentzVector> gennus;
   std::map<int, TLorentzVector> genleptons;
   std::map<int, TLorentzVector> gentauhs;
@@ -2182,6 +2242,7 @@ void TauTauAnalysis::visiblePTCheck(){
       TLorentzVector genNeutrino;
       genNeutrino.SetPtEtaPhiE(pt,eta,phi,energy);
       gennus[pdgId] = genNeutrino;
+      continue;
     }
     else if( mygoodGenPart.status()==1 && (abspdgId==11 || abspdgId==13) && (isDirectPromptTauDecayProduct > 0.5) ){
       TLorentzVector genLeptons;
@@ -2222,20 +2283,58 @@ void TauTauAnalysis::visiblePTCheck(){
       }else if(pdg==-15){
         if(nu==-16) (*it).second -= (*itn).second;
       }else{
-	  std::cout << "Impossible!!!" << std::endl;
+	  std::cout << ">>> Warning! gentauhs has a \'first\' != -15 or 15 !" << std::endl;
       }
     }
   }
   
+  float pt_tt_vis = -1;
+  float DeltaR_vis = -1;
+  
+  // semileptonic channel
   if(gentauhs.size()==1 && genleptons.size()==1){
-    Hist("pt_tt_vis_ltau", "checks")->Fill( (gentauhs.begin()->second + genleptons.begin()->second).Pt() );
+    pt_tt_vis = (gentauhs.begin()->second + genleptons.begin()->second).Pt();
+    DeltaR_vis = gentauhs.begin()->second.DeltaR(genleptons.begin()->second);
+    Hist("pt_tt_vis_ltau", "checks")->Fill( pt_tt_vis );
+    Hist("DeltaR_pt_tt_vis_ltau",     "checks")->Fill( pt_tt_vis, DeltaR_vis );
+    if (ntau_std > 0) Hist("DeltaR_pt_tt_vis_ltau_std", "checks")->Fill( pt_tt_vis, DeltaR_vis );
+    if (ntau_bst > 0) Hist("DeltaR_pt_tt_vis_ltau_bst", "checks")->Fill( pt_tt_vis, DeltaR_vis );
     if(gentauhs.begin()->first * genleptons.begin()->first > 0){
-      std::cout << "Impossible!!! gentauhs.begin()->first * genleptons.begin()->first > 0" << std::endl;
+      std::cout << ">>> Warning! gentauhs.begin()->first * genleptons.begin()->first > 0" << std::endl;
+    }
+  }
+  // all hadronic channel
+  else if(gentauhs.size()==2){
+    TLorentzVector tlv_tt;
+    int charge = 1;
+    for(std::map<int, TLorentzVector>::iterator it = gentauhs.begin(); it!=gentauhs.end(); ++it){
+      tlv_tt += (*it).second;
+      charge *= (*it).first;
+    }
+    pt_tt_vis = tlv_tt.Pt();
+    if(charge > 0){
+      std::cout << ">>> Warning! All hadronic channel's charge*charge > 0" << std::endl;
+    }
+  }
+  // dilepton channel
+  else if(genleptons.size()==2){
+    TLorentzVector tlv_tt;
+    int charge = 1;
+    for(std::map<int, TLorentzVector>::iterator it = genleptons.begin(); it!=genleptons.end(); ++it){
+      tlv_tt += (*it).second;
+      charge *= (*it).first;
+    }
+    pt_tt_vis = tlv_tt.Pt();
+    if(charge > 0){
+      std::cout << ">>> Warning! Dileptonic channel's charge*charge > 0" << std::endl;
     }
   }
   else if( (gentauhs.size()+genleptons.size())!=2 ){
-    std::cout << "Impossible!!! (gentauhs.size()+genleptons.size())!=2" << std::endl;
+    std::cout << ">>> Warning! (gentauhs.size()+genleptons.size()) != 2" << std::endl;
+    std::cout << ">>>           gentauhs.size() = " << gentauhs.size() << ", genleptons.size() = " << genleptons.size() << std::endl;
   }
+  
+  Hist("pt_tt_vis", "checks")->Fill( pt_tt_vis );
   
 }
 

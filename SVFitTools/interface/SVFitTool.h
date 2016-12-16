@@ -61,8 +61,7 @@ class SVFitTool : public SToolBase {
     std::vector<svFitStandalone::MeasuredTauLepton> m_measuredTauLeptons;
 
 
-    
-    
+      
 };
 
 

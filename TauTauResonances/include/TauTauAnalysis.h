@@ -421,7 +421,9 @@ class TauTauAnalysis : public SCycleBase {
     
     std::map<std::string,Double_t> b_m_vis;
     std::map<std::string,Double_t> b_pt_tt;
+    std::map<std::string,Double_t> b_pt_tt_vis;
     std::map<std::string,Double_t> b_R_pt_m_vis;
+    std::map<std::string,Double_t> b_R_pt_m_vis2;
     
     std::map<std::string,Double_t> b_m_sv; 
     //std::map<std::string,Double_t> b_m_sv_pfmet;
