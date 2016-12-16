@@ -1,6 +1,9 @@
 from ROOT import * #TFile, TCanvas, TH1F, TH2F, THStack, TAxis, TGaxis, TGraph...
 import CMS_lumi, tdrstyle
 from math import sqrt, pow
+from cStringIO import StringIO # for stdout capturing
+import sys
+# TODO http://stackoverflow.com/questions/16571150/how-to-capture-stdout-output-from-a-python-function-call
 
 # CMS style
 lumi = 12.9 #24.5
@@ -20,19 +23,22 @@ legendTextSize = 0.028 #0.036
 colors     = [ kAzure+4,
                kRed+3, kAzure+4, kOrange-6, kGreen+3, kMagenta+3, kYellow+2,
                kRed-7, kAzure-4, kOrange+6, kGreen-2, kMagenta-3, kYellow-2 ]
-fillcolors = [ kRed-2, #kAzure+5,
+fillcolors = [ kRed-2, kAzure+5,
                kMagenta-3, kYellow+771, kOrange-5,  kGreen-2,
                kRed-7, kAzure-9, kOrange+382,  kGreen+3,  kViolet+5, kYellow-2 ]
                #kYellow-3
                
-varlist = [ ("jpt_1", "leading jet pt"),   ("jpt_2", "leading jet pt"),
-            ("bpt_1", "leading b jet pt"), ("bpt_2", "sub-leading b jet pt"),
-            ("abs(jeta_1)", "leading jet abs(eta)"),   ("abs(jeta_2)", "sub-leading jet abs(eta)"),
-            ("abs(beta_1)", "leading b jet abs(eta)"), ("abs(beta_2)", "sub-leading b jet abs(eta)"),
-            ("jeta_1", "leading jet eta"),   ("jeta_2",  "sub-leading jet eta"),
-            ("beta_1", "leading b jet eta"), ("beta_2","sub-leading b jet eta"),
-            ("dR_ll","#DeltaR_{ll}"),
-            ("pfmt_1","PF mt_1"), ]
+varlist = { "jpt_1": "leading jet pt",              "jpt_2": "leading jet pt",
+            "bpt_1": "leading b jet pt",            "bpt_2": "sub-leading b jet pt",
+            "abs(jeta_1)": "leading jet abs(eta)",   "abs(jeta_2)": "sub-leading jet abs(eta)",
+            "abs(beta_1)": "leading b jet abs(eta)", "abs(beta_2)": "sub-leading b jet abs(eta)",
+            "jeta_1": "leading jet eta",            "jeta_2": "sub-leading jet eta",
+            "beta_1": "leading b jet eta",          "beta_2": "sub-leading b jet eta",
+            "pt_tt": "pt_ltau",                     "R_pt_m_vis": "R = pt_ltau / m_vis",
+            "pt_tt_sv": "SVFit pt_ltau,sv",         "R_pt_m_sv":  "SVFit R_{sv} = pt_ltau / m_sv",
+            "m_sv": "SVFit m_sv",
+            "dR_ll": "#DeltaR_{ltau}",
+            "pfmt_1":"PF mt_l,MET", "met":"MET" }
          
 
 
@@ -40,56 +46,63 @@ varlist = [ ("jpt_1", "leading jet pt"),   ("jpt_2", "leading jet pt"),
 
 def makeLatex(title):
     """Convert patterns in a string to LaTeX format."""
-
-    for a, b in varlist:
-        if a in title:
-            title = title.replace(a,b)
+    
+    for var in varlist:
+        if var in title:
+            title = title.replace(var,varlist[var])
             break
-
-    if "p_t" in title or "pt" in title or "Pt" in title:
-        if "pt_" in title and "pt_" in title:
-            title = title.replace("pt_","p_{T}^{").replace("Pt_","p_{T}^{") + "}"
-        else:
-            title = title.replace("p_t","p_{T}").replace("pt","p_{T}").replace("Pt","p_{T}")
-        title += " [GeV]"
     
-    if "m_" in title or "M_" in title:
-        title = title.replace("m_","m_{").replace("M_","M_{") + "}" # TODO: split at next space
-        title += " [GeV]"
+    strings = [ ]
+    for string in title.split(' / '):
     
-    if "mt_" in title or "MT_" in title:
-        title = title.replace("mt_","m_{T}^{").replace("M_","M_{T}^{") + "}" # TODO: split at next space
-        title += " [GeV]"
+        if "p_t" in string or "pt" in string or "Pt" in string:
+            if "pt_" in string and "Pt_" in string:
+                string = string.replace("pt_","p_{T}^{").replace("Pt_","p_{T}^{") + "}"
+            else:
+                string = string.replace("p_t","p_{T}").replace("pt","p_{T}").replace("Pt","p_{T}")
     
-    if "tau" in title or "Tau" in title:
-        title = title.replace("tau","#tau").replace("Tau","#tau")
-            
-    if "phi" in title or "Phi" in title:
-        if "phi_" in title or "Phi_" in title:
-            title = title.replace("phi_","#phi_{").replace("Phi_","#phi_{") + "}"
-        else:
-            title = title.replace("phi","#phi").replace("Phi","#phi")
+        if "m_" in string or "M_" in string:
+            string = string.replace("m_","m_{").replace("M_","M_{") + "}" # TODO: split at next space
     
-    if "eta" in title or "Eta" in title:
-        if "eta_" in title or "Eta_" in title:
-            title = title.replace("eta_","#eta_{").replace("Eta_","#eta_{") + "}"
-        else:
-            title = title.replace("eta","#eta").replace("Eta","#eta")
+        if "mt_" in string or "MT_" in string:
+            string = string.replace("mt_","m_{T}^{").replace("M_","M_{T}^{") + "}" # TODO: split at next space
     
-    if "abs(" in title and ")" in title:
-        title = title.replace("abs(","|").replace(")","") + "|" # TODO: split at next space
+        if "tau" in string or "Tau" in string:
+            string = string.replace("tau","#tau").replace("Tau","#tau")
     
-    if "mu" in title or "Mu" in title:
-        if "muon" not in title and "Muon" not in title: 
-            title = title.replace("mu","#mu").replace("Mu","#mu")
+        if "phi" in string or "Phi" in string:
+            if "phi_" in string or "Phi_" in string:
+                string = string.replace("phi_","#phi_{").replace("Phi_","#phi_{") + "}"
+            else:
+                string = string.replace("phi","#phi").replace("Phi","#phi")
     
-    if "ttbar" in title or "TTbar" in title:
-        title = title.replace("ttbar","t#bar{t}").replace("TTbar","t#bar{t}")
+        if "eta" in string or "Eta" in string:
+            if "eta_" in string or "Eta_" in string:
+                string = string.replace("eta_","#eta_{").replace("Eta_","#eta_{") + "}"
+            else:
+                string = string.replace("eta","#eta").replace("Eta","#eta")
     
-    if "npv" in title:
-        title = title.replace("npv","number of vertices")
+        if "abs(" in string and ")" in string:
+            string = string.replace("abs(","|").replace(")","") + "|" # TODO: split at next space
     
-    return title
+        if "mu" in string or "Mu" in string:
+            if "muon" not in string and "Muon" not in string: 
+                string = string.replace("mu","#mu").replace("Mu","#mu")
+    
+        if "ttbar" in string or "TTbar" in string:
+            string = string.replace("ttbar","t#bar{t}").replace("TTbar","t#bar{t}")
+    
+        if "npv" in string:
+            string = string.replace("npv","number of vertices")
+        
+        strings.append(string)
+    
+    newtitle = '/'.join(strings)
+    
+    if "p_" in newtitle or "m_" in newtitle or "M_" in newtitle or "mass" in newtitle or "MET" in newtitle or "met" in newtitle:
+        newtitle += " [GeV]"
+    
+    return newtitle
     
     
     
@@ -156,28 +169,57 @@ def color(string,**kwargs):
                                 "green"     : "42", "yellow"    : "43", "orange"    : "43",
                                 "blue"      : "44", "purple"    : "45",
                                 "magenta"   : "46", "grey"      : "47", }                  
-    color_code = text_color_dict[kwargs.get("color","red")] + background_color_dict[kwargs.get("background","black")]
-    return kwargs.get('prepend',"") + "\x1b[%sm%s\x1b[0m" % ( color_code, string )
+    color_code = text_color_dict[kwargs.get('color',"red")] + background_color_dict[kwargs.get('background',"black")]
+    return kwargs.get('prepend',"") + "\x1b[%sm%s\033[0m" % ( color_code, string )
 
 def warning(string,**kwargs):
-    return color("Warning! "+string, color="yellow", prepend=">>> ")
+    return color("Warning! "+string, color="yellow", prepend=">>> "+kwargs.get('prepend',""))
     
 def error(string,**kwargs):
-    return color("ERROR! "+string, color="red", prepend=">>> ")
+    return color("ERROR! "+string, color="red", prepend=">>> "+kwargs.get('prepend',""))
 
 
 
 
 
-def makeCanvas(self,**kwargs):
+class capturing(object):
+    """Capture standard output"""
+
+    def __init__(self,**kwargs):
+        self.old_stdout = sys.stdout
+        self.old_stderr = sys.stderr
+        self.captured0 = StringIO()
+        sys.stdout = self.captured0
+        sys.stderr = self.captured0
+
+    def stop(self):
+        sys.stdout = self.old_stdout
+        sys.stderr = self.old_stderr
+        self.captured0.close()
+
+    def captured(self):
+        sys.stdout = self.old_stdout
+        sys.stderr = self.old_stderr
+        out = self.captured0.getvalue()
+        if '\n' in out[-2:]: out = out[:-1]
+        self.captured0.close()
+        return out
+
+
+
+
+
+
+def makeCanvas(**kwargs):
     """Make canvas and pads for ratio plots."""
     
     square = kwargs.get('square', False)
     scaleleftmargin  = kwargs.get('scaleleftmargin', 1)
     scalerightmargin = kwargs.get('scalerightmargin', 1)
     scaletopmargin = kwargs.get('scaletopmargin', 1)
-    residue = kwargs.get('residue', False)
-    ratio = kwargs.get('ratio', False)
+    name = kwargs.get('name', "canvas").replace(' ','_')
+    #residue = kwargs.get('residue', False)
+    #ratio = kwargs.get('ratio', False)
     
     W = 800; H  = 600
     if square:
@@ -189,7 +231,7 @@ def makeCanvas(self,**kwargs):
     L = 0.12*W*scaleleftmargin
     R = 0.04*W*scalerightmargin
     
-    canvas = TCanvas("canvas","canvas",100,100,W,H)
+    canvas = TCanvas(name,name,100,100,W,H)
     canvas.SetFillColor(0)
     canvas.SetBorderMode(0)
     canvas.SetFrameFillStyle(0)
@@ -257,32 +299,57 @@ class Samples(object):
         self.isSignal   = kwargs.get('signal', False)
         self.blind      = kwargs.get('blind', { })
         filename = label
-        if self.samples: filename = self.samples[0].filename
+        treename = "tree"
+        if self.samples:
+            filename = self.samples[0].filename
+            treename = self.samples[0].treeName
         self.filename   = kwargs.get('filename', filename)
+        self._treeName  = kwargs.get('treeName', treename)
         self.filenameshort = "/".join(self.filename.split('/')[-2:])
+
+
+    @property
+    def treeName(self): return self._treeName
+
+    @treeName.setter
+    def treeName(self, value):
+        for sample in self.samples: sample.treeName = value
+        self._treeName = value
 
     
     def add(self, sample, **kwargs):
-        scale  = kwargs.get('scale', 1.0) * self.scale
-        sample.scale *= scale
+        #scale  = kwargs.get('scale', 1.0) * self.scale
+        #sample.scale *= scale
         self.samples.append(sample)
     
     
     def hist(self, var, nBins, a, b, **kwargs):
         name    = kwargs.get('name',  makeHistName(self.label+"_merged", var))
         title   = kwargs.get('title', self.label)
-        
-        if 'scale' in kwargs: kwargs['scale'] = self.scale * kwargs.get('scale', 1.0)
-        else:                 kwargs['scale'] = self.scale
+        kwargs['scale'] = self.scale * kwargs.get('scale', 1.0) # pass scale down
         
         #print ">>> Samples - hist: name = %s" % name
         hist = TH1F(name, title, nBins, a, b)
         for sample in self.samples:
             if 'name' in kwargs: # prevent memory leaks
-                kwargs['name']  = makeHistName(sample.label,name.replace(self.label+"_",""))    
+                kwargs['name']  = makeHistName(sample.label,name.replace(self.label+'_',''))    
             hist.Add( sample.hist(var, nBins, a, b, **kwargs) )
         
         return hist
+    
+    
+    def hist2D(self, var1, nBins1, a1, b1, var2, nBins2, a2, b2, **kwargs):
+        name   = kwargs.get('name',  makeHistName(self.label+"_merged", "%s_vs_%s" % (var1,var2)))
+        title   = kwargs.get('title', self.label)
+        kwargs['scale'] = self.scale * kwargs.get('scale', 1.0) # pass scale down
+        
+        hist2D = TH2F(name, title, nBins2, a2, b2, nBins1, a1, b1)
+        for sample in self.samples:
+            if 'name' in kwargs: # prevent memory leaks
+                kwargs['name']  = makeHistName(sample.label,name.replace(self.label+'_',''))    
+            hist2D.Add( sample.hist2D(var1, nBins1, a1, b1, var2, nBins2, a2, b2, **kwargs) )
+        
+        return hist2D
 
 
     def resetScalesAndWeights(self,**kwargs):
@@ -327,7 +394,7 @@ class Sample(object):
         self.blind      = kwargs.get('blind', { })
         # TODO: only blind for m_vis variable!
         # TODO: rewrite class with tree method, applycut method, ...
-    
+        
 
     
     def hist(self, var, nBins, a, b, **kwargs):
@@ -344,14 +411,39 @@ class Sample(object):
         cuts   = combineCuts(self.cuts, kwargs.get('cuts', ""), blindcuts, weight=weight)
         
         hist = TH1F(name, title, nBins, a, b)
-        tree.Draw("%s >> %s" % (var,name), cuts, "gOff")
-        if scale is not 1.0:
-            hist.Scale(scale)
-        if scale is  0:
-            print warning("Scale of %s is 0!" % self.label)
+        #captur = capturing()
+        out = tree.Draw("%s >> %s" % (var,name), cuts, "gOff")
+        if out < 0: print error("Drawing histogram for %s sample failed!" % (title))
+        
+        if scale is not 1.0: hist.Scale(scale)
+        if scale is     0.0: print warning("Scale of %s is 0!" % self.label)
         #print hist.GetEntries()
         #gDirectory.Delete(label)
         return hist
+        
+        
+        
+    def hist2D(self, var1, nBins1, a1, b1, var2, nBins2, a2, b2, **kwargs):
+        """Make a 2D histogram with a tree."""
+        
+        scale  = kwargs.get('scale', 1.0) * self.scale
+        tree   = self.file.Get(self.treeName)
+        name   = kwargs.get('name',  makeHistName(self.label, "%s_vs_%s" % (var1,var2)))
+        title  = kwargs.get('title', self.label)
+        
+        blindcuts = ""
+        if var1 in self.blind: blindcuts += self.blind[var1]
+        if var2 in self.blind: blindcuts += self.blind[var2]
+        weight = combineWeights(self.weight, kwargs.get('weight', ""))
+        cuts   = combineCuts(self.cuts, kwargs.get('cuts', ""), blindcuts, weight=weight)
+        
+        hist2D = TH2F(name, title, nBins2, a2, b2, nBins1, a1, b1)
+        out = tree.Draw("%s:%s >> %s" % (var1,var2,name), cuts, "gOff")
+        if out < 0: print error("Drawing histogram for %s sample failed!" % (title))
+        
+        #if scale is not 1.0: hist.Scale(scale)
+        #if scale is     0.0: print warning("Scale of %s is 0!" % self.label)
+        return hist2D
     
     
     
@@ -452,14 +544,16 @@ class Plot(object):
             histQCD = self.QCD()
             if histQCD: self.histsB.append(histQCD)
         
-        self.stack = None
-        self.canvas = None
-        self.pads = [ ]
-        self.frame = None
-        self.legend = None
-        self.width = 0.20;  self.height = 0.08 + 0.05 * len(self.histsB)
-        self.x2 = 0.95;     self.x1 = self.x2 - self.width
-        self.y1 = 0.48;     self.y2 = self.y1 + self.height
+        self.stack      = None
+        self.canvas     = None
+        self.graph_sigma  = None
+        self.canvas_sigma = None
+        self.pads       = [ ]
+        self.frame      = None
+        self.legend     = None
+        self.width  = 0.18; self.height = 0.08 + 0.05 * len(self.histsB)
+        self.x2     = 0.95; self.x1 = self.x2 - self.width
+        self.y2     = 0.90; self.y1 = self.y2 - self.height
 
     @property
     def hists(self): return ( self.histsB + self.histsS + self.histsD )
@@ -551,6 +645,11 @@ class Plot(object):
         if kwargs.get('legend', True):
             self.makeLegend( title=kwargs.get('title', ""), entries=kwargs.get('entries', ),
                                                             position=kwargs.get('position', "") )
+
+        # CMS LUMI        
+        CMS_lumi.cmsTextSize  = 0.65
+        CMS_lumi.lumiTextSize = 0.60
+        CMS_lumi.relPosX = 0.105
         CMS_lumi.CMS_lumi(self.canvas,13,0)
         
         # RATIO
@@ -567,6 +666,7 @@ class Plot(object):
         """Save plot, close canvas and delete the histograms."""
         
         self.canvas.SaveAs(filename)
+        if self.canvas_sigma: self.canvas_sigma.SaveAs(filename.replace(".png","_eff.png"))
         self.close()
 
 
@@ -574,7 +674,8 @@ class Plot(object):
     def close(self):
         """Close canvas and delete the histograms."""
         
-        if self.canvas: self.canvas.Close()
+        if self.canvas:     self.canvas.Close()
+        if self.canvas_sigma: self.canvas_sigma.Close()
         for hist in self.hists: gDirectory.Delete(hist.GetName())
 
 
@@ -669,7 +770,7 @@ class Plot(object):
             if "BottomBottom" in position:  y1 = 0.15;      y2 = y2 + height
             elif "Bottom" in position:      y1 = 0.20;      y2 = y2 + height
             elif "TopTop" in position:      y2 = 0.95;      y1 = y2 - height
-            elif "Top" in position:         y1 = 0.90;      y2 = y1 - height
+            elif "Top" in position:         y1 = 0.93;      y2 = y1 - height
         legend = TLegend(x1,y1,x2,y2)
         
         if transparent: legend.SetFillStyle(0) # 0 = transparent
@@ -1010,7 +1111,7 @@ class Plot(object):
             hist = args[0]
             if not a and not b: return hist.Integral()
         elif len(args) == 3:
-            hist = args[0].GetStack().Last()
+            hist = args[0]
             a = args[1]
             b = args[2]
         else:
@@ -1077,78 +1178,84 @@ class Plot(object):
            the mt_1 > 80 GeV sideband.
            This method assume that the variable of this Plot object is a transverse mass and is plotted
            from 80 GeV to at least 100 GeV."""
-        print ">>>\n>>> renormalizing WJ with mt > 80 GeV sideband for variable %s" % (self.var)
+        print(">>> renormalizing WJ with mt > 80 GeV sideband for variable %s" % (self.var)),
         
         samples = self.samples
-        cuts = self.cuts
-        var = self.var
-        nBins = self.nBins
-        a = self.a
-        b = self.b
-        samples = self.samples
+        cuts    = self.cuts
+        var     = self.var
+        nBins   = self.nBins
+        a       = self.a
+        b       = self.b
         
         # STACK
+        QCD = False
         stack = THStack("stack","")
         for hist in self.histsMC:
             stack.Add(hist)
-            if "QCD" in hist.GetName(): print ">>> renormalizing with QCD included"
+            if "QCD" in hist.GetName(): QCD = True
+        if QCD: print "(QCD included)"
+        else:   print " "
         self.stack = stack
         
         # CHECK MC and DATA
         if not self.histsMC:
-            print warning("Could not renormalize WJ: no MC!")
+            print warning("Could not renormalize WJ: no MC!", prepend="  ")
             return
         if not self.stack:
-            print warning("Could not renormalize WJ: no stack!")
+            print warning("Could not renormalize WJ: no stack!", prepend="  ")
             return
         if not self.histsD:
-            print warning("Could not renormalize WJ: no data!")
+            print warning("Could not renormalize WJ: no data!", prepend="  ")
             return
         
         # CHECK mt
         for v in [ "mt", "mT", "m_T", "MT", "M_T" ]:
             if v in var: break
         else:
-            print warning("Could not renormalize WJ: Plot object has no transverse mass variable!")
+            print warning("Could not renormalize WJ: Plot object has no transverse mass variable!", prepend="  ")
             return
         
-        # CHECK a, b    
+        # CHECK a, b (assume histogram range goes from 80 to >100 GeV)
         if a is not 80:
-            print warning("Renormalizing WJ with mt > %s GeV, instead of mt > 80 GeV!" % a)
+            print warning("Renormalizing WJ with mt > %s GeV, instead of mt > 80 GeV!" % a, prepend="  ")
         if b < 100:
-            print warning("Renormalizing WJ with mt < %s GeV < 100 GeV!" % b)
+            print warning("Renormalizing WJ with mt < %s GeV < 100 GeV!" % b, prepend="  ")
             return
         
-        # GET WJ
+        # GET WJ SAMPLE to set scale
         WJ = None
         WJs = [ ]
         for sample in samples:
             #print sample.label
             if "WJ" in sample.label or "W + jets" in sample.label or "W + Jets" in sample.label:
                 WJs.append(sample)
+                
+        # CHECK WJ SAMPLE
         if   len(WJs) == 1:
             WJ = WJs[0]
         elif len(WJs)  > 1:
             WJ = WJs[0]
-            print warning("More than one WJ sample, renormalizing with first instance (%s)!" % (WJ.label))
+            print warning("More than one WJ sample, renormalizing with first instance (%s)!" % (WJ.label), prepend="  ")
         else:
-            print warning("Could not renormalize WJ: no WJ sample!")
+            print warning("Could not renormalize WJ: no WJ sample!", prepend="  ")
             return
                 
-        # GET WJ HIST
+        # GET WJ HIST to calculate scale
         histWJ = None
         histsWJ = [ ]
         for hist in self.histsMC:
             #print hist.GetName()
             if "WJ" in hist.GetName() or "W-jets" in hist.GetName() or "W-Jets" in hist.GetName():
                 histsWJ.append(hist)
+                
+        # CHECK WJ HIST
         if   len(histsWJ) == 1:
             histWJ = histsWJ[0]
         elif len(histsWJ)  > 1:
             histWJ = histsWJ[0]
-            print warning("More than one WJ sample, renormalizing with first instance (%s)!" % (histWJ.GetName()))
+            print warning("More than one WJ sample, renormalizing with first instance (%s)!" % (histWJ.GetName()), prepend="  ")
         else:
-            print warning("Could not renormalize WJ: no WJ sample!")
+            print warning("Could not renormalize WJ: no WJ sample!", prepend="  ")
             return
         
         # RESET SCALE
@@ -1160,31 +1267,30 @@ class Plot(object):
         I_MC = self.stack.GetStack().Last().Integral()
         I_D  = self.histsD[0].Integral()
         I_WJ = histWJ.Integral()
-        #print ">>> I_D  = %.2f" % I_D
-        #print ">>> I_MC = %.2f" % I_MC
-        #print ">>> I_WJ = %.2f" % I_WJ
+        print ">>>   data: %.1f, MC: %.1f, WJ: %.1f " % (I_D,I_MC,I_WJ)
         if I_MC < 10:
-            print warning("Could not renormalize WJ: integral of MC is %s < 10!" % I_MC)
+            print warning("Could not renormalize WJ: integral of MC is %s < 10!" % I_MC, prepend="  ")
             return
         if I_D < 10:
-            print warning("Could not renormalize WJ: integral of data is %s < 10!" % I_D)
+            print warning("Could not renormalize WJ: integral of data is %s < 10!" % I_D, prepend="  ")
             return
         if I_WJ < 10:
-            print warning("Could not renormalize WJ: integral of WJ is %s < 10!" % I_WJ)
+            print warning("Could not renormalize WJ: integral of WJ is %s < 10!" % I_WJ, prepend="  ")
             return
         
         # SET WJ SCALE
         scale = ( I_D - I_MC + I_WJ ) / I_WJ # renormalize WJ such that #(MC) = #(data)
         if scale < 0:
-            scale = 1 # use BU scale to overwrite previous renormalizations
-            print warning("Could not renormalize WJ: scale < 0")
+            print warning("Could not renormalize WJ: scale = %.2f < 0!" % scale, prepend="  ")
+            WJ.scale = WJ.scaleBU # use BU scale to overwrite previous renormalizations
+            return
         WJ.scale = WJ.scaleBU * scale
-        print ">>> WJ renormalization scale = %.3f (new total scale = %.3f)" % (scale, WJ.scale)
-
-
-
-    def efficiencyScan(self,*args,**kwargs):
-        """Scans range of some variable, applying a cut, integrating the signal and background histograms,
+        print ">>>   WJ renormalization scale = %.3f (new total scale = %.3f)" % (scale, WJ.scale)
+        
+        
+        
+    def significanceScan(self,*args,**kwargs):
+        """Scan cut on a range of some variable, integrating the signal and background histograms,
            calculating the S/(1+sqrt(B)) and finally drawing a histogram with these values."""
         # assume this Plot object has:
         #   - the appropriate backgrounds (WJ renormalization, QCD if necessary)
@@ -1200,72 +1306,172 @@ class Plot(object):
         
         # CHECK MC and DATA
         if not self.histsB:
-            print warning("Could not calculate efficiency: no background MC samples!")
+            print warning("Could not calculate significance: no background MC samples!")
             return
         if not self.stack:
-            print warning("Could not calculate efficiency: no stack!")
+            print warning("Could not calculate significance: no stack!")
             return
-        if not self.histsS:
-            print warning("Could not calculate efficiency: no signal MC samples!")
-            return 
+        if not self.histsS[0]:
+            print warning("Could not calculate significance: no signal MC samples!")
+            return
         
         # SET UP
         if len(args) is 2: kwargs['range'] = args
-        range       = kwargs.get('range',(a,b))     # range to make cuts
-        N           = kwargs.get('N',10)            # number of cuts in range
-        up          = not kwargs.get("down",False)  # up = ( var > cut ), down = ( var < cut )
-        signal      = self.histS[0]
-        stack       = self.stack
-        graph_sigma = TGraph(N)
+        (a0,b0)         = kwargs.get('range',(a,b))      # range to make cuts
+        N               = max(kwargs.get('N',40),10)     # number of cuts in range
+        lower           = not kwargs.get('upper',False)  # lower = ( var > cut ), upper = ( var < cut )
+        signal          = self.histsS[0]
+        stack           = self.stack
+        graph_sigma     = TGraph(N)
+        
+        # NORM
+        norm            = 1.0
+        if signal.GetSumOfWeights():
+            norm        = 5.0/signal.GetSumOfWeights() # signal yield renormalization
         
         # TODO: CHECKS
-        if not N: N = 10
-        if a_cut < a: a_cut = a
-        if b_cut > b: b_cut = b
+        if not N: N = 40
+        if a0 < a: a0 = a
+        if b0 > b: b0 = b
         
         # INTEGRATE
-        (a_cut,b_cut)   = range
-        cut = 0
-        width           = abs(b_cut-a_cut)
+        cut         = 0
+        width       = abs(b0-a0)
+        sigma_max   = 0
         #N_totB          = stack.GetStack().Last().GetSumOfWeights()
         #N_totS          = signal.GetSumOfWeights()
+        b_cut = b0
+        a_cut = a0
+        #print ">>>   cuts on %s with interval %.2f to %.2f" % (var,a0,b0)
         for i in range(N): # 0, ..., N
-            if up: # scan up on lower limit
-                a_cut = a + i*width/N
+            if lower: # scan up on lower limit
+                a_cut = a0 + float(i)*width/N
                 cut = a_cut
-            else: # scan up on upper limit
-                b_cut = b - (N-i)*width/N
+            else:  # scan up on upper limit
+                b_cut = b0 - float(N-i)*width/N
                 cut = b_cut
+            S = self.integrateHist(signal,a_cut,b_cut) * norm
             B = self.integrateStack(stack,a_cut,b_cut)
-            S = self.integrateHist(signal,a_cut,b_cut)
-            graph_sigma.SetPoint(i,cut,S/sqrt(1+B))
+            sigma = S/(1+sqrt(B))
+            #print ">>>   %i: %s cut of %6.2f with S = %.2f, B = %.2f, S/(1+sqrt(B)) = %.2f" % (i,("lower" if lower else "upper"),cut,S,B,sigma)
+            if sigma_max < sigma: sigma_max = sigma
+            graph_sigma.SetPoint(i,cut,sigma)
+            # TODO: add error bars
         
         # DRAW
-        #self.canvas.cd()
-        frame = c.DrawFrame(1.4, 0.001, 4.1, 10)
-        frame.GetYaxis().CenterTitle()
+        W = 800; H  = 600
+        T = 0.08*H
+        B = 0.12*H
+        L = 0.12*W
+        R = 0.04*W
+        canvas = makeCanvas(name="canvas_sigma", scaleleftmargin=1.1)
+        canvas.cd()
+        frame = canvas.DrawFrame(1.4,0.001, 4.1, 10)
+        frame.SetMinimum(0)
+        frame.SetMaximum(sigma_max*1.05)
+        frame.GetXaxis().SetLimits(a0,b0)
         frame.GetYaxis().SetTitleSize(0.05)
         frame.GetXaxis().SetTitleSize(0.05)
         frame.GetXaxis().SetLabelSize(0.04)
-        frame.GetYaxis().SetLabelSize(0.04)
-        frame.GetYaxis().SetTitleOffset(0.9)
-        frame.GetXaxis().SetNdivisions(508)
-        frame.GetYaxis().CenterTitle(True)
+        frame.GetYaxis().SetLabelSize(0.038)
+        frame.GetYaxis().SetTitleOffset(1.3)
         frame.GetYaxis().SetTitle("S/(1+#sqrt{B})")
-        frame.GetXaxis().SetTitle("cut on %s" % var)
-        frame.SetMinimum(0)
-        frame.SetMaximum(max(up2s)*1.05)
-        frame.GetXaxis().SetLimits(min(values),max(values))
-        median.SetLineColor(1)
-        median.SetLineWidth(2)
-        median.SetLineStyle(2)
-        median.Draw('L')
-        CMS_lumi.CMS_lumi(self.canvas,13,0)
-        ROOT.gPad.SetTicks(1,1)
-        ROOT.gPad.SetGrid(1,1)
+        frame.GetXaxis().SetTitle("%s cut on %s" % ("lower" if lower else "upper", makeLatex(var)))
+        graph_sigma.SetLineColor(colors[0])
+        graph_sigma.SetMarkerColor(colors[0])
+        graph_sigma.SetMarkerSize(1)
+        graph_sigma.SetLineWidth(2)
+        graph_sigma.SetLineStyle(1)
+        graph_sigma.Draw('PL') #E0
         frame.Draw('sameaxis')
+        CMS_lumi.CMS_lumi(self.canvas,13,0)
+        self.graph_sigma = graph_sigma
+        self.canvas_sigma = canvas
         
         return
+        
+        
+        
+        
+        
+        
+class Plot2D(object):
+    """Class to automatically make CMS plot."""
+
+    def __init__(self, sample, var1, nBins1, a1, b1, var2, nBins2, a2, b2, **kwargs):
+        self.sample     = sample
+        self.var1       = var1
+        self.nBins1     = nBins1
+        self.a1         = a1
+        self.b1         = b1
+        self.var2       = var2
+        self.nBins2     = nBins2
+        self.a2         = a2
+        self.b2         = b2
+        self.cuts       = kwargs.get('cuts', "")
+        self.weight     = kwargs.get('weight', "")
+        self.canvas     = None
+        self.legend     = None
+        self.width  = 0.20; self.height = 0.08 + 0.05 * 1
+        self.x2     = 0.95; self.x1 = self.x2 - self.width
+        self.y1     = 0.48; self.y2 = self.y1 + self.height
+        self.hist       = sample.hist2D(var1, nBins1, a1, b1, var2, nBins2, a2, b2, weight=self.weight, cuts=self.cuts)
+
+
+
+    def plot(self,*args,**kwargs):
+        """Central method of Plot class: make plot with canvas, axis, error, ratio..."""
+    
+        var1 = self.var1
+        var2 = self.var2
+        
+        # CANVAS
+        self.canvas = makeCanvas( square=kwargs.get('square', True),
+                                  scaleleftmargin=kwargs.get('scaleleftmargin', 1.1),
+                                  scalerightmargin=kwargs.get('scalerightmargin', 1)  )
+        self.hist.SetTitle("")
+        self.hist.Draw('colz')
+        
+        # STYLE
+        # ...
+        
+        # AXES & LEGEND
+        self.hist.GetYaxis().SetLabelSize(0.040)
+        self.hist.GetYaxis().SetTitleSize(0.042)
+        self.hist.GetXaxis().SetLabelSize(0.040)
+        self.hist.GetXaxis().SetTitleSize(0.047)
+        self.hist.GetXaxis().SetTitleOffset(1.1)
+        self.hist.GetYaxis().SetTitleOffset(1.5)
+        self.hist.GetYaxis().SetTitle(makeLatex(var1))
+        self.hist.GetXaxis().SetTitle(makeLatex(var2))
+        #self.legend = TLegend(0.90,0.75,0.50,0.90)
+        #self.legend.AddEntry(prof,"average #DeltaR", 'l')
+        #self.legend.SetTextSize(0.045)
+        #self.legend.SetBorderSize(0)
+        #self.legend.SetFillStyle(0)
+        #self.legend.Draw()
+
+        # CMS LUMI        
+        CMS_lumi.cmsTextSize  = 0.65
+        CMS_lumi.lumiTextSize = 0.60
+        CMS_lumi.relPosX = 0.16
+        CMS_lumi.CMS_lumi(self.canvas,13,0)
+    
+    
+    
+    def saveAs(self,filename):
+        """Save plot, close canvas and delete the histograms."""
+        
+        self.canvas.SaveAs(filename)
+        self.close()
+    
+    
+    
+    def close(self):
+        """Close canvas and delete the histograms."""
+        
+        if self.canvas: self.canvas.Close()
+        if self.hist:   gDirectory.Delete(self.hist.GetName())
         
         
         
