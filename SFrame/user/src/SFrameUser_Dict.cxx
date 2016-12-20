@@ -251,10 +251,10 @@ namespace {
 0
     };
     static const char* includePaths[] = {
-"/shome/ytakahas/work/TauTau/SFrameAnalysis/SFrame",
+"/mnt/t3nfs01/data01/shome/ytakahas/work/TauTau/SFrameAnalysis_Izaak/SFrame",
 "./",
 "/cvmfs/cms.cern.ch/slc6_amd64_gcc530/lcg/root/6.06.00-ikhhed4/include",
-"/mnt/t3nfs01/data01/shome/ytakahas/work/TauTau/SFrameAnalysis/SFrame/user/",
+"/mnt/t3nfs01/data01/shome/ytakahas/work/TauTau/SFrameAnalysis_Izaak/SFrame/user/",
 0
     };
     static const char* fwdDeclCode = R"DICTFWDDCLS(

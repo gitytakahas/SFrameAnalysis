@@ -1,8 +1,18 @@
 import os, sys
 import subprocess
 import time
+from argparse import ArgumentParser
+import os, sys
+
+argv = sys.argv
+description = '''This script splits up the plots script into the different selection categories and sends them to the batch system.'''
+parser = ArgumentParser(description=description,epilog="Succes!")
+parser.add_argument( "-r", "--remove-log", dest="removeLogFiles", default=False, action='store_true',
+                     help="remove existing log files" )
+args = parser.parse_args()
 
 DIR = "/shome/ineuteli/analysis/SFrameAnalysis/plots"
+LOGDIR = "%s/submitPlots" % DIR
 
 
 
@@ -22,12 +32,27 @@ def getCategories():
 def main():
     #print
     
-    if not os.path.exists("%s/submitPlots" % DIR):
-        os.makedirs("%s/submitPlots" % DIR)
-        print ">>> made directory %s/submitPlots" % DIR
-    
+    # MAKE LOG DIR
+    if not os.path.exists(LOGDIR):
+        os.makedirs(LOGDIR)
+        print ">>> made directory %s" % LOGDIR
+        
+    # REMOVE LOG FILES
+    if args.removeLogFiles:
+        try:
+            out = subprocess.check_output("rm %s/*" % LOGDIR, shell=True, stderr=subprocess.STDOUT)
+            print "\n>>> removed old log files"
+        except subprocess.CalledProcessError as e:
+            if "No such file or directory" in e.output and os.path.exists(LOGDIR):
+                print "\n>>> could not remove old log files: no log files in %s" % LOGDIR
+            elif not os.path.exists(LOGDIR):
+                print "\n>>> could not remove old log files: log directory does not exits: %s" % LOGDIR
+            else: print "\n>>> could not remove old log files"
+
+    # GET CATEGORIES from plot.py    
     categories = getCategories()
     
+    # SUBMIT JOBS for each category
     if len(categories) > 0:
         for category, i in zip(categories, range(len(categories))):
             category = category.replace(" and ","-").replace(" ","").replace(",","-")

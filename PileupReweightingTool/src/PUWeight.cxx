@@ -210,7 +210,6 @@ std::vector<double> PUWeight::generateWeights(const PUWeight::Scenario sc, const
     npuProbs = npuWinter15_25ns;
   }
   else if( sc == Spring16_25ns ) {
-    nPUMax = 600;
     
     // Get data distribution from file
     TString mcPath = "$SFRAME_DIR/../PileupReweightingTool/histograms/";
@@ -224,6 +223,7 @@ std::vector<double> PUWeight::generateWeights(const PUWeight::Scenario sc, const
       throw std::exception();
     }
     
+    nPUMax = 600;
     double npuSpring16_25ns[nPUMax];
     for(unsigned int npu = 0; npu < nPUMax; ++npu) {
       const double npuProb = mcHist->GetBinContent(mcHist->GetXaxis()->FindBin(npu));
@@ -232,7 +232,7 @@ std::vector<double> PUWeight::generateWeights(const PUWeight::Scenario sc, const
     file.Close();
     npuProbs = npuSpring16_25ns;
     
-   }
+  }
 
 
   // Check that binning of data-profile matches MC scenario

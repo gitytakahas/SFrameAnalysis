@@ -21,7 +21,7 @@ void SVFitTool::BeginInputData( const SInputData& ) throw( SError ) {
   m_logger << INFO << "Initializing Mass and pT resolution for SVFit" << SLogger::endmsg;
   m_logger << INFO << "SVFit Mass and pT resolution File: " << m_ResoFilePath << SLogger::endmsg;
   TString resoFilePath(m_ResoFilePath);
-  m_ResoFile = new TFile( resoFilePath, "read" ); //, "read" fullPath().data()
+  m_ResoFile = new TFile( resoFilePath, "read" );
   return;
 }
 

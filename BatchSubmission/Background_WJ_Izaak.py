@@ -10,7 +10,7 @@ nFiles=4
 hCPU="03:30:00"
 hVMEM="5000M"
 postFix = ""
-label = "_ICHEP" #"_triggerless"
+label = "_ICHEP_sorting" #"_triggerless"
 dataSets = [
                 
                [ "WJetsToLNu_TuneCUETP8M1"+label,
@@ -23,7 +23,7 @@ dataSets = [
                     "W1JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_HLT1_0000_2.xml"]],
 
                [ "W2JetsToLNu_TuneCUETP8M1"+label,
-                 [  "W2JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_HLT1_0000_0.xml",
+                [   "W2JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_HLT1_0000_0.xml",
                     "W2JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_HLT1_0000_1.xml",]],
 
                [ "W3JetsToLNu_TuneCUETP8M1"+label,

@@ -10,7 +10,7 @@ nFiles=4
 hCPU="03:30:00"
 hVMEM="5000M"
 postFix = ""
-label = "_ICHEP" #"_triggerless"
+label = "_ICHEP_sorting" #"_triggerless"
 dataSets = [
                 
 #                [ "ST_tW_top_5f_NoFullyHadronicDecays"+label,

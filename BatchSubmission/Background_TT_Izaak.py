@@ -10,7 +10,7 @@ nFiles=4
 hCPU="03:30:00"
 hVMEM="5000M"
 postFix = ""
-label = "_ICHEP" #"_triggerless" # _nocuts
+label = "_ICHEP_sorting" #"_triggerless" # _nocuts
 dataSets = [
                ["TT_TuneCUETP8M1"+label,
                 [   "TT_TuneCUETP8M1_13TeV-powheg-pythia8_reHLT_ext_0000_0.xml",
@@ -24,7 +24,6 @@ dataSets = [
 userItems = [ 
                 ["IsData","false"],
                 ["IsSignal","false"],
-                #["doSVFit","true"],
                 ["doRecoilCorr","false"],
                 ["OutputTreeName_mutau", "tree_mutau" ],
                 ["OutputTreeName_eletau","tree_eletau"],

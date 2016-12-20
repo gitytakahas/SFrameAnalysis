@@ -1,15 +1,15 @@
 #ifndef __BTAGGINGSCALETOOL_H__
 #define __BTAGGINGSCALETOOL_H__
 
+#include <TH2.h>
+#include "../NtupleVariables/include/Jet.h"
+#include "../include/BTagCalibrationStandalone.h"
+
 // SFrame include(s):
 #include "core/include/SError.h"
 #include "plug-ins/include/SToolBase.h"
 
-#include <TH2.h>
 
-#include "../NtupleVariables/include/Jet.h"
-
-#include "../include/BTagCalibrationStandalone.h"
 
 class BTaggingScaleTool : public SToolBase {
   
@@ -45,6 +45,13 @@ class BTaggingScaleTool : public SToolBase {
 
   double getScaleFactor_veto( const UZH::JetVec& vJets, const double& sigma_bc = 0., const double& sigma_udsg = 0., const TString& jetCategory_veto = "jet_ak4" );
   
+  /// function for Izaak: return just the scalefactor instead of the jetweight
+  double getScaleFactor_noWeight( const double& pt, const double& eta, const int& flavour, const double& sigma_bc = 0., const double& sigma_udsg = 0., const TString& jetCategory_veto = "jet_ak4" );
+
+  double getScaleFactor_noWeight( const UZH::Jet& jet, const double& sigma_bc = 0., const double& sigma_udsg = 0., const TString& jetCategory_veto = "jet_ak4");
+  
+  /// function for promote - demote: https://twiki.cern.ch/twiki/bin/viewauth/CMS/HiggsToTauTauWorking2016#B_tag_scale_factors
+  //double getScaleFactor_promote_demote( const UZH::JetVec& vJets, const double& sigma_bc = 0., const double& sigma_udsg = 0., const TString& jetCategory_veto = "jet_ak4" );
 
 
   /// function to book histograms for efficiencies
@@ -64,6 +71,9 @@ class BTaggingScaleTool : public SToolBase {
   
   /// function to return b-tagging efficiency for individual jet
   double getEfficiency( const double& pt, const double& eta, const int& flavour, const TString& jetCategory = "jet" );
+  
+  /// function to return b-tagging efficiency for individual jet
+  double getEfficiency( const UZH::Jet& jet, const TString& jetCategory = "jet" );
   
   /// function to convert flavor integer to TString
   TString flavourToString( const int& flavour );

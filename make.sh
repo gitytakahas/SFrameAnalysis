@@ -1,4 +1,4 @@
-for dir in BTaggingTools GoodRunsLists LepEff2016 NtupleVariables PileupReweightingTool SFrame SVFit SVfitStandalone TauTauResonances VHTausResonances
+for dir in BTaggingTools GoodRunsLists LepEff2016 NtupleVariables PileupReweightingTool SFrame SVFitTools TauTauResonances RecoilCorrections
 do
     echo
     echo $dir

@@ -110,7 +110,7 @@ class TauTauAnalysis : public SCycleBase {
     /// Function to book tree branches
     //virtual void FillBranches(const std::string& channel,  const std::vector<UZH::Jet>& Jet, const UZH::Tau& tau, const  TLorentzVector& lepton, const UZH::MissingEt& met );
     virtual void FillBranches(const std::string& channel, const std::vector<UZH::Jet>& Jet,
-                              const UZH::Tau& tau, const UZH::Muon& muon, const UZH::Electron& electron,
+                              const UZH::Tau& tau, const int taugen, const UZH::Muon& muon, const UZH::Electron& electron,
                               const UZH::MissingEt& met, const UZH::MissingEt& puppimet, const UZH::MissingEt& mvamet);
     
     // check pass of triggers / MET filters
@@ -210,6 +210,8 @@ class TauTauAnalysis : public SCycleBase {
     bool      m_doSVFit;
     bool      m_doRecoilCorr;
     bool      m_doZpt;
+    bool      m_doTES;
+    double    m_TESshift;
 
     ///
     /// CUTS

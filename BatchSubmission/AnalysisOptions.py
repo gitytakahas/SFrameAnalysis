@@ -1,11 +1,11 @@
 loadLibs=[
-  #"libGenVector",
+    #"libGenVector",
     "libNtupleVariables",
     "libGoodRunsLists",
     "libPileupReweightingTool",
     "libBTaggingTools",
     "libTauTauResonances",
-   "libSVFitTool",
+    "libSVFitTool",
     "libScaleFactorTool",
     "libRecoilCorrector",
 
@@ -25,21 +25,20 @@ loadPacks=[
 	   ]
 
 compilePacks=[
-  "../NtupleVariables",
-  "../GoodRunsLists",
-  "../PileupReweightingTool",
-  "../BTaggingTools",
-  "../SVFitTool",
-  "../TauTauResonances",
-  "../LepEff2016",
-  "../RecoilCorrections",
+    "../NtupleVariables",
+    "../GoodRunsLists",
+    "../PileupReweightingTool",
+    "../BTaggingTools",
+    "../SVFitTool",
+    "../TauTauResonances",
+    "../LepEff2016",
+    "../RecoilCorrections",
   ]
 
 AddUserItems = [
-   #general settings
-   ["RecoTreeName","tree"], 
-   ["doSVFit","true"], 
-#   ["JetPtCut", "120."]
-   ]
+    #general settings
+    ["RecoTreeName","tree"], 
+    ["doSVFit","true"],
+  ]
 
 #End

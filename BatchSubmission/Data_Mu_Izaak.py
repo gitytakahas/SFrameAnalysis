@@ -10,7 +10,7 @@ nFiles=2
 hCPU="04:00:00"
 hVMEM="5000M"
 postFix = ""
-label = "_ICHEP" #"_triggerless"
+label = "_ICHEP_sorting" #"_triggerless"
 dataSets = [
                ["SingleMuon_1_Run2016"+label,
                 [   "SingleMuon_Run2016B-PromptReco-v2_24p47fb_v2_0000_0.xml",

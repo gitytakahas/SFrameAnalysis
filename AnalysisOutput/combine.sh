@@ -1,6 +1,6 @@
 #!/bin/bash
 
-L="_ICHEP"
+L="_ICHEP_sorting"
 ls -l SingleMuon/TauTauAnalysis.SingleMuon*
 
 hadd -f SingleMuon/TauTauAnalysis.SingleMuon_Run2016${L}.root SingleMuon/TauTauAnalysis.SingleMuon_?_Run2016${L}.root

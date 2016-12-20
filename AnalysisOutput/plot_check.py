@@ -165,7 +165,7 @@ def ptSignalAcceptence():
     pt_taus = file.Get("checks/pt_gentaus")
     pt_tau1 = file.Get("checks/pt_gentau1")
     pt_tau2 = file.Get("checks/pt_gentau2")
-    pt_muon = file.Get("checks/pt_muon")
+    pt_muon = file.Get("checks/pt_genmuon")
     
     bincut_taus = pt_taus.FindBin(cut)
     bincut_tau1 = pt_tau1.FindBin(cut)
@@ -193,10 +193,10 @@ def ptSignalAcceptence():
     print ">>> check: bincut_muon = %3i,  N_muon =%7i" % (bincut_muon,N_muon)
     
     # DRAW
-    canvas = TCanvas("canvas","canvas",100,100,600,600)
+    canvas = TCanvas("canvas","canvas",100,100,800,600) # 600,600
     canvas.SetBottomMargin(0.12)
     canvas.SetRightMargin(0.05)
-    canvas.SetLeftMargin(0.05)
+    canvas.SetLeftMargin(0.12)
     canvas.SetTopMargin(0.05)
     pt_taus.SetLineWidth(3)
     pt_muon.SetLineWidth(3)
@@ -204,19 +204,30 @@ def ptSignalAcceptence():
     pt_muon.SetLineColor(kRed+3)
     pt_taus.Scale(1/N_taus)
     pt_muon.Scale(1/N_muon/3)
-    pt_taus.Rebin(2)
-    pt_muon.Rebin(2)
+    #pt_taus.Rebin(2)
+    #pt_muon.Rebin(2)
     pt_taus.Draw("hist")
     pt_muon.Draw("histsame")
     pt_taus.SetTitle("")
     pt_taus.GetXaxis().SetRangeUser(0,100)
     pt_taus.GetXaxis().SetTitle("p_{T} of generator level particle")
-    pt_taus.GetYaxis().SetTitleSize(0)
+    pt_taus.GetYaxis().SetTitle("A.U.")
+    #pt_taus.GetYaxis().SetTitleSize(0)
     pt_taus.GetXaxis().SetTitleSize(0.05)
-    pt_taus.GetXaxis().SetTitleOffset(1.15)
+    pt_taus.GetYaxis().SetTitleSize(0.05)
+    pt_taus.GetXaxis().SetTitleOffset(1.14)
+    pt_taus.GetYaxis().SetTitleOffset(1.17)
     pt_taus.GetXaxis().SetLabelSize(0.045)
-    pt_taus.GetYaxis().SetLabelSize(0)
-    gStyle.SetOptStat(0)
+    pt_taus.GetYaxis().SetLabelSize(0.040)
+    #pt_taus.GetYaxis().SetLabelSize(0)    
+    legend = TLegend(0.56,0.68,0.80,0.84)
+    legend.AddEntry(pt_taus, " gen #tau", 'l')
+    legend.AddEntry(pt_muon, " gen #mu from #tau", 'l')
+    legend.SetTextSize(0.055)
+    legend.SetBorderSize(0)
+    legend.SetFillStyle(0)
+    legend.Draw()
+    #gStyle.SetOptStat(0)
     canvas.SaveAs("plots_check/pt.png")
     canvas.Close()
     
@@ -716,7 +727,6 @@ def DeltaR_vs_pt_tt():
     
     
     
-    
 def pt_tt():
     print ">>>\n>>> pt_tt()"
     
@@ -751,7 +761,7 @@ def pt_tt():
     hist1.GetYaxis().SetRangeUser(0,hist1.GetMaximum()*1.08)
     legend = TLegend(0.90,0.60,0.55,0.80)
     legend.AddEntry(hist1,"#tau#tau", 'l')
-    legend.AddEntry(hist2,"lepton + #tau (visible)", 'l')
+    legend.AddEntry(hist2,"lepton + #tau_{h} (visible)", 'l')
     legend.SetTextSize(0.045)
     legend.SetBorderSize(0)
     legend.SetFillStyle(0)
@@ -771,7 +781,7 @@ def main():
     #numbers()
     #signalEfficiency()
     #DYAcceptence()
-    #ptSignalAcceptence()
+    ptSignalAcceptence()
     #deltaR()
     #deltaR2()
     #Delta_eta_phi()
