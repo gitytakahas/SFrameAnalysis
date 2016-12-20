@@ -457,7 +457,9 @@ class DataMCPlot(object):
 
         for hist in self._SortedHistograms():
             'Writing', hist, 'as', hist.name
-            hist.weighted.Write(hist.name)
+            # blinding ! 
+            if hist.name != 'data_obs':
+                hist.weighted.Write(hist.name)
         outf.Write()
 
     def _BuildStack(self, hists, ytitle=None):

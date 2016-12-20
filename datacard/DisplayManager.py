@@ -232,6 +232,6 @@ class DisplayManager(object):
         l3=add_Preliminary()
         l3.Draw("same")
 
-        self.canvas.Print(self.name)
+#        self.canvas.Print(self.name)
         self.canvas.Print(self.name.replace('pdf','gif'))
-        self.canvas.Print(self.name.replace('pdf','eps'))
+#        self.canvas.Print(self.name.replace('pdf','eps'))

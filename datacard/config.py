@@ -10,12 +10,19 @@ class config(object):
 
         self.process = {
 
-            'TT':{'name':'TT', 
-                  'file':self.basedir + '/TT/TauTauAnalysis.TT_TuneCUETP8M1_ICHEP.root',
-                  'additional_cut':'1',
-                  'cross-section':831.76,
-                  'isSignal':0, 
-                  'order':1},
+            'TTT':{'name':'TTT', 
+                   'file':self.basedir + '/TT/TauTauAnalysis.TT_TuneCUETP8M1_ICHEP.root',
+                   'additional_cut':'gen_match_2==5',
+                   'cross-section':831.76,
+                   'isSignal':0, 
+                   'order':1},
+
+            'TTJ':{'name':'TTJ', 
+                   'file':self.basedir + '/TT/TauTauAnalysis.TT_TuneCUETP8M1_ICHEP.root',
+                   'additional_cut':'gen_match_2!=5',
+                   'cross-section':831.76,
+                   'isSignal':0, 
+                   'order':1},
 
 #            'ZTT10to50':{'name':'ZTT10to50', 
 #                         'file':self.basedir + '/DY/TauTauAnalysis.DYJetsToLL_M-10to50_TuneCUETP8M1_ICHEP.root', 

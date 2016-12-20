@@ -9,7 +9,7 @@ import MultiDraw
 
 
 lumi=12.9
-basedir = '/mnt/t3nfs01/data01/shome/ytakahas/work/TauTau/SFrameAnalysis/AnalysisOutput_SM/'
+basedir = '/shome/ineuteli/analysis/SFrameAnalysis/AnalysisOutput/'
 
 
 normalizeWusinghighMT = True
@@ -243,7 +243,12 @@ for catname, cat in categories.iteritems():
         comparisonPlots(hist, 'fig_' + catname + '/' + stackname + '.pdf')
 
 
-        if WriteDataCard == True and varname=='m_vis' and catname=='signal_os':
+        if WriteDataCard == True and varname=='m_sv' and catname=='signal_os':
             print hist
             hist.WriteDataCard(filename='datacard_{}.root'.format(varname), dir='mt_' + catname, mode='recreate')
+
+        # put ttbar combine here, as in the datacard level, we want to have it in split
+        # while for the drawing, we want to have it combined
             
+        hist.Group('TT', ['TTT', 'TTJ'])
+        comparisonPlots(hist, 'fig_' + catname + '/' + stackname + '.pdf')
