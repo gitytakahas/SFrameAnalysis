@@ -415,6 +415,12 @@ void TauTauAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
     DeclareVariable( b_pzetamiss[channels_[ch]],    "pzetamiss",        treeName);
     DeclareVariable( b_pzetavis[channels_[ch]],     "pzetavis",         treeName);
     DeclareVariable( b_pzeta_disc[channels_[ch]],   "pzeta_disc",       treeName);
+    DeclareVariable( b_vbf_mjj[channels_[ch]],   "vbf_mjj",       treeName);
+    DeclareVariable( b_vbf_deta[channels_[ch]],   "vbf_deta",       treeName);
+    DeclareVariable( b_vbf_jdphi[channels_[ch]],   "vbf_jdphi",       treeName);
+    DeclareVariable( b_vbf_ncentral[channels_[ch]],   "vbf_ncentral",       treeName);
+    DeclareVariable( b_vbf_ncentral20[channels_[ch]],   "vbf_ncentral20",       treeName);
+
 
   }
   
@@ -1170,7 +1176,7 @@ void TauTauAnalysis::FillBranches(const std::string& channel, const std::vector<
     b_jphi_1[ch]    = Jet.at(0).phi();
     b_jpt_2[ch]     = Jet.at(1).pt();
     b_jeta_2[ch]    = Jet.at(1).eta();
-    b_jphi_2[ch]    = Jet.at(1).phi();
+    b_jphi_2[ch]    = Jet.at(1).phi();    
   }
   else if(njets20 == 1){
     b_jpt_1[ch]     = Jet.at(0).pt();
@@ -1187,6 +1193,41 @@ void TauTauAnalysis::FillBranches(const std::string& channel, const std::vector<
     b_jpt_2[ch]     = -1;
     b_jeta_2[ch]    = -9;
     b_jphi_2[ch]    = -9;
+  }
+
+  if(njets>=2){
+    b_vbf_mjj[ch] = (Jet.at(0).tlv() + Jet.at(1).tlv()).M();
+    b_vbf_deta[ch] = Jet.at(0).eta() - Jet.at(1).eta();
+    b_vbf_jdphi[ch] = deltaPhi(Jet.at(0).phi(), Jet.at(1).phi());
+
+    Float_t min_eta = Jet.at(0).eta();
+    Float_t max_eta = Jet.at(1).eta();
+    if(min_eta > max_eta){
+      min_eta = Jet.at(1).eta(); 
+      max_eta = Jet.at(0).eta(); 
+    }
+
+    int ncentral = 0;
+    int ncentral20 = 0;
+
+    for( int ijet = 0; ijet < (int)Jet.size(); ++ijet ){
+      Float_t jeteta = Jet.at(ijet).eta();
+      Float_t jetpt = Jet.at(ijet).pt();
+
+      if(min_eta < jeteta && jeteta < max_eta){
+	if(jetpt > 30.) ncentral++;
+	if(jetpt > 20.) ncentral20++;
+      }
+    }
+    
+    b_vbf_ncentral[ch] = ncentral;
+    b_vbf_ncentral20[ch] = ncentral20;
+  }else{
+    b_vbf_mjj[ch] = -99;
+    b_vbf_deta[ch] = -99;
+    b_vbf_jdphi[ch] = -99;
+    b_vbf_ncentral[ch] = -99;
+    b_vbf_ncentral20[ch] = -99;
   }
   
   if(ibjet1 < 0){

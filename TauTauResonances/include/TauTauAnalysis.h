@@ -446,6 +446,12 @@ class TauTauAnalysis : public SCycleBase {
     std::map<std::string,Double_t> b_pzetavis;
     std::map<std::string,Double_t> b_pzeta_disc;
     
+  std::map<std::string,Double_t> b_vbf_mjj;
+  std::map<std::string,Double_t> b_vbf_deta;
+  std::map<std::string,Double_t> b_vbf_jdphi;
+  std::map<std::string,Int_t> b_vbf_ncentral;
+  std::map<std::string,Int_t> b_vbf_ncentral20;
+
     // Macro adding the functions for dictionary generation
     ClassDef( TauTauAnalysis, 0 );
   
