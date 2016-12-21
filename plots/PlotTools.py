@@ -1,6 +1,6 @@
 from ROOT import * #TFile, TCanvas, TH1F, TH2F, THStack, TAxis, TGaxis, TGraph...
 import CMS_lumi, tdrstyle
-from math import sqrt, pow
+from math import sqrt, pow, log
 from cStringIO import StringIO # for stdout capturing
 import sys
 # TODO http://stackoverflow.com/questions/16571150/how-to-capture-stdout-output-from-a-python-function-call
@@ -158,6 +158,84 @@ def combineCuts(*cuts,**kwargs):
 
 
 
+class LoadingBar(object):
+    """Class to make a simple, custom loading bar."""
+    # from math import log, import sys
+
+    def __init__(self, *args, **kwargs):
+        '''Constructor for LoadingBar object.'''
+        self.steps = 10
+        if len(args)>0 and isinstance(args[0],int) and args[0]>0: self.steps = args[0]
+        self.tally   = 0
+        self.position = 0
+        self.steps   = max(kwargs.get('steps',self.steps),1)
+        self.width   = max(kwargs.get('width',self.steps),1)
+        self.counter = kwargs.get('counter',False)
+        self.counterformat = "%%%ii" % (log(self.steps,10)+1)
+        self.remove  = kwargs.get('remove',False)
+        self.symbol  = kwargs.get('symbol',"=")
+        self.prepend = kwargs.get('prepend',">>> ")
+        self.append  = kwargs.get('append',"")
+        self.message_ = kwargs.get('message',"")
+        self.done    = False
+        if self.counter: self.counter = " %s/%i" % (self.counterformat%self.tally,self.steps)
+        else:            self.counter = ""
+        sys.stdout.write("%s[%s]" % (self.prepend," "*self.width))
+        sys.stdout.flush()
+        sys.stdout.write("\b"*(self.width+1)) # return to start of line, after '['
+        if self.counter: self.updateCounter()
+        if self.message_: self.message(self.message_)
+
+    def count(self,*args,**kwargs):
+        """Count one step."""
+        if self.done: return
+        i = 1.0
+        message = ""
+        if len(args)>0 and isinstance(args[0],int) and args[0]>0:
+            i = args[0]
+            args.remove(i)
+        if len(args)>0 and isinstance(args[0],str):
+            message = args[0]
+        i = max(min(i,self.steps-self.tally),0)
+        newposition = int(round(float(self.tally+i)*self.width/self.steps))
+        step = newposition-self.position
+        self.position = newposition
+        sys.stdout.write(self.symbol*step)
+        sys.stdout.flush()
+        self.tally += i
+        if self.counter: self.updateCounter()
+        if message: self.message(message)
+        if self.tally >= self.steps:
+            if self.append: self.message(self.append,moveback=self.remove)
+            if self.remove:
+                sys.stdout.write("\b"*(self.width+1+len(self.prepend)))
+                sys.stdout.write(' '*(len(self.prepend)+self.width+len(self.counter)+len(self.message_)+4))
+                sys.stdout.write("\b"*(len(self.prepend)+self.width+len(self.counter)+len(self.message_)+4))
+            elif not self.append: self.message("\n")
+            self.done = True
+
+    def updateCounter(self,**kwargs):
+        """Update the counter."""
+        self.counter = " %s/%i" % (self.counterformat%self.tally,self.steps)
+        sys.stdout.write("%s]%s" % (' '*(self.width-self.position), self.counter))
+        sys.stdout.flush()
+        sys.stdout.write("\b"*(self.width+1-self.position+len(self.counter)))
+
+    def message(self,newmessage,moveback=True):
+        """Append the counter with some progress message."""
+        end_ = ""
+        if "\n" in newmessage:
+            end_ = newmessage[newmessage.index("\n"):]
+            newmessage = newmessage[:newmessage.index("\n")]
+        self.message_ = newmessage.ljust(len(self.message_))+end_
+        sys.stdout.write("%s]%s %s" % (' '*(self.width-self.position), self.counter, self.message_))
+        sys.stdout.flush()
+        if moveback: sys.stdout.write("\b"*(self.width+2-self.position+len(self.counter)+len(self.message_)))
+
+
+
+
+
 def color(string,**kwargs):
     """Color"""
     # http://stackoverflow.com/questions/287871/print-in-terminal-with-colors-using-python
@@ -177,6 +255,15 @@ def warning(string,**kwargs):
     
 def error(string,**kwargs):
     return color("ERROR! "+string, color="red", prepend=">>> "+kwargs.get('prepend',""))
+
+
+
+
+
+def printSameLine(string):
+    """Print string without making new line. (Write to stdout and flush.)"""
+    sys.stdout.write(string+" ")
+    sys.stdout.flush()
 
 
 
@@ -389,11 +476,16 @@ class Sample(object):
         self.isData     = kwargs.get('data', False)
         self.isBackground = kwargs.get('background', False)
         self.isSignal   = kwargs.get('signal', False)
-        self.tree       = kwargs.get('treeName', None)
         self.treeName   = kwargs.get('treeName', "tree")
         self.blind      = kwargs.get('blind', { })
         # TODO: only blind for m_vis variable!
         # TODO: rewrite class with tree method, applycut method, ...
+
+    @property
+    def tree(self): return self.file.Get(self.treeName)
+
+    #@treeName.setter
+    #def tree(self, tree): self._tree = tree
         
 
     
@@ -411,7 +503,7 @@ class Sample(object):
         cuts   = combineCuts(self.cuts, kwargs.get('cuts', ""), blindcuts, weight=weight)
         
         hist = TH1F(name, title, nBins, a, b)
-        #captur = capturing()
+        #print "\n>>> %s: %s" % ( self.filenameshort, cuts)
         out = tree.Draw("%s >> %s" % (var,name), cuts, "gOff")
         if out < 0: print error("Drawing histogram for %s sample failed!" % (title))
         
@@ -523,6 +615,7 @@ class Plot(object):
         self.cuts       = kwargs.get('cuts', "")
         self.weight     = kwargs.get('weight', "")
         self.reset      = kwargs.get('reset', False)
+        self.loadingbar = kwargs.get('loadingbar', True)
         
         self.histsS     = [ ]
         self.histsB     = [ ]
@@ -532,7 +625,10 @@ class Plot(object):
         self.hist_error = None
         self.ratio      = None
         
+        if self.loadingbar:
+            bar = LoadingBar(len(samples),width=16,prepend=">>> making histograms: ",counter=True,remove=True)
         for sample in samples:
+            if self.loadingbar: bar.message(sample.label)
             if self.reset: sample.scale = sample.scaleBU
             if sample.isSignal and kwargs.get('signal', True):
                 self.histsS.append(sample.hist(var, nBins, a, b, cuts=self.cuts, weight=self.weight))
@@ -540,6 +636,7 @@ class Plot(object):
                 self.histsB.append(sample.hist(var, nBins, a, b, cuts=self.cuts, weight=self.weight))
             elif sample.isData and kwargs.get('data', True):
                 self.histsD.append(sample.hist(var, nBins, a, b, cuts=self.cuts))
+            if self.loadingbar: bar.count("%s done"%sample.label)
         if kwargs.get('QCD', False):
             histQCD = self.QCD()
             if histQCD: self.histsB.append(histQCD)
@@ -1060,17 +1157,16 @@ class Plot(object):
         """Substract stacked MC histograms from a data histogram,
            bin by bin if the difference is larger than zero."""
         
-        name = kwargs.get('name', "diff_"+hist0.GetName())
-        title = kwargs.get('title', "difference")
-        N = hist0.GetNbinsX()
-        a = hist0.GetXaxis().GetXmin()
-        b = hist0.GetXaxis().GetXmax()
-        hist_diff = TH1F(name,title,N,a,b)
+        name    = kwargs.get('name', "diff_"+hist0.GetName())
+        title   = kwargs.get('title', "difference")
+        nBins   = hist0.GetNbinsX()
+        (a,b)   = (hist0.GetXaxis().GetXmin(), hist0.GetXaxis().GetXmax())
+        hist_diff = TH1F(name,title,nBins,a,b)
         
-        for i in range(1,N+1):
+        for i in range(1,nBins+1):
             hist_diff.SetBinContent(i, max(0,hist0.GetBinContent(i)-stack.GetStack().Last().GetBinContent(i)));
             #print ">>> i=%i, diff = %f" % (i, hist.GetBinContent(i)-stack.GetStack().Last().GetBinContent(i))  
-
+        
         return hist_diff
 
 
@@ -1104,8 +1200,7 @@ class Plot(object):
     def integrateHist(self,*args,**kwargs):
         """Integrate histogram."""
         
-        a = kwargs.get('a',0)
-        b = kwargs.get('b',0)
+        (a,b) = (kwargs.get('a',0),kwargs.get('b',0))
         
         if   len(args) == 1:
             hist = args[0]
@@ -1134,10 +1229,11 @@ class Plot(object):
         weight  = self.weight
         var     = self.var
         nBins   = self.nBins
-        a       = self.a
-        b       = self.b
+        (a,b)   = (self.a,self.b)
         samples = self.samples
         scale   = 1.06 # scale up QCD 6% in OS region
+        name    = kwargs.get('name',makeHistName("QCD",var))
+        verbose = kwargs.get('verbose',False)
         
         if "q_1 * q_2 < 0" in cuts or "q_1*q_2<0" in cuts or "q_1*q_2 < 0" in cuts:
             cuts = cuts.replace("q_1 * q_2 < 0","q_1 * q_2 > 0").replace("q_1*q_2 < 0","q_1 * q_2 > 0").replace("q_1*q_2<0","q_1 * q_2 > 0")        
@@ -1152,23 +1248,28 @@ class Plot(object):
         
         histsMC_SS = [ ]
         histsD_SS  = [ ]
+        if self.loadingbar: bar = LoadingBar(len(samples),width=16,prepend=">>> calculating QCD: ",counter=True,remove=True)
         for sample in samples:
-            name = makeHistName(sample.label+"_SS", var)
+            if self.loadingbar: bar.count(sample.label)
+            name_SS = makeHistName(sample.label+"_SS", var)
             if sample.isBackground:
-                histsMC_SS.append(sample.hist(var, nBins, a, b, cuts=cuts, weight=weight, name=name))
+                histsMC_SS.append(sample.hist(var, nBins, a, b, cuts=cuts, weight=weight, name=name_SS))
             elif sample.isData:
-                histsD_SS.append(sample.hist(var, nBins, a, b, cuts=cuts, name=name))
+                histsD_SS.append(sample.hist(var, nBins, a, b, cuts=cuts, name=name_SS))
+            if self.loadingbar: bar.count("%s done"%sample.label)
         if not histsD_SS:
             print warning("No data to make DATA driven QCD!")
-            return None 
+            return None
         
         stack_SS = THStack("stack_SS","stack_SS")
         for hist in histsMC_SS: stack_SS.Add(hist)
-        histQCD = self.substractStackFromHist(stack_SS,histsD_SS[0],name=makeHistName("QCD",var),title="QCD")
+        histQCD = self.substractStackFromHist(stack_SS,histsD_SS[0],name=name,title="QCD")
         histQCD.Scale(scale)
+        if not histQCD: print warning("Could not make QCD! QCD histogram is none!")
         
         for hist in histsMC_SS + histsD_SS:
             gDirectory.Delete(hist.GetName())
+        
         return histQCD
 
 
@@ -1178,14 +1279,13 @@ class Plot(object):
            the mt_1 > 80 GeV sideband.
            This method assume that the variable of this Plot object is a transverse mass and is plotted
            from 80 GeV to at least 100 GeV."""
-        print(">>> renormalizing WJ with mt > 80 GeV sideband for variable %s" % (self.var)),
+        printSameLine(">>> renormalizing WJ with mt > 80 GeV sideband for variable %s" % (self.var))
         
         samples = self.samples
         cuts    = self.cuts
         var     = self.var
         nBins   = self.nBins
-        a       = self.a
-        b       = self.b
+        (a,b)   = (self.a,self.b)
         
         # STACK
         QCD = False
