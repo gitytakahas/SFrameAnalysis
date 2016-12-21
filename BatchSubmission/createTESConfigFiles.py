@@ -7,55 +7,52 @@ cd $BASEDIR
 UP="TES1p03"
 DOWN="TES0p97"
 TESSHIFT="0.03"
-TESSHIFTLINE="\[\"TESshift\",\"0.00\"\],"
-NEWTESSHIFTUPLINE=`echo $TESSHIFTLINE | sed "s/0.00/$TESSHIFT/"`
-NEWTESSHIFTDOWNLINE=`echo $TESSHIFTLINE | sed "s/0.00/-$TESSHIFT/"`
+TESSHIFT_LINE="\[\"TESshift\",\"0.00\"\],"
+TESSHIFT_UP_NEWLINE=`echo $TESSHIFT_LINE | sed "s/0.00/$TESSHIFT/"`
+TESSHIFT_DOWN_NEWLINE=`echo $TESSHIFT_LINE | sed "s/0.00/-$TESSHIFT/"`
 
-DOTESLINE="\[\"doTES\",\"false\"\]"
-NEWDOTESLINE="\[\"doTES\",\"true\"\]"
+DOTES_LINE="\[\"doTES\",\"false\"\]"
+DOTES_NEWLINE="\[\"doTES\",\"true\"\]"
 
-LABELLINE="label = \""
-NEWLABELUPLINE="label = \"_${UP}"
-NEWLABELDOWNLINE="label = \"_${DOWN}"
+LABEL_LINE="label = \""
+LABEL_UP_NEWLINE="label = \"_${UP}"
+LABEL_DOWN_NEWLINE="label = \"_${DOWN}"
 
 echo " "
-echo ">>> replacing \"$TESSHIFTLINE\" with:"
-echo ">>>    $NEWTESSHIFTUPLINE"
-echo ">>>    $NEWTESSHIFTDOWNLINE"
+echo ">>> replacing \"${TESSHIFT_LINE}\" with: "
+echo ">>>    \"\"${TESSHIFT_UP_NEWLINE}\"      "
+echo ">>>    \"\"${TESSHIFT_DOWN_NEWLINE}\"    "
 echo ">>> "
-echo ">>> replacing \"$DOTESLINE\" with:"
-echo ">>>    $NEWDOTESLINE"
+echo ">>> replacing \"${DOTES_LINE}\" with: "
+echo ">>>    \"${DOTES_NEWLINE}\"           "
 echo ">>> "
-echo ">>> replacing \"$LABELLINE\" with:"
-echo ">>>    $NEWLABELUPLINE"
-echo ">>>    $NEWLABELDOWNLINE"
+echo ">>> replacing \"${LABEL_LINE}\" with: "
+echo ">>>    \"${LABEL_UP_NEWLINE}\"        "
+echo ">>>    \"${LABEL_DOWN_NEWLINE}\"      "
 
 for f in $FILES; do
     echo ">>> "
     echo ">>> making TES shifts for $f"
-    if grep -q $TESSHIFTLINE $f; then
-        FUP=`  echo $f | sed "s/$FILEND/_$UP$FILEND/"`
-        FDOWN=`echo $f | sed "s/$FILEND/_$DOWN$FILEND/"`
+    if grep -q "${TESSHIFT_LINE}" $f; then
+        FUP=`  echo $f | sed "s/${FILEND}/_${UP}${FILEND}/"`
+        FDOWN=`echo $f | sed "s/${FILEND}/_${DOWN}${FILEND}/"`
         echo ">>> creating file: $FUP"
         echo ">>> creating file: $FDOWN"
         cp $f $FUP
         cp $f $FDOWN
-        sed -i "s/$TESSHIFTLINE/$NEWTESSHIFTUPLINE/"   $FUP
-        sed -i "s/$TESSHIFTLINE/$NEWTESSHIFTDOWNLINE/" $FDOWN
-        if grep -q ${DOTESLINE} $f; then
-            sed -i "s/$DOTESLINE/$NEWDOTESLINE/"   $FUP
-            sed -i "s/$DOTESLINE/$NEWDOTESLINE/" $FDOWN          
-        else
-            echo ">>> Warning could not find \"$DOTESLINE\" line"
+        sed -i "s/${TESSHIFT_LINE}/${TESSHIFT_UP_NEWLINE}/"   $FUP
+        sed -i "s/${TESSHIFT_LINE}/${TESSHIFT_DOWN_NEWLINE}/" $FDOWN
+        if grep -q "${DOTES_LINE}" $f; then
+            sed -i "s/${DOTES_LINE}/${DOTES_NEWLINE}/"   $FUP
+            sed -i "s/${DOTES_LINE}/${DOTES_NEWLINE}/" $FDOWN          
+        else echo ">>> Warning could not find \"${DOTES_LINE}\" line"
         fi
-        if grep -q "${LABELLINE}" $f; then
-            sed -i "s/$LABELLINE/$NEWLABELUPLINE/"   $FUP
-            sed -i "s/$LABELLINE/$NEWLABELDOWNLINE/" $FDOWN          
-        else
-            echo ">>> Warning could not find \"$LABELLINE\" line"
+        if grep -q "${LABEL_LINE}" $f; then
+            sed -i "s/${LABEL_LINE}/${LABEL_UP_NEWLINE}/"   $FUP
+            sed -i "s/${LABEL_LINE}/${LABEL_DOWN_NEWLINE}/" $FDOWN          
+        else echo ">>> Warning could not find \"${LABEL_LINE}\" line"
         fi
-    else
-        echo ">>> Warning could not find \"$TESSHIFTLINE\" line"
+    else echo ">>> Warning could not find \"${TESSHIFT_LINE}\" line"
     fi
 done
 
