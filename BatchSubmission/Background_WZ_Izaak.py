@@ -10,7 +10,7 @@ nFiles=4
 hCPU="03:30:00"
 hVMEM="5000M"
 postFix = ""
-label = "_ICHEP_sorting" #"_triggerless"
+label = "_ICHEP" #"_triggerless"
 dataSets = [
                 
 #                [ "WZJToLLLNu_TuneCUETP8M1"+label,

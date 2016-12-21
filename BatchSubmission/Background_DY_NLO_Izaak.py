@@ -10,7 +10,7 @@ nFiles=4
 hCPU="03:30:00"
 hVMEM="5000M"
 postFix = ""
-label = "_ICHEP_sorting" #"_triggerless"
+label = "_ICHEP" #"_triggerless"
 dataSets = [
                 
                 ##############
@@ -34,6 +34,8 @@ userItems = [
                 ["IsData","false"],
                 ["IsSignal","false"],
                 ["doRecoilCorr","true"],
+                ["doTES","false"],
+                ["TESshift","0.00"],
                 ["doZpt","false"],
                 ["OutputTreeName_mutau", "tree_mutau" ],
                 ["OutputTreeName_eletau","tree_eletau"],

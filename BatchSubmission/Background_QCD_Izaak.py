@@ -10,7 +10,7 @@ nFiles=4
 hCPU="03:30:00"
 hVMEM="5000M"
 postFix = ""
-label = "_ICHEP_sorting" #"_triggerless"
+label = "_ICHEP" #"_triggerless"
 dataSets = [
                ["QCD_HT100toInf"+label,
                 [   "QCD_HT1000to1500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_HLT1_0000.xml",
