@@ -10,7 +10,7 @@ nFiles=3
 hCPU="03:00:00"
 hVMEM="5000M"
 postFix = ""
-label = "_ICHEP" #_onlycrosstrigger" #"_triggerless" # _nocuts
+label = "_TES0p97_ICHEP" #_onlycrosstrigger" #"_triggerless" # _nocuts
 dataSets = [
                 ["LowMass_30GeV_DiTauResonance"+label,
                  [  "LowMass_30GeV_DiTauResonance_RunIISpring16MiniAODv2_PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v2.xml", ]],
@@ -21,8 +21,8 @@ userItems = [
                 ["IsSignal","true"],
                 #["doSVFit","true"],
                 ["doRecoilCorr","false"],
-                ["doTES","false"],
-                ["TESshift","0.00"],
+                ["doTES","true"],
+                ["TESshift","-0.03"],
                 ["OutputTreeName_mutau", "tree_mutau" ],
                 ["OutputTreeName_eletau","tree_eletau"],
              ]
