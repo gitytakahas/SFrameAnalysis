@@ -3,9 +3,9 @@ from argparse import ArgumentParser
 from math import sqrt, pow
 import ROOT
 from ROOT import TFile, TH1D, gDirectory, kAzure
-import os, sys
+import os, sys, time
 import PlotTools
-from PlotTools import Sample, Samples, Plot, Plot2D, color, warning, error, combineCuts
+from PlotTools import Sample, Samples, Plot, Plot2D, color, warning, error, printSameLine, combineCuts
 ROOT.gROOT.SetBatch(ROOT.kTRUE)
 
 
@@ -79,7 +79,7 @@ plotlabel = "" #"_noWJrenomalization" #_DY_check" # extra label for png file
 
 
 # PLOTS OPTIONS
-stack       = True # COMPARE: set to false
+stack       = True # COMPARE: set to False
 normalizeWJ = len(samplesD) and stack and True
 doQCD       = len(samplesD) and stack and True
 doSigma     = True and False
@@ -107,31 +107,32 @@ blindcuts   = { "m_vis":      "( m_vis < %i || %i < m_vis )"           % blindli
 isocuts     = "iso_1 < 0.15 && iso_2 == 1"
 vetos       = "dilepton_veto == 0 && extraelec_veto == 0 && extramuon_veto == 0 && " +\
                     "againstElectronVLooseMVA6_2 == 1 && againstMuonTight3_2 == 1"
+baseline    = "%s && %s && q_1*q_2<0" % (isocuts, vetos)
 category1   = "ncbtag > 0 && ncjets == 1 && nfjets  > 0"
 category2   = "ncbtag > 0 && ncjets  > 1 && nfjets == 0 && dphi_ll_bj > 2 && met < 60"
 metcut      = "met < 60"
 mt1cut      = "pfmt_1 < 60"
-signalwindow = "%i < m_sv && m_sv < %i" % blindlimits["m_sv"]
 newcuts     = "%s && %s" % (metcut,mt1cut)
+signalwindow = "%i < m_sv && m_sv < %i" % blindlimits["m_sv"]
 categories = [
                 #("no cuts",             ""),
                 #("isolation",           "%s" % (isocuts)),
                 #("lepton vetos",        "%s" % (vetos)),
                 #("iso, lepton vetos",   "%s && %s" % (isocuts, vetos)),
-#                 ("iso, vetos, OS",      "%s && %s && q_1*q_2<0" % (isocuts, vetos)),
                 #("iso, vetos, SS",      "%s && %s && q_1*q_2>0" % (isocuts, vetos)),
-#                 ("category 1",          "%s && %s && q_1*q_2<0 && %s" % (isocuts, vetos, category1)),
-#                 ("category 2",          "%s && %s && q_1*q_2<0 && %s" % (isocuts, vetos, category2)), # && met < 60
-#                 ("category 1 met",      "%s && %s && q_1*q_2<0 && %s && %s" % (isocuts, vetos, category1, metcut)),
-#                 ("category 1 mt1",      "%s && %s && q_1*q_2<0 && %s && %s" % (isocuts, vetos, category1, mt1cut)),
-#                 ("category 2 mt1",      "%s && %s && q_1*q_2<0 && %s && %s" % (isocuts, vetos, category2, mt1cut)),
-#                 ("category 1 SR",       "%s && %s && q_1*q_2<0 && %s && %s" % (isocuts, vetos, category1, signalwindow)),
-#                 ("category 2 SR",       "%s && %s && q_1*q_2<0 && %s && %s" % (isocuts, vetos, category2, signalwindow)), # && met < 60
-#                 ("category 1 SR met",   "%s && %s && q_1*q_2<0 && %s && %s && %s" % (isocuts, vetos, category1, metcut, signalwindow)),
-#                 ("category 1 SR mt1",   "%s && %s && q_1*q_2<0 && %s && %s && %s" % (isocuts, vetos, category1, mt1cut, signalwindow)),
-#                 ("category 2 SR mt1",   "%s && %s && q_1*q_2<0 && %s && %s && %s" % (isocuts, vetos, category2, mt1cut, signalwindow)),
-                ("category 1.2",        "%s && %s && q_1*q_2<0 && %s && %s" % (isocuts, vetos, category1, newcuts)),
-                ("category 2.2",        "%s && %s && q_1*q_2<0 && %s && %s" % (isocuts, vetos, category2, mt1cut)),
+#                 ("iso, vetos, OS",      "%s" % (baseline)),
+#                 ("category 1",          "%s && %s" % (baseline, category1)),
+#                 ("category 2",          "%s && %s" % (baseline, category2)),
+#                 ("category 1 met",      "%s && %s && %s" % (baseline, category1, metcut)),
+#                 ("category 1 mt1",      "%s && %s && %s" % (baseline, category1, mt1cut)),
+#                 ("category 2 mt1",      "%s && %s && %s" % (baseline, category2, mt1cut)),
+#                 ("category 1 SR",       "%s && %s && %s" % (baseline, category1, signalwindow)),
+#                 ("category 2 SR",       "%s && %s && %s" % (baseline, category2, signalwindow)), # && met < 60
+#                 ("category 1 SR met",   "%s && %s && %s && %s" % (baseline, category1, metcut, signalwindow)),
+#                 ("category 1 SR mt1",   "%s && %s && %s && %s" % (baseline, category1, mt1cut, signalwindow)),
+#                 ("category 2 SR mt1",   "%s && %s && %s && %s" % (baseline, category2, mt1cut, signalwindow)),
+                ("category 1.2",        "%s && %s && %s" % (baseline, category1, newcuts)),
+                ("category 2.2",        "%s && %s && %s" % (baseline, category2, mt1cut)),
               ]
 
     
@@ -192,7 +193,7 @@ def plotStacks(channel, **kwargs):
     label = mylabel
     treeName = "tree_%s" % channel
     for sample in samples: sample.treeName=treeName
-
+    
 
     # LOOP over SELECTIONS
     for label, cuts in categories:
@@ -204,22 +205,7 @@ def plotStacks(channel, **kwargs):
         
         
         # REMOVE DY LOW MASS for jet categories
-        if "category" in label:
-            for sample in samples:
-                if ("Drell-Yan" in sample.label or "DY" in sample.label ) and "10-50" in sample.label:
-                    samples.remove(sample)
-                    if kAzure+5 in PlotTools.fillcolors: PlotTools.fillcolors.remove(kAzure+5)
-                    print warning("Removed Drell Yan low mass and kAzure+5.")
-        
-        
-        # RENORMALIZE WJ
-        if normalizeWJ and "SS" not in label and "category" not in label:
-            #renormcuts = "channel==%i && %s && %s && q_1*q_2<0" % (channeli, isocuts, vetos)
-            plot = Plot( samples, "pfmt_1", 100, 80, 180, cuts=cuts, QCD=QCD, reset=True )
-            plot.renormalizeWJ()
-            plot.close()
-        else:
-            print warning("Not WJ renormalized! (normalizeWJ=%s, label=\"%s\")" % (normalizeWJ,label))
+        if "category" in label: removeLowMassDY()
         
         
         # RESET
@@ -314,6 +300,16 @@ def plotStacks(channel, **kwargs):
     ################
     # Extra checks #
     ################
+    
+
+def removeLowMassDY(**kwargs):
+    """Remove low mass DY."""
+    for sample in samples:
+        if ("Drell-Yan" in sample.label or "DY" in sample.label ) and "10-50" in sample.label:
+            samples.remove(sample)
+            if kAzure+5 in PlotTools.fillcolors: PlotTools.fillcolors.remove(kAzure+5)
+            print warning("Removed Drell Yan low mass and kAzure+5.")
+    
 
 def checkSignal(plot):
     """Check signal bump, signal region, signal yield, ..."""
@@ -455,16 +451,16 @@ def checkCutflowEfficiency(channel, **kwargs):
                         "iso":                  "%s" % (isocuts),
                         "vetos":                "%s" % (vetos),
                         "iso, vetos":           "%s && %s" % (isocuts, vetos),
-                        "iso, vetos, OS":       "%s && %s && q_1*q_2<0" % (isocuts, vetos),
-                        "b jet":                "%s && %s && q_1*q_2<0 && ncbtag > 0" % (isocuts, vetos),
-                        "category 1":           "%s && %s && q_1*q_2<0 && %s" % (isocuts, vetos, category1),
-                        "category 2":           "%s && %s && q_1*q_2<0 && %s" % (isocuts, vetos, category2),
-                        "category 1 met":       "%s && %s && q_1*q_2<0 && %s && %s" % (isocuts, vetos, category1, metcut),
-                        "category 1 mt1":       "%s && %s && q_1*q_2<0 && %s && %s" % (isocuts, vetos, category1, mt1cut),
-                        "category 2 met":       "%s && %s && q_1*q_2<0 && %s && %s" % (isocuts, vetos, category2, metcut),
-                        "category 2 mt1":       "%s && %s && q_1*q_2<0 && %s && %s" % (isocuts, vetos, category2, mt1cut),
-                        "category 1.2":         "%s && %s && q_1*q_2<0 && %s && %s" % (isocuts, vetos, category1, newcuts),
-                        "category 2.2":         "%s && %s && q_1*q_2<0 && %s && %s" % (isocuts, vetos, category2, newcuts),
+                        "iso, vetos, OS":       "%s" % (baseline),
+                        "b jet":                "%s && ncbtag > 0" % (baseline),
+                        "category 1":           "%s && %s" % (baseline, category1),
+                        "category 2":           "%s && %s" % (baseline, category2),
+                        "category 1 met":       "%s && %s && %s" % (baseline, category1, metcut),
+                        "category 1 mt1":       "%s && %s && %s" % (baseline, category1, mt1cut),
+                        "category 2 met":       "%s && %s && %s" % (baseline, category2, metcut),
+                        "category 2 mt1":       "%s && %s && %s" % (baseline, category2, mt1cut),
+                        "category 1.2":         "%s && %s && %s" % (baseline, category1, newcuts),
+                        "category 2.2":         "%s && %s && %s" % (baseline, category2, newcuts),
                        }
     cutflows = [
 #                     ("no cuts", "iso", "iso, vetos", "iso, vetos, OS", "category 1", "category 1.2"),
@@ -525,6 +521,138 @@ def checkCutflowEfficiency(channel, **kwargs):
                 N_last = N
         
         print ">>>\n>>> "
+
+
+
+
+
+    ##########################
+    # writeDataCardHistogram #
+    ##########################
+
+def writeDataCardHistograms(channel, **kwargs):
+    """Make histogram from a variable in a tree and write to a new root file."""
+    print header("%s channel: Writing histogram for datacards" % channel)
+    
+    categories = [
+                    ("category 1.2",        "%s && %s && %s" % (baseline, category1, newcuts)),
+                    ("category 2.2",        "%s && %s && %s" % (baseline, category2, mt1cut)),
+                  ]
+    
+    samples_dict = { 
+                        "ttbar":        [   ( "TTT",    "gen_match_2 == 5" ),
+                                            ( "TTJ",    "gen_match_2 != 5" ), ],
+                        "Drell-Yan":    [   ( "ZTT",    "gen_match_2 == 5" ),
+                                            ( "ZL",     "gen_match_2  < 5" ),
+                                            ( "ZJ",     "gen_match_2 == 6" ), ],
+                        "diboson":      [   ( "VV",     ""                 ), ],
+                                            #( "VVT",    "gen_match_2 == 5" ),
+                                            #( "VVJ",    "gen_match_2 != 5" ), ],
+                        "W + jets":     [   ( "W",      ""                 ), ],
+                        "QCD":          [   ( "QCD",    ""                 ), ],
+                    }
+    
+    myvar       = "m_sv"
+    treeName    = "tree_%s" % channel
+    weight      = "weight"
+    for sample in samples: sample.treeName=treeName
+    DIR = kwargs.get('DIR',OUT_DIR)
+    
+    outdir      = "%sdatacards/" % DIR
+    makeDirectory(outdir)
+    outfilename = outdir + makeDataCardOutputName(channel,"LowMassDiTau")
+    outfile     = TFile(outfilename, 'recreate')
+    print ">>> writing %s shapes to %s" % (myvar,outfilename)
+    
+    # LOOP over CATEGORIES
+    for category, cuts in categories:        
+        start_here = time.time()
+        print ">>>\n>>> " + color("_%s:_%s_" % (channel.replace(' ','_'),category.replace(' ','_')), color = "magenta")
+        
+        # REMOVE DY LOW MASS for jet categories
+        if "category" in category: removeLowMassDY()
+        
+        # MAKE DIR
+        dirname = makeDataCardTDirName(channel,category)
+        if dirname:
+            dir = outfile.GetDirectory(dirname)
+            if not dir:
+                dir = outfile.mkdir(dirname)
+                print ">>>   created directory %s in %s" % (dirname,outfilename.replace(DIR,""))
+            dir.cd()
+        
+        # LOOP over SAMPLES
+        for samplename in samples_dict:
+        
+            # FIND SAMPLE
+            matches = [ ]
+            sample  = None
+            for sample in samples:
+                #print ">>> sample.label = %s" % (sample.label)
+                if samplename in sample.label or samplename in sample.filename: matches.append(sample)
+            if not matches and not "QCD" in samplename:
+                print warning("Could make datacard histogram! No \"%s\" sample!" % (samplename))
+                continue
+            if len(matches)>0:
+                if len(matches)>1: print warning("Found more than one \"%s\" sample!" % (samplename))
+                sample = matches[0]
+            
+            for subsample, extracuts in samples_dict[samplename]:
+                printSameLine(">>>   making %3s histogram..." % (subsample.ljust(3)))
+                #http://stackoverflow.com/questions/3249524/print-in-one-line-dynamically
+                
+                # SETUP NAMES
+                var         = myvar
+                name        = subsample
+                cuts1       = combineCuts(cuts,extracuts)#,weight=weight)
+                (a,b)       = (0,350)
+                nBins       = kwargs.get('nBins',35)
+                
+                # MAKE HIST
+                hist        = None
+                if "QCD" in subsample:
+                    plot = Plot(samples,var,nBins,a,b,cuts=cuts1,QCD=False)
+                    hist = plot.QCD(name=name)
+                else: hist = sample.hist(var,nBins,a,b,name=name,cuts=cuts1)
+                hist.SetLineStyle(1)
+                hist.SetLineWidth(2)
+                N_MC = hist.GetEntries()
+                N_ev = hist.GetSumOfWeights()
+                                
+                # WRITE HIST
+                hist.Write(hist.GetName(),TH1D.kOverwrite)
+                gDirectory.Delete(name)
+                print "written %5i entries to file (yield is %5.1f)" % (N_MC,N_ev)
+        
+        #print ">>>   took %.1f seconds" % (time.time()-start_here)
+    outfile.Close()
+
+
+def makeDataCardOutputName(channel, analysis, E="13TeV"):
+    """Make name of output file according to HTT Working TWiki."""
+    
+    if "t" in channel:
+        if   "m" in channel: channel = "mt"
+        elif "e" in channel: channel = "et"
+        else: print ">>> makeOutputName: channel not found!"
+    else: print ">>> makeOutputName: channel not found!"
+    
+    outputname = "htt_%s.inputs-%s-%s.root" % (channel,analysis,E)
+    return outputname
+
+
+def makeDataCardTDirName(channel, category):
+    """Make name of directory according to HTT Working TWiki."""
+    
+    if "t" in channel:
+        if   "m" in channel: channel = "mt"
+        elif "e" in channel: channel = "et"
+        else: print ">>> makeTDir: channel not found!"
+    else: print ">>> makeTDir: channel not found!"
+    
+    category = category.replace(' ','').replace('.','_').replace(',','-')
+    dirname = "%s_%s" % (channel,category)
+    return dirname
 
 
 
@@ -601,13 +729,18 @@ def getScales():
     samples = stitchSamples(samples,"WJ",name_incl="WJets")
     #samples = mergeSamples(samples,"DY",label="M-10to50_nlo",name="Drell-Yan 10-50 NLO")
     samples = stitchSamples(samples,"DY",label="M-50")
+    
+            
+    # RENORMALIZE WJ
+    if normalizeWJ: renormalizeWJ(var="pfmt_1", cuts=baseline, QCD=doQCD, reset=True)
+    else: print warning("Not WJ renormalized! (normalizeWJ=%s)" % (normalizeWJ))
 
 
 def signalNormalization(sample,S_exp=S_exp):
     """Calculates normalization for a given expected signal yield."""
     
-    categories_exp = [  ("category 1", "%s && %s && q_1*q_2<0 && %s" % (isocuts, vetos, category1)),
-                        ("category 2", "%s && %s && q_1*q_2<0 && %s" % (isocuts, vetos, category2)), ]        
+    categories_exp = [  ("category 1", "%s && %s" % (baseline, category1)),
+                        ("category 2", "%s && %s" % (baseline, category2)), ]        
     N  = 0 
     MC = 0
     for label, cuts in categories_exp:
@@ -624,14 +757,26 @@ def signalNormalization(sample,S_exp=S_exp):
         print warning("Could not find normalization for signal: no MC events in category 1 or 2!")
         return 1
     
+
+def renormalizeWJ(**kwargs):
+    """Renormalize W + Jets."""
+    print ">>>\n>>> renormalizing WJ"
+    var     = kwargs.get('var',"pfmt_1")
+    QCD     = kwargs.get('QCD',True)
+    cuts    = kwargs.get('cuts',"")
+    reset   = kwargs.get('reset',True)    
+    plot = Plot( samples, "pfmt_1", 100, 80, 180, cuts=cuts, QCD=QCD, reset=True )
+    plot.renormalizeWJ()
+    plot.close()
     
     
     
     
     
-    ######################
-    # Stitching & Mergin #
-    ######################
+    
+    #######################
+    # Stitchin' & Mergin' #
+    #######################
 
 def mergeSamples(sample_list,names,**kwargs):
     """Merge samples"""
@@ -800,6 +945,7 @@ def main():
         return
     
     getScales()
+    print ">>> "
     
     if args.category > -1:
         selectCategory(args.category)
@@ -812,9 +958,10 @@ def main():
         dirlabel = mylabel #"_69p2mb"#_noSF"
         DIR = PLOTS_DIR+channel+dirlabel
         
-        plotStacks(channel,DIR=DIR)
+#         plotStacks(channel,DIR=DIR)
 #         plot2DCorrelation(channel,DIR=DIR)
 #         checkCutflowEfficiency(channel)
+        writeDataCardHistograms(channel,DIR=OUT_DIR)
 
 
 

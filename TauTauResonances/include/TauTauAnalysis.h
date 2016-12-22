@@ -361,6 +361,7 @@ class TauTauAnalysis : public SCycleBase {
     std::map<std::string,Double_t> b_pfmt_2;
     std::map<std::string,Double_t> b_puppimt_2;
     std::map<std::string,Double_t> b_iso_2;
+    std::map<std::string,Double_t> b_iso_2_medium;
     std::map<std::string,Int_t>    b_gen_match_2;
     std::map<std::string,Int_t>    b_trigweight_2;
     //std::map<std::string,Double_t> b_isoweight_2;
@@ -446,11 +447,11 @@ class TauTauAnalysis : public SCycleBase {
     std::map<std::string,Double_t> b_pzetavis;
     std::map<std::string,Double_t> b_pzeta_disc;
     
-  std::map<std::string,Double_t> b_vbf_mjj;
-  std::map<std::string,Double_t> b_vbf_deta;
-  std::map<std::string,Double_t> b_vbf_jdphi;
-  std::map<std::string,Int_t> b_vbf_ncentral;
-  std::map<std::string,Int_t> b_vbf_ncentral20;
+    std::map<std::string,Double_t> b_vbf_mjj;
+    std::map<std::string,Double_t> b_vbf_deta;
+    std::map<std::string,Double_t> b_vbf_jdphi;
+    std::map<std::string,Int_t> b_vbf_ncentral;
+    std::map<std::string,Int_t> b_vbf_ncentral20;
 
     // Macro adding the functions for dictionary generation
     ClassDef( TauTauAnalysis, 0 );

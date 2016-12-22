@@ -239,8 +239,8 @@ void TauTauAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
   m_logger << INFO << "doSVFit:             " <<            (m_doSVFit ?    "TRUE" : "FALSE") << SLogger::endmsg;
   m_logger << INFO << "doRecoilCorr:        " <<            (m_doRecoilCorr ? "TRUE" : "FALSE") << SLogger::endmsg;
   m_logger << INFO << "doZpt:               " <<            (m_doZpt ?      "TRUE" : "FALSE") << SLogger::endmsg;
-  m_logger << INFO << "doTES:                " <<           (m_doTES ? "TRUE" : "FALSE") << SLogger::endmsg;
-  m_logger << INFO << "TESshift:             " <<           m_TESshift << SLogger::endmsg;
+  m_logger << INFO << "doTES:               " <<            (m_doTES ? "TRUE" : "FALSE") << SLogger::endmsg;
+  m_logger << INFO << "TESshift:            " <<            m_TESshift << SLogger::endmsg;
 
   m_logger << INFO << "ElectronPtCut:       " <<            m_electronPtCut << SLogger::endmsg;
   m_logger << INFO << "ElectronEtaCut:      " <<            m_electronEtaCut << SLogger::endmsg;
@@ -336,6 +336,7 @@ void TauTauAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
     DeclareVariable( b_pfmt_2[channels_[ch]],         "pfmt_2",         treeName);
     DeclareVariable( b_puppimt_2[channels_[ch]],      "puppimt_2",      treeName);
     DeclareVariable( b_iso_2[channels_[ch]],          "iso_2",          treeName);
+    DeclareVariable( b_iso_2_medium[channels_[ch]],   "iso_2_medium",   treeName);
     DeclareVariable( b_gen_match_2[channels_[ch]],    "gen_match_2",    treeName);
     DeclareVariable( b_trigweight_2[channels_[ch]],   "trigweight_2",   treeName);
     DeclareVariable( b_idisoweight_2[channels_[ch]],  "idisoweight_2",  treeName);
@@ -1276,6 +1277,7 @@ void TauTauAnalysis::FillBranches(const std::string& channel, const std::vector<
   b_d0_2[ch]        = tau.d0();
   b_dz_2[ch]        = tau.dz();
   b_iso_2[ch]       = tau.byTightIsolationMVArun2v1DBoldDMwLT();
+  b_iso_2_medium[ch] = tau.byMediumIsolationMVArun2v1DBoldDMwLT();
   
   b_pol_2[ch]       = -9;
   if (tau.chargedPionPt() > 0 && tau.neutralPionPt() > 0)
@@ -1404,47 +1406,31 @@ void TauTauAnalysis::FillBranches(const std::string& channel, const std::vector<
     fmvamet = 0.0;
   }
 
-  ////////////////////////////////////////////////////////
-  /// TES
-
+  ///////////
+  /// TES ///
+  ///////////
+  
   TLorentzVector metVecNew;
   TLorentzVector tauVecNew;
-
   if(m_isData==false && m_doTES && taugen==5){
-    b_pt_2[ch]        = tau.tlv().Pt()*(1+m_TESshift);
-    b_m_2[ch]         = tau.tlv().M()*(1+m_TESshift);
-
-    float dx = tau.tlv().Px()*m_TESshift;
-    float dy = tau.tlv().Py()*m_TESshift;
-
+    b_pt_2[ch]  = tau.tlv().Pt()*(1+m_TESshift);
+    b_m_2[ch]   = tau.tlv().M()*(1+m_TESshift);
+    float dx    = tau.tlv().Px()*m_TESshift;
+    float dy    = tau.tlv().Py()*m_TESshift;
     TLorentzVector deltaTauP4(dx, dy, 0, 0);
     TLorentzVector scaledMet;
-    scaledMet.SetPxPyPzE(fmet*TMath::Cos(fmetphi), 
-			 fmet*TMath::Sin(fmetphi), 
-			 0, 
-			 fmet);
+    scaledMet.SetPxPyPzE(fmet*TMath::Cos(fmetphi), fmet*TMath::Sin(fmetphi), 0, fmet);
     scaledMet -= deltaTauP4;
-
     metVecNew.SetPtEtaPhiM(scaledMet.Pt(),scaledMet.Eta(),scaledMet.Phi(),0.);    
-    std::cout << "Modify MET according to tau pT : old MET =" << met.et() << ", new MET =" << scaledMet.Pt() << std::endl;
-
-
+    //std::cout << "Modify MET according to tau pT : old MET =" << met.et() << ", new MET =" << scaledMet.Pt() << std::endl;
   }else{
-    b_pt_2[ch]        = tau.tlv().Pt();
-    b_m_2[ch]         = tau.tlv().M();
-
-    metVecNew.SetPxPyPzE(fmet*TMath::Cos(fmetphi), 
-			 fmet*TMath::Sin(fmetphi), 
-			 0, 
-			 fmet);
-
+    b_pt_2[ch]  = tau.tlv().Pt();
+    b_m_2[ch]   = tau.tlv().M();
+    metVecNew.SetPxPyPzE(fmet*TMath::Cos(fmetphi), fmet*TMath::Sin(fmetphi), 0, fmet);
   }    
-
   tauVecNew.SetPtEtaPhiM(b_pt_2[ch], b_eta_2[ch], b_phi_2[ch], b_m_2[ch]);
 
   /// TES
-
-
 
   
   //  b_met[ch]         = fmet;
@@ -1524,11 +1510,9 @@ void TauTauAnalysis::FillBranches(const std::string& channel, const std::vector<
   double R_pt_m_sv = -1;
   // to save time, apply some extra cuts 
   if ( m_doSVFit && channel=="mutau" &&
-       b_iso_1[ch] < 0.15 && b_iso_2[ch] == 1 &&
+       b_iso_1[ch] < 0.30 && b_iso_2_medium[ch] == 1 &&
        b_againstElectronVLooseMVA6_2[ch] == 1 && b_againstMuonTight3_2[ch] == 1 &&
        b_dilepton_veto[ch] == 0 && b_extraelec_veto[ch] == 0 && b_extramuon_veto[ch] == 0 ){
-    //    m_SVFitTool.addMeasuredLeptonTau(channel,lep_lv, tau.tlv());
-    //    m_SVFitTool.getSVFitMassAndPT(m_sv,pt_tt_sv,lmetCorr.Px(),lmetCorr.Py(), met.cov00(),met.cov10(),met.cov11());
     m_SVFitTool.addMeasuredLeptonTau(channel,lep_lv, tauVecNew);
     m_SVFitTool.getSVFitMassAndPT(m_sv,pt_tt_sv,lmet_corrected.Px(),lmet_corrected.Py(), met.cov00(),met.cov10(),met.cov11());
     if(m_sv > 0) R_pt_m_sv = pt_tt_sv/m_sv;

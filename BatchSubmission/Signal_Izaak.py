@@ -21,6 +21,8 @@ userItems = [
                 ["IsSignal","true"],
                 #["doSVFit","true"],
                 ["doRecoilCorr","false"],
+                ["doTES","false"],
+                ["TESshift","0.00"],
                 ["OutputTreeName_mutau", "tree_mutau" ],
                 ["OutputTreeName_eletau","tree_eletau"],
              ]
