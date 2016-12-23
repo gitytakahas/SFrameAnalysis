@@ -1,4 +1,7 @@
-from ROOT import TFile
+import os, copy
+from ROOT import TFile, TH1F
+from DisplayManager import DisplayManager
+from DataMCPlot import *
 
 class config(object):
 
@@ -7,6 +10,34 @@ class config(object):
         self.basedir = basedir
 
         self.lumi = lumi
+
+        self.hists = {}
+
+        self.baseline = 'dilepton_veto == 0 && extraelec_veto == 0 && extramuon_veto == 0 && againstElectronVLooseMVA6_2 == 1 && againstMuonTight3_2 == 1 && iso_1 < 0.15 && iso_2 == 1 && channel==1 && q_1*q_2 < 0'
+        
+        self.W_lowMT = 50.
+        self.W_highMT = 80.
+
+
+        self.sel_0jet_low = self.baseline + ' && ' + 'pt_2 > 20 && pt_2 < 50 && njets==0 && pfmt_1 < ' + str(self.W_lowMT)
+        self.sel_0jet_high = self.baseline + ' && ' + 'pt_2 > 50 && njets==0 && pfmt_1 < ' + str(self.W_lowMT)
+        self.sel_1jet_low = self.baseline + ' && ' + '(njets==1 || (njets==2 && vbf_mjj < 500)) && ((pt_2 > 30 && pt_2 < 40) || (pt_2 > 40 && pt_tt < 140)) && pfmt_1 < ' + str(self.W_lowMT)
+        self.sel_1jet_high = self.baseline + ' && ' + '(njets==1 || (njets==2 && vbf_mjj < 500)) && pt_2 > 40 && pt_tt > 140 && pfmt_1 < ' + str(self.W_lowMT)
+        self.sel_vbf_low = self.baseline + ' && ' + 'njets==2 && pt_2 > 20 && vbf_mjj > 500 && (vbf_mjj < 800 || pt_tt < 100) && pfmt_1 < ' + str(self.W_lowMT)
+        self.sel_vbf_high = self.baseline + ' && ' + 'njets==2 && pt_2 > 20 && vbf_mjj > 800 && pt_tt > 100 && pfmt_1 < ' + str(self.W_lowMT)
+
+
+        self.catdir = {
+            '0jet_low':{'name':'0jet_low', 'sel':self.sel_0jet_low, 'os_ss_ratio':1.},    
+            '0jet_high':{'name':'0jet_high', 'sel':self.sel_0jet_high, 'os_ss_ratio':1.},
+            '1jet_low':{'name':'1jet_low', 'sel':self.sel_1jet_low, 'os_ss_ratio':1.15},
+            '1jet_high':{'name':'1jet_hight', 'sel':self.sel_1jet_high, 'os_ss_ratio':1.15},
+            'vbf_low':{'name':'vbf_low', 'sel':self.sel_vbf_low, 'os_ss_ratio':1.2},
+            'vbf_high':{'name':'vbf_high', 'sel':self.sel_vbf_high, 'os_ss_ratio':1.2}
+            }
+
+
+
 
         self.process = {
 
@@ -345,3 +376,162 @@ class config(object):
 
         self.w_weightstr += '1)'
         print self.w_weightstr
+
+
+    def returnWeight(self, val):
+        weight = 'weight*' + str(val['cross-section']*self.lumi*1000/val['ntot'])  + '*(gen_match_2==5 ? 0.9 : 1)'
+
+        if val['name'] in ['ZTT', 'ZTT1', 'ZTT2', 'ZTT3', 'ZTT4',
+                           'ZL', 'ZL1', 'ZL2', 'ZL3', 'ZL4',
+                           'ZJ', 'ZJ1', 'ZJ2', 'ZJ3', 'ZJ4']:            
+            weight = 'weight*' + self.dy_weightstr + '*(gen_match_2==5 ? 0.9 : 1)'
+
+        elif val['name'] in ['W', 'W1', 'W2', 'W3', 'W4']:
+            weight = 'weight*' + self.w_weightstr + '*(gen_match_2==5 ? 0.9 : 1)'
+
+        elif val['name'] in ['data_obs']:        
+            weight = '1'
+
+        return weight
+
+
+    def createHistograms(self, catname, selection, exceptionList, vardir, sf_W = 1.):
+
+        print '-'*80
+        print 'category : ', catname
+        print 'selection : ', selection
+        print 'exceptionList : ', exceptionList
+        print 'vardir = ', vardir
+        print 'SF for W = ', sf_W
+        print '-'*80    
+
+        for processname, val in self.process.iteritems():
+            if processname in exceptionList: 
+                print 'Remove', processname
+                continue
+        
+            tree = val['file'].Get('tree_mutau')
+
+            var_tuples = []
+    
+            for varname, var in vardir.iteritems():
+#                print catname, processname, varname, var['drawname']
+                hname = 'hist_' + catname + '_' + processname + '_' + var['drawname']
+        
+                hist_register = TH1F(hname, hname, var['nbins'], var['min'], var['max'])
+                hist_register.GetXaxis().SetTitle(var['label'])
+                hist_register.GetXaxis().SetLabelSize(0)
+                hist_register.Sumw2()
+    
+                if val['name'] in ['data_obs']:
+                    hist_register.SetMarkerStyle(20)
+                    hist_register.SetMarkerSize(0.5)
+        
+                self.hists[hname] = hist_register
+
+                var_tuples.append('{var} >> {hist}'.format(var=var['drawname'], hist=hname))
+
+            weight = self.returnWeight(val)
+            if processname in ['W', 'W1', 'W2', 'W3', 'W4']:
+                weight += '*' + str(sf_W)
+
+#            print processname, weight
+
+
+
+            cutstr = selection + ' && ' + val['additional_cut']
+            cut = '({c}) * {we}'.format(c=cutstr, we=weight)
+            tree.MultiDraw(var_tuples, cut)
+
+
+
+        print 'making plots ...'
+        ensureDir('fig_' + catname)
+
+        for varname, var in vardir.iteritems():        
+
+            stackname = 'stackhist_' + catname + '_' + varname
+            hist = DataMCPlot(stackname)
+            hist.legendBorders = 0.55, 0.55, 0.88, 0.88
+
+            for processname, val in self.process.iteritems():
+
+                hname = 'hist_' + catname + '_' + processname + '_' + varname
+                if not self.hists.has_key(hname): continue
+
+                pname = val['name']
+                
+                hist.AddHistogram(pname, self.hists[hname], val['order'])
+                if pname in ['data_obs']:
+                    hist.Hist(pname).stack = False
+
+            hist.Group('VV', ['WZ', 'ZZ', 'WWTo1L1Nu2Q', 'ST_t_top', 'ST_t_antitop', 'ST_tw_top', 'ST_tw_antitop'])
+            hist.Group('ZTT', ['ZTT', 'ZTT1', 'ZTT2', 'ZTT3', 'ZTT4'])
+            hist.Group('ZL', ['ZL', 'ZL1', 'ZL2', 'ZL3', 'ZL4'])
+            hist.Group('ZJ', ['ZJ', 'ZJ1', 'ZJ2', 'ZJ3', 'ZJ4'])
+            hist.Group('W', ['W', 'W1', 'W2', 'W3', 'W4'])
+            hist.Group('TT', ['TTT', 'TTJ'])
+
+            print hist
+            self.comparisonPlots(hist, 'fig_' + catname + '/' + stackname + '.gif')
+#            display = DisplayManager('fig_' + catname + '/' + stackname + '.gif', True, self.lumi, 0.42, 0.65)
+#            display.Draw(hist)
+
+
+
+
+
+
+
+    def extractQCD(self, catname, exceptionList, var, os_ss_ratio):
+        h_QCD = None
+
+        for processname, val in self.process.iteritems():
+            if processname in exceptionList: continue
+        
+            hname = 'hist_' + catname + '_' + processname + '_' + var
+        
+            addfactor = -1.
+            if val['name'] == 'data_obs':
+                addfactor = 1.
+            
+            if h_QCD == None:
+                h_QCD = copy.deepcopy(self.hists[hname])
+                h_QCD.Scale(addfactor)
+#                print 'subtract', hname, self.hists[hname].Integral(0, self.hists[hname].GetNbinsX()+1)
+#                print 'subtract_copy', h_QCD.Integral(0, h_QCD.GetNbinsX()+1)
+            else:
+                h_QCD.Add(self.hists[hname], addfactor)
+#                print 'subtract', hname, self.hists[hname].Integral(0, self.hists[hname].GetNbinsX()+1)
+#                print 'subtract_copy', h_QCD.Integral(0, h_QCD.GetNbinsX()+1)
+
+            
+        h_QCD_os = copy.deepcopy(h_QCD)
+        h_QCD_os.Scale(os_ss_ratio)
+
+        osname = 'hist_' + catname.replace('ss','os') + '_QCD_' + var
+        h_QCD_os.SetName(osname)
+
+        print '-'*80
+        print 'Original yield = ', h_QCD.Integral(0, h_QCD_os.GetNbinsX()+1)
+        print 'OS/SS ratio = ', os_ss_ratio
+        print 'Estimated QCD yield at ', catname, ' : ', h_QCD_os.Integral(0, h_QCD_os.GetNbinsX()+1)
+        print '-'*80
+
+        self.hists[osname] = h_QCD_os
+
+
+
+    def comparisonPlots(self, hist, pname='sync.pdf', isRatio=True):
+        display = DisplayManager(pname, isRatio, self.lumi, 0.42, 0.65)
+        display.Draw(hist)
+
+
+def ensureDir(directory):
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+
+
+
+def returnIntegral(hist):
+    return hist.Integral(0, hist.GetNbinsX()+1)
