@@ -60,6 +60,7 @@ TauTauAnalysis::TauTauAnalysis() : SCycleBase()
   DeclareProperty( "IsSignal",              m_isSignal              = false );
   DeclareProperty( "doRecoilCorr",          m_doRecoilCorr          = false );
   DeclareProperty( "doZpt",                 m_doZpt                 = false );
+  DeclareProperty( "doTTpt",                m_doTTpt                = false );
   DeclareProperty( "doTES",                 m_doTES                 = false );
   DeclareProperty( "TESshift",              m_TESshift              = 0.0 );
 
@@ -239,6 +240,7 @@ void TauTauAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
   m_logger << INFO << "doSVFit:             " <<            (m_doSVFit ?    "TRUE" : "FALSE") << SLogger::endmsg;
   m_logger << INFO << "doRecoilCorr:        " <<            (m_doRecoilCorr ? "TRUE" : "FALSE") << SLogger::endmsg;
   m_logger << INFO << "doZpt:               " <<            (m_doZpt ?      "TRUE" : "FALSE") << SLogger::endmsg;
+  m_logger << INFO << "doTTpt:              " <<            (m_doTTpt ?     "TRUE" : "FALSE") << SLogger::endmsg;
   m_logger << INFO << "doTES:               " <<            (m_doTES ? "TRUE" : "FALSE") << SLogger::endmsg;
   m_logger << INFO << "TESshift:            " <<            m_TESshift << SLogger::endmsg;
 
@@ -285,6 +287,7 @@ void TauTauAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
     DeclareVariable( b_puweight[channels_[ch]],       "puweight",       treeName);
     DeclareVariable( b_weightbtag[channels_[ch]],     "weightbtag",     treeName);
     DeclareVariable( b_zptweight[channels_[ch]],      "zptweight",      treeName);
+    DeclareVariable( b_ttptweight[channels_[ch]],     "ttptweight",     treeName);
     DeclareVariable( b_channel[channels_[ch]],        "channel",        treeName);
     DeclareVariable( b_isData[channels_[ch]],         "isData",         treeName);
     DeclareVariable( b_run[channels_[ch]],            "run",            treeName);
@@ -416,11 +419,11 @@ void TauTauAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
     DeclareVariable( b_pzetamiss[channels_[ch]],    "pzetamiss",        treeName);
     DeclareVariable( b_pzetavis[channels_[ch]],     "pzetavis",         treeName);
     DeclareVariable( b_pzeta_disc[channels_[ch]],   "pzeta_disc",       treeName);
-    DeclareVariable( b_vbf_mjj[channels_[ch]],   "vbf_mjj",       treeName);
-    DeclareVariable( b_vbf_deta[channels_[ch]],   "vbf_deta",       treeName);
-    DeclareVariable( b_vbf_jdphi[channels_[ch]],   "vbf_jdphi",       treeName);
-    DeclareVariable( b_vbf_ncentral[channels_[ch]],   "vbf_ncentral",       treeName);
-    DeclareVariable( b_vbf_ncentral20[channels_[ch]],   "vbf_ncentral20",       treeName);
+    DeclareVariable( b_vbf_mjj[channels_[ch]],      "vbf_mjj",          treeName);
+    DeclareVariable( b_vbf_deta[channels_[ch]],     "vbf_deta",         treeName);
+    DeclareVariable( b_vbf_jdphi[channels_[ch]],    "vbf_jdphi",        treeName);
+    DeclareVariable( b_vbf_ncentral[channels_[ch]], "vbf_ncentral",     treeName);
+    DeclareVariable( b_vbf_ncentral20[channels_[ch]], "vbf_ncentral20", treeName);
 
 
   }
@@ -1303,7 +1306,8 @@ void TauTauAnalysis::FillBranches(const std::string& channel, const std::vector<
     //    b_gen_match_2[ch]                   = genMatch(b_eta_2[ch], b_phi_2[ch]);
     b_gen_match_2[ch]                   = taugen;
     b_genmatchweight[ch]                = genMatchSF(b_gen_match_2[ch],b_eta_2[ch]); // leptons faking taus and real taus ID eff
-    b_weight[ch]                        = b_weight[ch] * b_genmatchweight[ch];
+    if (m_doTTpt) b_ttptweight[ch]      = genMatchSF(-36);
+    b_weight[ch]                        = b_weight[ch] * b_genmatchweight[ch] * b_ttptweight[ch];
     // MARK: check boosted tau ID matching standard ID
 //     if (b_gen_match_2[ch] == 5 && m_isSignal){
 //       int nMatch = 0;
@@ -1600,10 +1604,10 @@ int TauTauAnalysis::genMatch(Float_t lep_eta, Float_t lep_phi) {
     Float_t dr = deltaR(lep_eta-eta, deltaPhi(lep_phi, phi));
     if(dr < min_dR){
       min_dR = dr;
-      if( pdgId==11 && isPrompt > 0.5) id = 1;
-      if( pdgId==13 && isPrompt > 0.5) id = 2;
-      if( pdgId==11 && isDirectPromptTauDecayProduct > 0.5) id = 3;
-      if( pdgId==13 && isDirectPromptTauDecayProduct > 0.5) id = 4;      
+      if(pdgId==11 && isPrompt > 0.5) id = 1;
+      if(pdgId==13 && isPrompt > 0.5) id = 2;
+      if(pdgId==11 && isDirectPromptTauDecayProduct > 0.5) id = 3;
+      if(pdgId==13 && isDirectPromptTauDecayProduct > 0.5) id = 4;      
     }
   }
   
@@ -1787,8 +1791,9 @@ bool TauTauAnalysis::LooseJetID(const UZH::Jet& jet)
 
 float TauTauAnalysis::genMatchSF(const int genmatch_2, const float tau_eta){
   //std::cout << "genMatchSF" << std::endl;
-  //https://twiki.cern.ch/twiki/bin/viewauth/CMS/HiggsToTauTauWorking2016#MC_Matching
-  //https://indico.cern.ch/event/563239/contributions/2279020/attachments/1325496/1989607/lepTauFR_tauIDmeeting_20160822.pdf
+  // matching ID code:      https://twiki.cern.ch/twiki/bin/viewauth/CMS/HiggsToTauTauWorking2016#MC_Matching
+  // tau reweighting:       https://indico.cern.ch/event/563239/contributions/2279020/attachments/1325496/1989607/lepTauFR_tauIDmeeting_20160822.pdf
+  // top pt reweighting:    https://twiki.cern.ch/twiki/bin/view/CMS/MSSMAHTauTauEarlyRun2#Top_quark_pT_reweighting
   
   float eta = fabs(tau_eta);
   
@@ -1808,6 +1813,23 @@ float TauTauAnalysis::genMatchSF(const int genmatch_2, const float tau_eta){
   // real tau
   else if (genmatch_2 == 5) {
     return 0.90;
+  }
+  // real top
+  else if (genmatch_2 == -36) {
+    double pt_top_1 = 0;
+    double pt_top_2 = 0;
+    int qq = 0;
+    for ( int p = 0; p < (m_genParticle.N); ++p ) {
+      UZH::GenParticle top( &m_genParticle, p );
+      if( abs(top.pdgId()) == 6 ){
+        if(qq==0) { pt_top_1 = top.pt(); qq = top.pdgId(); }
+        else if(qq*top.pdgId()<0) { pt_top_2 = top.pt(); qq*=top.pdgId(); break; }
+      }
+    }
+    if(qq==-36)
+      return TMath::Sqrt(TMath::Exp(0.156-0.00137*TMath::Min(pt_top_1,400.0))*TMath::Exp(0.156-0.00137*TMath::Min(pt_top_2,400.0)));
+    else
+      std::cout << ">>> TauTauAnalysis::genMatchSF: genmatch_2 = 66, qq = " << qq << " != -36 !!!" << std::endl;
   }
   
   return 1.0;
