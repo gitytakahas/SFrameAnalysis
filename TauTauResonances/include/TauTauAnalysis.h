@@ -138,7 +138,7 @@ class TauTauAnalysis : public SCycleBase {
     virtual bool LooseJetID(const UZH::Jet& jet);
     
     // extra scaling factors
-    virtual float genMatchSF(const int genmatch_2, const float tau_eta);
+    virtual float genMatchSF(const int genmatch_2, const float tau_eta = 0.);
     virtual bool getBTagWeight_promote_demote( const UZH::Jet& jet );
     
     // checks
@@ -210,6 +210,7 @@ class TauTauAnalysis : public SCycleBase {
     bool      m_doSVFit;
     bool      m_doRecoilCorr;
     bool      m_doZpt;
+    bool      m_doTTpt;
     bool      m_doTES;
     double    m_TESshift;
 
@@ -307,6 +308,7 @@ class TauTauAnalysis : public SCycleBase {
     std::map<std::string,Double_t> b_weightbtag;
     std::map<std::string,Double_t> b_genmatchweight;
     std::map<std::string,Double_t> b_zptweight;
+    std::map<std::string,Double_t> b_ttptweight;
     std::map<std::string,Int_t>    b_channel;  // 1 mutau; 2 eletau;
     std::map<std::string,Int_t>    b_isData;
     
@@ -450,8 +452,8 @@ class TauTauAnalysis : public SCycleBase {
     std::map<std::string,Double_t> b_vbf_mjj;
     std::map<std::string,Double_t> b_vbf_deta;
     std::map<std::string,Double_t> b_vbf_jdphi;
-    std::map<std::string,Int_t> b_vbf_ncentral;
-    std::map<std::string,Int_t> b_vbf_ncentral20;
+    std::map<std::string,Int_t>    b_vbf_ncentral;
+    std::map<std::string,Int_t>    b_vbf_ncentral20;
 
     // Macro adding the functions for dictionary generation
     ClassDef( TauTauAnalysis, 0 );
