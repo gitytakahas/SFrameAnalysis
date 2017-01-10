@@ -25,8 +25,10 @@ userItems = [
                 ["IsData","false"],
                 ["IsSignal","false"],
                 ["doRecoilCorr","false"],
+                ["doTTpt","true"],
                 ["doTES","false"],
                 ["TESshift","0.00"],
+                ["doTTpt","true"],
                 ["OutputTreeName_mutau", "tree_mutau" ],
                 ["OutputTreeName_eletau","tree_eletau"],
              ]
