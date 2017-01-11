@@ -21,7 +21,7 @@ dataSets = [
 userItems = [ 
                 ["IsData","false"],
                 ["IsSignal","true"],
-                ["doRecoilCorr","false"],
+                ["doRecoilCorr","true"],
                 ["doTES","false"],
                 ["TESshift","0.00"],
                 ["OutputTreeName_mutau", "tree_mutau" ],
