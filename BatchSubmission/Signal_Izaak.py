@@ -13,7 +13,7 @@ postFix = ""
 label = "_ICHEP" #_onlycrosstrigger" #"_triggerless" # _nocuts
 dataSets = [
                 ["LowMass_30GeV_DiTauResonance"+label,
-                 [  "LowMass_30GeV_DiTauResonance_RunIISpring16MiniAODv2_PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v2.xml", ]],
+                 [  "LowMass_30GeV_DiTauResonance_RunIISpring16MiniAODv2_asymptotic_miniAODv2.xml", ]],
            ]
 
 userItems = [ 

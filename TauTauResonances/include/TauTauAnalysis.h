@@ -132,6 +132,7 @@ class TauTauAnalysis : public SCycleBase {
     // help function
     virtual Float_t deltaPhi(Float_t p1, Float_t p2);
     virtual Float_t deltaR(Float_t p1, Float_t p2);
+    virtual void shiftLeptonAndMET( const float shift, TLorentzVector lep_shifted, TLorentzVector met_shifted, bool shiftEnergy = false);
     
     // IDs
     virtual bool isNonTrigElectronID(const UZH::Electron& electron);
@@ -213,6 +214,8 @@ class TauTauAnalysis : public SCycleBase {
     bool      m_doTTpt;
     bool      m_doTES;
     double    m_TESshift;
+    bool      m_doLTF;
+    double    m_LTFshift;
 
     ///
     /// CUTS
@@ -442,6 +445,10 @@ class TauTauAnalysis : public SCycleBase {
     std::map<std::string,Double_t> b_dphi_ll_bj;
     std::map<std::string,Double_t> b_mt_tot;
     std::map<std::string,Double_t> b_ht;
+    
+    std::map<std::string,Double_t> b_m_genboson;
+    std::map<std::string,Double_t> b_pt_genboson;
+    
     //std::map<std::string,Double_t> b_pt_sv; 
     //std::map<std::string,Double_t> b_eta_sv; 
     //std::map<std::string,Double_t> b_phi_sv;

@@ -50,6 +50,9 @@
     <Item Name="IsSignal"                   Value="False"/>
     <Item Name="doRecoilCorr"               Value="True"/>
     <Item Name="doZpt"                      Value="True"/>
+    <Item Name="doTES"                      Value="True"/>
+    <Item Name="TESshift"                   Value="0.03"/>
+    <Item Name="LTFshift"                   Value="0.03"/>
   </UserConfig>
   </Cycle>
 </JobConfiguration>

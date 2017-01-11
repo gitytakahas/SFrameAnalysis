@@ -82,7 +82,9 @@ userItems = [
                 ["doRecoilCorr","true"],
                 ["doTES","false"],
                 ["TESshift","0.00"],
-                ["doZpt","true"],
+                ["doLTF","false"],
+                ["LTFshift","0.00"],
+                ["doZpt","true"], # only to LO DY!
                 ["OutputTreeName_mutau", "tree_mutau" ],
                 ["OutputTreeName_eletau","tree_eletau"],
              ]
