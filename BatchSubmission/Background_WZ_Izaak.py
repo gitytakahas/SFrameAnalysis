@@ -9,18 +9,17 @@ nProcesses=1
 nFiles=4
 hCPU="03:30:00"
 hVMEM="5000M"
-postFix = ""
-label = "_ICHEP" #"_triggerless"
+postFix = "_ICHEP" #"_triggerless"
 dataSets = [
                 
-#                [ "WZJToLLLNu_TuneCUETP8M1"+label,
+#                [ "WZJToLLLNu_TuneCUETP8M1",
 #                 [   "WZJToLLLNu_TuneCUETP8M1_13TeV-amcnlo-pythia8_reHLT_0000_0.xml",
 #                     "WZJToLLLNu_TuneCUETP8M1_13TeV-amcnlo-pythia8_reHLT_0000_1.xml",
 #                     "WZJToLLLNu_TuneCUETP8M1_13TeV-amcnlo-pythia8_reHLT_0000_2.xml",
 #                     "WZJToLLLNu_TuneCUETP8M1_13TeV-amcnlo-pythia8_reHLT_0000_3.xml",
 #                     "WZJToLLLNu_TuneCUETP8M1_13TeV-amcnlo-pythia8_reHLT_0000_4.xml", ]],
                     
-#                [ "WZTo1L1Nu2Q"+label,
+#                [ "WZTo1L1Nu2Q",
 #                 [   "WZTo1L1Nu2Q_13TeV_amcatnloFXFX_madspin_pythia8_HLT1_0000_0.xml",
 #                     "WZTo1L1Nu2Q_13TeV_amcatnloFXFX_madspin_pythia8_HLT1_0000_1.xml",
 #                     "WZTo1L1Nu2Q_13TeV_amcatnloFXFX_madspin_pythia8_HLT1_0000_10.xml",
@@ -190,7 +189,7 @@ dataSets = [
 #                     "WZTo1L1Nu2Q_13TeV_amcatnloFXFX_madspin_pythia8_HLT1_0000_98.xml",
 #                     "WZTo1L1Nu2Q_13TeV_amcatnloFXFX_madspin_pythia8_HLT1_0000_99.xml", ]],
                     
-#                [ "WZTo1L3Nu"+label,
+#                [ "WZTo1L3Nu",
 #                 [   "WZTo1L3Nu_13TeV_amcatnloFXFX_madspin_pythia8_HLT1_0000_0.xml",
 #                     "WZTo1L3Nu_13TeV_amcatnloFXFX_madspin_pythia8_HLT1_0000_1.xml",
 #                     "WZTo1L3Nu_13TeV_amcatnloFXFX_madspin_pythia8_HLT1_0000_10.xml",
@@ -206,7 +205,7 @@ dataSets = [
 #                     "WZTo1L3Nu_13TeV_amcatnloFXFX_madspin_pythia8_HLT1_0000_8.xml",
 #                     "WZTo1L3Nu_13TeV_amcatnloFXFX_madspin_pythia8_HLT1_0000_9.xml", ]],
                     
-#                [ "WZTo2L2Q"+label,
+#                [ "WZTo2L2Q",
 #                 [   "WZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8_HLT1_0000_0.xml",
 #                     "WZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8_HLT1_0000_1.xml",
 #                     "WZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8_HLT1_0000_10.xml",
@@ -427,7 +426,7 @@ dataSets = [
 #                     "WZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8_HLT1_0000_98.xml",
 #                     "WZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8_HLT1_0000_99.xml", ]],
                     
-               [ "WZ_TuneCUETP8M1"+label,
+               [ "WZ_TuneCUETP8M1",
                 [   "WZ_TuneCUETP8M1_13TeV-pythia8_HLT1_0000_0.xml",
                     "WZ_TuneCUETP8M1_13TeV-pythia8_HLT1_0000_1.xml",
                     "WZ_TuneCUETP8M1_13TeV-pythia8_HLT1_0000_2.xml",

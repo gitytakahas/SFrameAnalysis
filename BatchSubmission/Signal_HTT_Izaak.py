@@ -9,10 +9,9 @@ nProcesses=1
 nFiles=3
 hCPU="03:00:00"
 hVMEM="5000M"
-postFix = ""
-label = "_ICHEP" #_onlycrosstrigger" #"_triggerless" # _nocuts
+postFix = "_ICHEP" #_onlycrosstrigger" #"_triggerless" # _nocuts
 dataSets = [
-                ["GluGluHToTauTau_M125"+label,
+                ["GluGluHToTauTau_M125",
                  [  "GluGluHToTauTau_M125_13TeV_powheg_pythia8_reHLT_v7_0000_0.xml",
                     "GluGluHToTauTau_M125_13TeV_powheg_pythia8_reHLT_v7_0000_1.xml",
                     "GluGluHToTauTau_M125_13TeV_powheg_pythia8_reHLT_v7_0000_2.xml", ]],

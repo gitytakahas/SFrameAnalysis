@@ -9,23 +9,22 @@ nProcesses=1
 nFiles=4
 hCPU="03:30:00"
 hVMEM="5000M"
-postFix = ""
-label = "_ICHEP" #"_triggerless"
+postFix = "_ICHEP" #"_triggerless"
 dataSets = [
                 
                 ##############
                 #  M-10to50  # NLO
                 ##############
 
-               ["DYJetsToLL_M-10to50_nlo"+label,
+               ["DYJetsToLL_M-10to50_nlo",
                 [   "DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_HLT1_0000_0.xml",
                     "DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_HLT1_0000_1.xml",
                     "DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_HLT1_0000_2.xml", ]],
                 
-               ["DY1JetsToLL_M-10to50_nlo"+label,
+               ["DY1JetsToLL_M-10to50_nlo",
                 [   "DY1JetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_reHLT_0000.xml", ]],
                 
-               ["DY2JetsToLL_M-10to50_nlo"+label,
+               ["DY2JetsToLL_M-10to50_nlo",
                 [   "DY2JetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_reHLT_0000.xml", ]],
                 
            ]

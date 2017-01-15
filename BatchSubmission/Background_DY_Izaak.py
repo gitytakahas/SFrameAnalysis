@@ -9,15 +9,14 @@ nProcesses=1
 nFiles=4
 hCPU="03:30:00"
 hVMEM="5000M"
-postFix = ""
-label = "_ICHEP" #"_triggerless"
+postFix = "_ICHEP" #"_triggerless"
 dataSets = [
                 
                 ##############
                 #  M-10to50  #
                 ##############
                
-               ["DYJetsToLL_M-10to50_TuneCUETP8M1"+label,
+               ["DYJetsToLL_M-10to50_TuneCUETP8M1",
                 [   "DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_HLT1_0000_0.xml",
                     "DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_HLT1_0000_0.xml", ]],
                 
@@ -26,24 +25,24 @@ dataSets = [
                 #  M-50  #
                 ##########
                  
-               ["DYJetsToLL_M-50_TuneCUETP8M1"+label,
+               ["DYJetsToLL_M-50_TuneCUETP8M1",
                 [   "DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_reHLT_ext_0000.xml", ]],
                 
-               ["DY1JetsToLL_M-50_TuneCUETP8M1"+label,
+               ["DY1JetsToLL_M-50_TuneCUETP8M1",
                 [   "DY1JetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_HLT1_0000_0.xml",
                     "DY1JetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_HLT1_0000_1.xml",
                     "DY1JetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_HLT1_0000_2.xml",
                     "DY1JetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_HLT1_0001_0.xml",
                     "DY1JetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_HLT1_0001_1.xml", ]],
                 
-               ["DY2JetsToLL_M-50_TuneCUETP8M1"+label,
+               ["DY2JetsToLL_M-50_TuneCUETP8M1",
                 [   "DY2JetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_HLT1_0000_0.xml",
                     "DY2JetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_HLT1_0000_1.xml", ]],
                 
-               ["DY3JetsToLL_M-50_TuneCUETP8M1"+label,
+               ["DY3JetsToLL_M-50_TuneCUETP8M1",
                 [   "DY3JetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_HLT1_0000.xml", ]],
                 
-               ["DY4JetsToLL_M-50_TuneCUETP8M1"+label,
+               ["DY4JetsToLL_M-50_TuneCUETP8M1",
                 [   "DY4JetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_HLT1_0000.xml", ]],
                 
                 
@@ -52,25 +51,25 @@ dataSets = [
                 #######################
                 
                 
-#                ["DYJetsToLL_M-5to50_TuneCUETP8M1"+label,
+#                ["DYJetsToLL_M-5to50_TuneCUETP8M1",
 #                 [   "DYJetsToLL_M-5to50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_HLT1_0000.xml", ]],
 #                 
-#                ["DYJetsToLL_M-5to50_HT-100to200_TuneCUETP8M1"+label,
+#                ["DYJetsToLL_M-5to50_HT-100to200_TuneCUETP8M1",
 #                 [   "DYJetsToLL_M-5to50_HT-100to200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_HLT1_0000.xml",
 #                     "DYJetsToLL_M-5to50_HT-100to200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_HLT1_ext_0000.xml", ]],
 #                 
-#                ["DYJetsToLL_M-5to50_HT-200to400_TuneCUETP8M1"+label,
+#                ["DYJetsToLL_M-5to50_HT-200to400_TuneCUETP8M1",
 #                 [   "DYJetsToLL_M-5to50_HT-200to400_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_HLT1_0000.xml",
 #                     "DYJetsToLL_M-5to50_HT-200to400_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_HLT1_ext_0000.xml", ]],
 #                 
-#                ["DYJetsToLL_M-5to50_HT-400to600_TuneCUETP8M1"+label,
+#                ["DYJetsToLL_M-5to50_HT-400to600_TuneCUETP8M1",
 #                 [   "DYJetsToLL_M-5to50_HT-400to600_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_HLT1_0000.xml",
 #                     "DYJetsToLL_M-5to50_HT-400to600_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_HLT1_v3_ext_0000_0.xml",
 #                     "DYJetsToLL_M-5to50_HT-400to600_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_HLT1_v3_ext_0000_1.xml",
 #                     "DYJetsToLL_M-5to50_HT-400to600_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_HLT1_v3_ext_0000_2.xml",
 #                     "DYJetsToLL_M-5to50_HT-400to600_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_HLT1_v3_ext_0001.xml", ]],
 #                 
-#                ["DYJetsToLL_M-5to50_HT-600toInf_TuneCUETP8M1"+label,
+#                ["DYJetsToLL_M-5to50_HT-600toInf_TuneCUETP8M1",
 #                 [   "DYJetsToLL_M-5to50_HT-600toInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_HLT1_0000.xml",
 #                     "DYJetsToLL_M-5to50_HT-600toInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_HLT1_ext_0000.xml", ]],
                 

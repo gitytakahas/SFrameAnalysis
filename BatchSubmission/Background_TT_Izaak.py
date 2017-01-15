@@ -9,10 +9,9 @@ nProcesses=1
 nFiles=4
 hCPU="03:30:00"
 hVMEM="5000M"
-postFix = ""
-label = "_ICHEP" #"_triggerless" # _nocuts
+postFix = "_ICHEP" #"_triggerless" # _nocuts
 dataSets = [
-               ["TT_TuneCUETP8M1"+label,
+               ["TT_TuneCUETP8M1",
                 [   "TT_TuneCUETP8M1_13TeV-powheg-pythia8_reHLT_ext_0000_0.xml",
                     "TT_TuneCUETP8M1_13TeV-powheg-pythia8_reHLT_ext_0000_1.xml",
                     "TT_TuneCUETP8M1_13TeV-powheg-pythia8_reHLT_ext_0001_0.xml",

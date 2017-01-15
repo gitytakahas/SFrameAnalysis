@@ -9,19 +9,18 @@ nProcesses=1
 nFiles=4
 hCPU="03:30:00"
 hVMEM="5000M"
-postFix = ""
-label = "_ICHEP" #"_triggerless"
+postFix = "_ICHEP" #"_triggerless"
 dataSets = [
                 
-#                [ "WWTo1L1Nu2Q"+label,
+#                [ "WWTo1L1Nu2Q",
 #                 [   "WWTo1L1Nu2Q_13TeV_amcatnloFXFX_madspin_pythia8_HLT1_0000.xml", ]],
                     
-#                [ "WWTo4Q_4f"+label,
+#                [ "WWTo4Q_4f",
 #                 [   "WWTo4Q_4f_13TeV_amcatnloFXFX_madspin_pythia8_HLT1_0000_0.xml",
 #                     "WWTo4Q_4f_13TeV_amcatnloFXFX_madspin_pythia8_HLT1_0000_1.xml",
 #                     "WWTo4Q_4f_13TeV_amcatnloFXFX_madspin_pythia8_HLT1_0000_2.xml", ]],
                     
-               [ "WW_TuneCUETP8M1"+label,
+               [ "WW_TuneCUETP8M1",
                 [   "WW_TuneCUETP8M1_13TeV-pythia8_HLT1_0000.xml", ]],
                     
            ]

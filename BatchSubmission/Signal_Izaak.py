@@ -1,19 +1,21 @@
 path2xml="$SFRAME_DIR/../BatchSubmission/xmls_Izaak"
 path2tmp="$SFRAME_DIR/../AnalysisTemp"
 jobName="signal"
-outDir="$SFRAME_DIR/../AnalysisOutput/" + jobName
+#outDir="$SFRAME_DIR/../AnalysisOutput/" + jobName
+outDir="/scratch/$USER/analysis/AnalysisOutput/" + jobName
 cycleName="TauTauAnalysis"
 nEventsMax=-1
 #nEventsMax=200
 nProcesses=1
-nFiles=3
+nFiles=1
 hCPU="03:00:00"
 hVMEM="5000M"
-postFix = ""
-label = "_ICHEP" #_onlycrosstrigger" #"_triggerless" # _nocuts
+postFix = "_ICHEP" #_onlycrosstrigger" #"_triggerless" # _nocuts
 dataSets = [
-                ["LowMass_30GeV_DiTauResonance"+label,
-                 [  "LowMass_30GeV_DiTauResonance_RunIISpring16MiniAODv2_asymptotic_miniAODv2.xml", ]],
+                ["LowMass_30GeV_DiTauResonance",
+                 [  #"LowMass_30GeV_DiTauResonance_RunIISpring16MiniAODv2_asymptotic_miniAODv2.xml",
+                    "LowMass_30GeV_DiTauResonance_RunIISpring16MiniAODv2_asymptotic_miniAODv2_short.xml",
+                     ]],
            ]
 
 userItems = [ 
