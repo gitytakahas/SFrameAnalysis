@@ -24,9 +24,9 @@ TESSHIFT="0.03"
 TESSHIFT_LINE="\[\"TESshift\",\"0.00\"\],"
 TESSHIFT_UP_NEWLINE=`echo $TESSHIFT_LINE | sed "s/0.00/$TESSHIFT/"`
 TESSHIFT_DOWN_NEWLINE=`echo $TESSHIFT_LINE | sed "s/0.00/-$TESSHIFT/"`
-LABEL_LINE="label = \""
-LABEL_TES_UP_NEWLINE="label = \"_${TES_UP}"
-LABEL_TES_DOWN_NEWLINE="label = \"_${TES_DOWN}"
+LABEL_LINE="postFix = \""
+LABEL_TES_UP_NEWLINE="postFix = \"_${TES_UP}"
+LABEL_TES_DOWN_NEWLINE="postFix = \"_${TES_DOWN}"
 
 echo " "
 echo ">>> replacing \"${TESSHIFT_LINE}\" with: "
