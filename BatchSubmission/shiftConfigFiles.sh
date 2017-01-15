@@ -1,3 +1,4 @@
+#! /bin/bash
 
 BASEDIR="/shome/ineuteli/analysis/SFrameAnalysis/BatchSubmission"
 TESFILES="Signal_Izaak.py \
@@ -78,9 +79,9 @@ LTFSHIFT="0.03"
 LTFSHIFT_LINE="\[\"LTFshift\",\"0.00\"\],"
 LTFSHIFT_UP_NEWLINE=`echo $LTFSHIFT_LINE | sed "s/0.00/$LTFSHIFT/"`
 LTFSHIFT_DOWN_NEWLINE=`echo $LTFSHIFT_LINE | sed "s/0.00/-$LTFSHIFT/"`
-LABEL_LINE="label = \""
-LABEL_LTF_UP_NEWLINE="label = \"_${LTF_UP}"
-LABEL_LTF_DOWN_NEWLINE="label = \"_${LTF_DOWN}"
+LABEL_LINE="postFix = \""
+LABEL_LTF_UP_NEWLINE="postFix = \"_${LTF_UP}"
+LABEL_LTF_DOWN_NEWLINE="postFix = \"_${LTF_DOWN}"
 
 echo ">>> "
 echo ">>> "
