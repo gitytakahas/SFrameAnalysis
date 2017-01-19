@@ -1,7 +1,7 @@
 path2xml="$SFRAME_DIR/../BatchSubmission/xmls_Izaak"
 path2tmp="$SFRAME_DIR/../AnalysisTemp"
 jobName="SingleMuon"
-outDir="$SFRAME_DIR/../AnalysisOutput/" + jobName
+outDir="/scratch/ineuteli/SFrameAnalysis/AnalysisOutput/"+jobName #"$SFRAME_DIR/../AnalysisOutput/"+jobName
 cycleName="TauTauAnalysis"
 nEventsMax=-1
 #nEventsMax=200
@@ -9,7 +9,7 @@ nProcesses=1
 nFiles=2
 hCPU="04:00:00"
 hVMEM="5000M"
-postFix = "_ICHEP"
+postFix="_ICHEP" #"_ICHEP"
  #"_triggerless"
 dataSets = [
                ["SingleMuon_1_Run2016",

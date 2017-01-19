@@ -1,6 +1,6 @@
 #! /bin/bash
 
-BASEDIR="/shome/ineuteli/analysis/SFrameAnalysis/BatchSubmission"
+BASEDIR="/shome/$USER/analysis/SFrameAnalysis/BatchSubmission"
 TESFILES="Signal_Izaak.py \
           Signal_HTT_Izaak.py \
           Background_DY_Izaak.py \
@@ -24,9 +24,9 @@ TESSHIFT="0.03"
 TESSHIFT_LINE="\[\"TESshift\",\"0.00\"\],"
 TESSHIFT_UP_NEWLINE=`echo $TESSHIFT_LINE | sed "s/0.00/$TESSHIFT/"`
 TESSHIFT_DOWN_NEWLINE=`echo $TESSHIFT_LINE | sed "s/0.00/-$TESSHIFT/"`
-LABEL_LINE="postFix = \""
-LABEL_TES_UP_NEWLINE="postFix = \"_${TES_UP}"
-LABEL_TES_DOWN_NEWLINE="postFix = \"_${TES_DOWN}"
+LABEL_LINE="postFix=\""
+LABEL_TES_UP_NEWLINE="postFix=\"_${TES_UP}"
+LABEL_TES_DOWN_NEWLINE="postFix=\"_${TES_DOWN}"
 
 echo " "
 echo ">>> replacing \"${TESSHIFT_LINE}\" with: "
@@ -79,9 +79,9 @@ LTFSHIFT="0.03"
 LTFSHIFT_LINE="\[\"LTFshift\",\"0.00\"\],"
 LTFSHIFT_UP_NEWLINE=`echo $LTFSHIFT_LINE | sed "s/0.00/$LTFSHIFT/"`
 LTFSHIFT_DOWN_NEWLINE=`echo $LTFSHIFT_LINE | sed "s/0.00/-$LTFSHIFT/"`
-LABEL_LINE="postFix = \""
-LABEL_LTF_UP_NEWLINE="postFix = \"_${LTF_UP}"
-LABEL_LTF_DOWN_NEWLINE="postFix = \"_${LTF_DOWN}"
+LABEL_LINE="postFix=\""
+LABEL_LTF_UP_NEWLINE="postFix=\"_${LTF_UP}"
+LABEL_LTF_DOWN_NEWLINE="postFix=\"_${LTF_DOWN}"
 
 echo ">>> "
 echo ">>> "

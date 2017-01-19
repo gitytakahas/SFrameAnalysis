@@ -1,7 +1,7 @@
 path2xml="$SFRAME_DIR/../BatchSubmission/xmls_Izaak"
 path2tmp="$SFRAME_DIR/../AnalysisTemp"
 jobName="HTT"
-outDir="$SFRAME_DIR/../AnalysisOutput/" + jobName
+outDir="/scratch/ineuteli/SFrameAnalysis/AnalysisOutput/"+jobName #"$SFRAME_DIR/../AnalysisOutput/"+jobName
 cycleName="TauTauAnalysis"
 nEventsMax=-1
 #nEventsMax=200
@@ -9,13 +9,20 @@ nProcesses=1
 nFiles=3
 hCPU="03:00:00"
 hVMEM="5000M"
-postFix = "_ICHEP" #_onlycrosstrigger" #"_triggerless" # _nocuts
+postFix="_ICHEP" #"_ICHEP" #_Summer2016"
 dataSets = [
-                ["GluGluHToTauTau_M125",
-                 [  "GluGluHToTauTau_M125_13TeV_powheg_pythia8_reHLT_v7_0000_0.xml",
-                    "GluGluHToTauTau_M125_13TeV_powheg_pythia8_reHLT_v7_0000_1.xml",
-                    "GluGluHToTauTau_M125_13TeV_powheg_pythia8_reHLT_v7_0000_2.xml", ]],
-           ]
+        [ "GluGluHToTauTau_M125",
+         [  "GluGluHToTauTau_M125_13TeV_powheg_pythia8_reHLT_v7_0000_0.xml",
+            "GluGluHToTauTau_M125_13TeV_powheg_pythia8_reHLT_v7_0000_1.xml",
+            "GluGluHToTauTau_M125_13TeV_powheg_pythia8_reHLT_v7_0000_2.xml", ]],
+            ]
+                
+if "Summer2016" in postFix: dataSets = [
+        [ "GluGluHToTauTau_M125",
+         [  "GluGluHToTauTau_M125_13TeV_powheg_pythia8_v1_0000_0.xml",
+            "GluGluHToTauTau_M125_13TeV_powheg_pythia8_v1_0000_1.xml",
+            "GluGluHToTauTau_M125_13TeV_powheg_pythia8_v1_0000_2.xml", ]],
+            ]
 
 userItems = [ 
                 ["IsData","false"],
@@ -23,8 +30,6 @@ userItems = [
                 ["doRecoilCorr","true"],
                 ["doTES","false"],
                 ["TESshift","0.00"],
-                ["OutputTreeName_mutau", "tree_mutau" ],
-                ["OutputTreeName_eletau","tree_eletau"],
              ]
 
 jobOptionsFile2=open("AnalysisOptions.py", 'r')

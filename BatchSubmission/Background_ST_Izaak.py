@@ -1,7 +1,7 @@
 path2xml="$SFRAME_DIR/../BatchSubmission/xmls_Izaak"
 path2tmp="$SFRAME_DIR/../AnalysisTemp"
 jobName="ST"
-outDir="$SFRAME_DIR/../AnalysisOutput/" + jobName
+outDir="/scratch/ineuteli/SFrameAnalysis/AnalysisOutput/"+jobName #"$SFRAME_DIR/../AnalysisOutput/"+jobName
 cycleName="TauTauAnalysis"
 nEventsMax=-1
 #nEventsMax=200
@@ -9,46 +9,60 @@ nProcesses=1
 nFiles=4
 hCPU="03:30:00"
 hVMEM="5000M"
-postFix = "_ICHEP" #"_triggerless"
+postFix="_ICHEP" #"_ICHEP" #"_Summer2016"
 dataSets = [
-                
-#                [ "ST_tW_top_5f_NoFullyHadronicDecays",
-#                 [   "ST_tW_top_5f_NoFullyHadronicDecays_13TeV-powheg_TuneCUETP8M1_HLT1_0000.xml", ]],
-               
-               [ "ST_tW_top_5f_inclusiveDecays",
-                [   "ST_tW_top_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1_HLT1_0000.xml", ]],
-               
-#                [ "ST_tW_antitop_5f_NoFullyHadronicDecays",
-#                 [   "ST_tW_antitop_5f_NoFullyHadronicDecays_13TeV-powheg_TuneCUETP8M1_HLT1_0000.xml", ]],
-               
-               [ "ST_tW_antitop_5f_inclusiveDecays",
-                [   "ST_tW_antitop_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1_HLT1_0000.xml", ]],
-               
-               [ "ST_s-channel_4f_leptonDecays",
-                [   "ST_s-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1_HLT1_0000.xml", ]],
-                    
-#                [ "ST_t-channel_antitop_4f_inclusiveDecays",
-#                 [   "ST_t-channel_antitop_4f_inclusiveDecays_13TeV-powhegV2-madspin-pythia8_TuneCUETP8M1_HLT1_0000_0.xml",
-#                     "ST_t-channel_antitop_4f_inclusiveDecays_13TeV-powhegV2-madspin-pythia8_TuneCUETP8M1_HLT1_0000_1.xml", ]],
-                    
-               [ "ST_t-channel_antitop_4f_leptonDecays",
-                [   "ST_t-channel_antitop_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1_HLT1_0000.xml", ]],
-                    
-#                [ "ST_t-channel_top_4f_inclusiveDecays",
-#                 [   "ST_t-channel_top_4f_inclusiveDecays_13TeV-powhegV2-madspin-pythia8_TuneCUETP8M1_HLT1_0000.xml", ]],
-                    
-               [ "ST_t-channel_top_4f_leptonDecays",
-                [   "ST_t-channel_top_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1_HLT1_0000.xml", ]],
+                       
+       [ "ST_tW_top_5f_inclusiveDecays",
+        [   "ST_tW_top_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1_HLT1_0000.xml", ]],
+       
+       [ "ST_tW_antitop_5f_inclusiveDecays",
+        [   "ST_tW_antitop_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1_HLT1_0000.xml", ]],
+       
+       [ "ST_s-channel_4f_leptonDecays",
+        [   "ST_s-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1_HLT1_0000.xml", ]],
             
-           ]
+       [ "ST_t-channel_antitop_4f_leptonDecays",
+        [   "ST_t-channel_antitop_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1_HLT1_0000.xml", ]],
+            
+       [ "ST_t-channel_top_4f_leptonDecays",
+        [   "ST_t-channel_top_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1_HLT1_0000.xml", ]],
+        
+            ]
+
+
+
+    ################
+    #  Summer2016  #
+    ################
+                
+if "Summer2016" in postFix: dataSets = [
+                       
+       [ "ST_tW_top_5f_NoFullyHadronicDecays",
+        [   "ST_tW_top_5f_NoFullyHadronicDecays_13TeV-powheg_TuneCUETP8M1_V1_0000.xml", ]],
+       
+       [ "ST_tW_antitop_5f_NoFullyHadronicDecays",
+        [   "ST_tW_antitop_5f_NoFullyHadronicDecays_13TeV-powheg_TuneCUETP8M1_V1_0000.xml", ]],
+       
+       [ "ST_s-channel_4f_leptonDecays",
+        [   "ST_s-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1_V1_0000.xml",
+            "ST_s-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1_test_0000.xml", ]],
+            
+       [ "ST_t-channel_antitop_4f_inclusiveDecays",
+        [   "ST_t-channel_antitop_4f_inclusiveDecays_13TeV-powhegV2-madspin-pythia8_TuneCUETP8M1_V1_0000_0.xml",
+            "ST_t-channel_antitop_4f_inclusiveDecays_13TeV-powhegV2-madspin-pythia8_TuneCUETP8M1_V1_0000_1.xml", ]],
+            
+       [ "ST_t-channel_top_4f_inclusiveDecays",
+        [   "ST_t-channel_top_4f_inclusiveDecays_13TeV-powhegV2-madspin-pythia8_TuneCUETP8M1_V1_0000_0.xml",
+            "ST_t-channel_top_4f_inclusiveDecays_13TeV-powhegV2-madspin-pythia8_TuneCUETP8M1_V1_0000_1.xml",
+            "ST_t-channel_top_4f_inclusiveDecays_13TeV-powhegV2-madspin-pythia8_TuneCUETP8M1_V1_0000_2.xml", ]],
+        
+            ]
 
 userItems = [ 
                 ["IsData","false"],
                 ["IsSignal","false"],
                 #["doSVFit","true"],
                 ["doRecoilCorr","false"],
-                ["OutputTreeName_mutau", "tree_mutau" ],
-                ["OutputTreeName_eletau","tree_eletau"],
              ]
 
 jobOptionsFile2=open("AnalysisOptions.py", 'r')
