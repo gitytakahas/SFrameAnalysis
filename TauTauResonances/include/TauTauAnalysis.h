@@ -349,6 +349,7 @@ class TauTauAnalysis : public SCycleBase {
     std::map<std::string,Double_t> b_puppimt_1;
     std::map<std::string,Double_t> b_iso_1;
     std::map<std::string,Int_t>    b_id_e_mva_nt_loose_1;
+    std::map<std::string,Int_t>    b_id_e_mva_nt_loose_1_old;
     std::map<std::string,Int_t>    b_gen_match_1;
     std::map<std::string,Double_t> b_trigweight_1;
     //std::map<std::string,Double_t> b_idweight_1;
@@ -393,6 +394,7 @@ class TauTauAnalysis : public SCycleBase {
     std::map<std::string,Int_t>    b_dilepton_veto;
     std::map<std::string,Int_t>    b_extraelec_veto;
     std::map<std::string,Int_t>    b_extramuon_veto;
+    std::map<std::string,Int_t>    b_lepton_vetos;
     
     std::map<std::string,Double_t> b_jpt_1;
     std::map<std::string,Double_t> b_jeta_1;
