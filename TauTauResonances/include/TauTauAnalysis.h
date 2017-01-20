@@ -111,7 +111,7 @@ class TauTauAnalysis : public SCycleBase {
     //virtual void FillBranches(const std::string& channel,  const std::vector<UZH::Jet>& Jet, const UZH::Tau& tau, const  TLorentzVector& lepton, const UZH::MissingEt& met );
     virtual void FillBranches(const std::string& channel, const std::vector<UZH::Jet>& Jet,
                               const UZH::Tau& tau, const int taugen, const UZH::Muon& muon, const UZH::Electron& electron,
-                              const UZH::MissingEt& met, const UZH::MissingEt& puppimet, const UZH::MissingEt& mvamet);
+                              const UZH::MissingEt& met, const UZH::MissingEt& puppimet);//, const UZH::MissingEt& mvamet=NULL);
     
     // check pass of triggers / MET filters
     virtual TString passTrigger();
@@ -139,8 +139,8 @@ class TauTauAnalysis : public SCycleBase {
     virtual bool LooseJetID(const UZH::Jet& jet);
     
     // extra scaling factors
-    virtual float genMatchSF(const int genmatch_2, const float tau_eta = 0.);
-    virtual bool getBTagWeight_promote_demote( const UZH::Jet& jet );
+    virtual float genMatchSF(const std::string& channel, const int genmatch_2, const float tau_eta = 0.);
+    virtual bool  getBTagWeight_promote_demote( const UZH::Jet& jet );
     
     // checks
     virtual void checks();
@@ -168,7 +168,7 @@ class TauTauAnalysis : public SCycleBase {
     Ntuple::TauNtupleObject         m_tau;            ///< tau container
     Ntuple::MissingEtNtupleObject   m_missingEt;      ///< missing E_T container
     Ntuple::MissingEtNtupleObject   m_puppimissingEt; ///< missing E_T container
-    Ntuple::MissingEtNtupleObject   m_mvamissingEt;   ///< missing E_T container
+    //Ntuple::MissingEtNtupleObject   m_mvamissingEt;   ///< missing E_T container
     Ntuple::GenParticleNtupleObject m_genParticle;    ///< gen particle container
     
     
@@ -344,7 +344,7 @@ class TauTauAnalysis : public SCycleBase {
     std::map<std::string,Int_t>    b_q_1;
     std::map<std::string,Double_t> b_d0_1;
     std::map<std::string,Double_t> b_dz_1;
-    std::map<std::string,Double_t> b_mt_1;
+    //std::map<std::string,Double_t> b_mt_1;
     std::map<std::string,Double_t> b_pfmt_1;
     std::map<std::string,Double_t> b_puppimt_1;
     std::map<std::string,Double_t> b_iso_1;
@@ -416,18 +416,18 @@ class TauTauAnalysis : public SCycleBase {
     //std::map<std::string,Double_t> b_metcorrphi;
     std::map<std::string,Double_t> b_puppimet;
     std::map<std::string,Double_t> b_puppimetphi;
-    std::map<std::string,Double_t> b_mvamet;
-    std::map<std::string,Double_t> b_mvamet_old;
-    std::map<std::string,Double_t> b_mvametphi;
+    //std::map<std::string,Double_t> b_mvamet;
+    //std::map<std::string,Double_t> b_mvamet_old;
+    //std::map<std::string,Double_t> b_mvametphi;
     
     std::map<std::string,Double_t> b_metcov00;
     std::map<std::string,Double_t> b_metcov01;
     std::map<std::string,Double_t> b_metcov10;
     std::map<std::string,Double_t> b_metcov11;
-    std::map<std::string,Double_t> b_mvacov00;
-    std::map<std::string,Double_t> b_mvacov01;
-    std::map<std::string,Double_t> b_mvacov10;
-    std::map<std::string,Double_t> b_mvacov11;
+    //std::map<std::string,Double_t> b_mvacov00;
+    //std::map<std::string,Double_t> b_mvacov01;
+    //std::map<std::string,Double_t> b_mvacov10;
+    //std::map<std::string,Double_t> b_mvacov11;
     
     std::map<std::string,Double_t> b_m_vis;
     std::map<std::string,Double_t> b_pt_tt;
