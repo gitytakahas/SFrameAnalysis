@@ -1,4 +1,5 @@
-#! /usr/bin/python
+#!/usr/bin/env python
+
 # -*- coding: utf-8 -*-
 #***************************************************************************
 #* @Project: submission tool for SFrame
@@ -122,7 +123,7 @@ class BatchScript(object):
     self.batchScript+="date\n"
     self.batchScript+="hostname\n"
     self.batchScript+="uname -a\n"
-#    self.batchScript+="df -h\n"
+    #self.batchScript+="df -h\n"
     self.batchScript+="cd %s/..\n" %(path2sframe)
     # setup ROOT and python
     if (socket.gethostname()).find("psi.ch") >=0:
@@ -138,7 +139,7 @@ class BatchScript(object):
       self.batchScript+="cd %s/../%s/src\n" %(path2sframe, cmssw)
       self.batchScript+="eval `scramv1 runtime -sh`\n"
       self.batchScript+="cd ../..\n"
-
+    
     # self.batchScript+="export DCACHE_CLIENT_ACTIVE=1\n"
     self.batchScript+="cd %s\n" %(path2sframe)
     self.batchScript+="source setup.sh\n"
@@ -146,12 +147,12 @@ class BatchScript(object):
     
     self.batchScript+="env\n"
     self.batchScript+="echo Using SFrame in ${SFRAME_DIR}\n"
-      
+    
     self.batchScript=self.batchScript.replace("HCPU", hCPU)
     self.batchScript=self.batchScript.replace("HVMEM", hVMEM)
     self.batchScript=self.batchScript.replace("HOST", useHost)
     self.batchScript=self.batchScript.replace("OSYSTEM", useOS)
-
+  
   def addLine(self, lineString):
     self.batchScript+=lineString
     
@@ -717,9 +718,9 @@ def main():
     os.system( "mkdir -p " + tempDirRoot )
     os.system( "mkdir -p " + tempDirSh )
   else:
-    tempDirLog=tempfile.mkdtemp(prefix="sframe_", dir=path2tmplog)
-    tempDirRoot=tempfile.mkdtemp(prefix="sframe_", dir=path2tmproot)
-    tempDirSh=tempfile.mkdtemp(prefix="sframe_", dir=path2tmpsh)
+    tempDirLog=tempfile.mkdtemp(prefix="sframe_log_", dir=path2tmplog)
+    tempDirRoot=tempfile.mkdtemp(prefix="sframe_root_", dir=path2tmproot)
+    tempDirSh=tempfile.mkdtemp(prefix="sframe_sh_", dir=path2tmpsh)
 
   if (useSandbox):
     analysisDir = (path2sframe.rstrip("/")).rstrip("SFrame")
@@ -854,7 +855,7 @@ def main():
         batchScript.addLine("cd %s\n" %(tmppath2sframe))
       else:
         batchScript.addLine("cd %s\n" %(path2sframe))
-
+      
       batchScript.addLine("cd $TMPDIR\n")
       batchScript.addLine("cp -f %s .\n" %(tempDirSh+"/"+j[2]+j[3]+".xml"))
       
@@ -863,7 +864,7 @@ def main():
         batchScript.addLine("echo \"########## Copying files from dCache ############\"\n")
         batchScript.addLine("for i in `cat %s.xml | grep \"dcap://\" | awk '{ print $2; }'`; do LENGTH=(${#i}-1); DCAPFILE=`echo $i[11,$LENGTH]`; LOCALFILE=`basename $DCAPFILE`; echo dccp $DCAPFILE .; dccp $DCAPFILE .; ls $LOCALFILE; DCAPPATH=`dirname $DCAPFILE`; sed -i.bak 's|'\"$DCAPPATH\"'/||g' %s.xml; done; \n" %((j[2]+j[3]),(j[2]+j[3])))
         batchScript.addLine("echo \"######## Done copying files from dCache #########\"\n")
-
+      
       batchScript.addLine("echo \"##################################################\"\n")
       batchScript.addLine("cat %s\n" %(j[2]+j[3]+".xml"))
       batchScript.addLine("echo \"##################################################\"\n")
@@ -876,9 +877,9 @@ def main():
       batchScript.addLine("echo \"##################################################\"\n")
       batchScript.addLine("echo \"cp -f %s %s/%s\"\n" %(j[2]+".root", tempDirRoot, j[2]+j[3]+".root"))
       batchScript.addLine("cp -f %s %s/%s\n" %(j[2]+".root", tempDirRoot, j[2]+j[3]+".root"))
-      batchScript.addLine("cp -f %s %s/%s\n" %("Myroot_mutau.root",  tempDirRoot, j[0]+"_mutau_"+j[3]+".root"))
-      batchScript.addLine("cp -f %s %s/%s\n" %("Myroot_eletau.root", tempDirRoot, j[0]+"_eletau_"+j[3]+".root"))
-
+      #batchScript.addLine("cp -f %s %s/%s\n" %("Myroot_mutau.root",  tempDirRoot, j[0]+"_mutau_"+j[3]+".root"))
+      #batchScript.addLine("cp -f %s %s/%s\n" %("Myroot_eletau.root", tempDirRoot, j[0]+"_eletau_"+j[3]+".root"))
+      
       batchScript.replace("HCPU", hCPU)
       batchScript.replace("HVMEM", hVMEM)
       batchScript.replace("HOST", useHost)
@@ -887,7 +888,7 @@ def main():
       batchScript.replace("STDOUT", tempDirLog+"/"+j[2]+j[3]+".log")
       
       batchScript.write(j[2]+j[3]+'.sh')
-
+      
       lock=thread.allocate_lock()
       lock.acquire()
       nameOfJob=j[2]+j[3]
@@ -909,14 +910,14 @@ def main():
         while runningJobsLimit>0:
           #subProcess=subprocess.Popen('qstat -u $USER | awk \'{print $5}\' | grep r |wc -l' , stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
           #nRunning=int(subProcess.stdout.read())
-          subProcess=subprocess.Popen('qstat -u $USER |wc -l' , stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+          subProcess=subprocess.Popen('qstat -u $USER | wc -l' , stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
           nSubmitted=int(subProcess.stdout.read())-2
           #print " submitted:",nSubmitted
           if nSubmitted<runningJobsLimit: break
           print "|",
           time.sleep(float(timeCheck*2))
         print
-
+        
       iJobs+=1
     waitForBatchJobs(runningJobs, listOfJobs, userName, timeCheck)
     while not len(dataSets)==0:
@@ -947,15 +948,21 @@ def main():
       runningJobs.append(["-1",j[2]+j[3]])
     waitForBatchJobs(runningJobs, listOfJobs, userName, 0)
     checkCompletion(dataSets, listOfJobs, outDir, cycleName, postFix,keepTemp)
-
+  
   os.chdir(currentDir)
   if not keepTemp:
+    print "\nremoved temporary directory with scripts and root file:"
+    print  "    %s" % (tempDirSh)
+    print  "    %s" % (tempDirRoot)
+    print "kept temporary directory with log files:"
+    print  "    %s" % (tempDirLog)
     shutil.rmtree(tempDirSh)
+    shutil.rmtree(tempDirRoot)
   
   if "postExec" in dir():
     print "Executing:\n%s \n\n" % postExec
     exec postExec
-  print "Tschoe"
-
+  print "\nTschoe\n"
+  
 if __name__ == "__main__":
   main()
