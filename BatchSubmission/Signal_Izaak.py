@@ -12,7 +12,9 @@ hVMEM="5000M"
 postFix="_ICHEP" #"_ICHEP" #"_Summer2016"
 dataSets = [
     ["LowMass_30GeV_DiTauResonance",
-     [  "LowMass_30GeV_DiTauResonance_RunIISpring16MiniAODv2_asymptotic_miniAODv2_short.xml", ]],                
+     [  "LowMass_30GeV_DiTauResonance_RunIISpring16MiniAODv2_asymptotic_miniAODv2.xml"
+        #"LowMass_30GeV_DiTauResonance_RunIISpring16MiniAODv2_asymptotic_miniAODv2_short.xml",
+        ]],                
             ]
                 
 if "Summer2016" in postFix: dataSets = [
@@ -23,7 +25,6 @@ if "Summer2016" in postFix: dataSets = [
 userItems = [
                 ["IsData","false"],
                 ["IsSignal","true"],
-                #["doSVFit","true"],
                 ["doRecoilCorr","false"],
                 ["doTES","false"],
                 ["TESshift","0.00"],
@@ -37,6 +38,3 @@ for i in [o for o in jobOptionsFile2.readlines()]:
 jobOptionsFile2.close()
 exec command2
 userItems += AddUserItems
-
-inputTrees=["ntuplizer/tree"]
-outputTrees=["tree_mutau","tree_eletau"]

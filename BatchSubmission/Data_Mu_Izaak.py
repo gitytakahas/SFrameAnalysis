@@ -102,7 +102,7 @@ userItems = [
                 #["doSVFit","true"],
                 ["doRecoilCorr","false"],
                 ["OutputTreeName_mutau", "tree_mutau" ],
-                ["OutputTreeName_eletau","tree_eletau"],
+                ["OutputTreeName_eletau","tree_etau"],
              ]
 
 jobOptionsFile2=open("AnalysisOptions.py", 'r')
@@ -113,6 +113,3 @@ for i in [o for o in jobOptionsFile2.readlines()]:
 jobOptionsFile2.close()
 exec command2
 userItems += AddUserItems
-
-inputTrees=["ntuplizer/tree"]
-outputTrees=["tree_mutau","tree_eletau"]

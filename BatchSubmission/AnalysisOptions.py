@@ -1,3 +1,4 @@
+
 loadLibs=[
     #"libGenVector",
     "libNtupleVariables",
@@ -8,9 +9,7 @@ loadLibs=[
     "libSVFitTool",
     "libScaleFactorTool",
     "libRecoilCorrector",
-
-  ]
-
+            ]
 
 loadPacks=[
     "SFrameCore.par",
@@ -22,7 +21,7 @@ loadPacks=[
     "SVFitTool.par",
     "ScaleFactorTool.par",
     "RecoilCorrector.par",
-	   ]
+	        ]
 
 compilePacks=[
     "../NtupleVariables",
@@ -33,12 +32,16 @@ compilePacks=[
     "../TauTauResonances",
     "../LepEff2016",
     "../RecoilCorrections",
-  ]
+            ]
 
 AddUserItems = [
-    #general settings
     ["RecoTreeName","tree"], 
     ["doSVFit","true"],
-  ]
+    ["OutputTreeName_mutau", "tree_mutau" ],
+    ["OutputTreeName_eletau","tree_etau"],
+            ]
+  
+inputTrees=["ntuplizer/tree"]
+outputTrees=["tree_mutau","tree_etau"]
 
 #End

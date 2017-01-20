@@ -25,7 +25,7 @@ dataSets = [
                 
 if "Summer2016" in postFix: dataSets = [
         
-       [ "ZZTo2L2Q_13TeV_nlo",
+       [ "ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8",
         [   "ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8_V2_0000_0.xml",
             "ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8_V2_0000_1.xml",
             "ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8_V2_0000_2.xml",
@@ -88,6 +88,3 @@ for i in [o for o in jobOptionsFile2.readlines()]:
 jobOptionsFile2.close()
 exec command2
 userItems += AddUserItems
-
-inputTrees=["ntuplizer/tree"]
-outputTrees=["tree_mutau","tree_eletau"]
