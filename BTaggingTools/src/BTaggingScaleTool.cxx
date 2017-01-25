@@ -82,22 +82,22 @@ BTaggingScaleTool::~BTaggingScaleTool() {
 void BTaggingScaleTool::BeginInputData( const SInputData& ) throw( SError ) {
 
   m_logger << INFO << "Initializing BTagCalibrationStandalone" << SLogger::endmsg;
-  m_logger << INFO << "CSV file:    " << m_csvFile << SLogger::endmsg;
-  m_logger << INFO << "CSV file for veto:    " << m_csvFile_veto << SLogger::endmsg;
+  m_logger << INFO << "CSV file:                  " << m_csvFile << SLogger::endmsg;
+  m_logger << INFO << "CSV file for veto:         " << m_csvFile_veto << SLogger::endmsg;
 
-  m_logger << INFO << "Tagger:         " << m_tagger << SLogger::endmsg;
-  m_logger << INFO << "Tagger for veto:         " << m_tagger_veto << SLogger::endmsg;
-  m_logger << INFO << "WorkingPoint: " << m_workingPoint << SLogger::endmsg;
+  m_logger << INFO << "Tagger:                    " << m_tagger << SLogger::endmsg;
+  m_logger << INFO << "Tagger for veto:           " << m_tagger_veto << SLogger::endmsg;
+  m_logger << INFO << "WorkingPoint:              " << m_workingPoint << SLogger::endmsg;
   m_logger << INFO << "WorkingPoint for veto ak4: " << m_workingPoint_veto << SLogger::endmsg;
 
   m_logger << INFO << "MeasurementType veto udsg: " << m_measurementType_veto_udsg << SLogger::endmsg;
-  m_logger << INFO << "MeasurementType veto  bc: " << m_measurementType_veto_bc << SLogger::endmsg;
+  m_logger << INFO << "MeasurementType veto  bc:  " << m_measurementType_veto_bc << SLogger::endmsg;
 
-  m_logger << INFO << "MeasurementType udsg: " << m_measurementType_udsg << SLogger::endmsg;
-  m_logger << INFO << "MeasurementType bc: " << m_measurementType_bc << SLogger::endmsg;
+  m_logger << INFO << "MeasurementType udsg:      " << m_measurementType_udsg << SLogger::endmsg;
+  m_logger << INFO << "MeasurementType bc:        " << m_measurementType_bc << SLogger::endmsg;
   
-  m_logger << INFO << "EffHistDirectory: " << m_effHistDirectory << SLogger::endmsg;
-  m_logger << INFO << "Efficiency file: " << m_effFile << SLogger::endmsg;
+  m_logger << INFO << "EffHistDirectory:          " << m_effHistDirectory << SLogger::endmsg;
+  m_logger << INFO << "Efficiency file:           " << m_effFile << SLogger::endmsg;
    
   BTagEntry::OperatingPoint wp = BTagEntry::OP_LOOSE;
   if (m_workingPoint.find("Loose") != std::string::npos) {
