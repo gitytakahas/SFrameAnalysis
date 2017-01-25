@@ -1279,7 +1279,11 @@ void TauTauAnalysis::FillBranches(const std::string& channel, const std::vector<
   b_nfbtag20[ch]    = nfbtag20;
   b_ncbtag20[ch]    = ncbtag20;
   
-  // For taus
+  
+  ////////////////
+  // MARK: Taus //
+  ////////////////
+  
   b_pt_2[ch]        = tau.tlv().Pt();
   b_eta_2[ch]       = tau.tlv().Eta();
   b_phi_2[ch]       = tau.tlv().Phi();
@@ -1308,93 +1312,99 @@ void TauTauAnalysis::FillBranches(const std::string& channel, const std::vector<
   b_neutralIsoPtSum_2[ch]               = tau.neutralIsoPtSum();
   b_puCorrPtSum_2[ch]                   = tau.puCorrPtSum();
   b_decayModeFindingOldDMs_2[ch]        = tau.decayModeFinding();
-  
-  b_ttptweight[ch] = 1.;
-  if (m_isData)  b_gen_match_2[ch]      = -1;
-  else{
-    b_gen_match_2[ch]                   = gen_match_2;
-    b_genmatchweight[ch]                = genMatchSF(channel, gen_match_2,b_eta_2[ch]); // leptons faking taus and real taus ID eff
-    if (m_doTTpt) b_ttptweight[ch]      = genMatchSF(channel, -36); // 6*-6 = -36
-    b_weight[ch]                        = b_weight[ch] * b_genmatchweight[ch] * b_ttptweight[ch];
-    // MARK: check boosted tau ID matching standard ID
-//     if (b_gen_match_2[ch] == 5 && m_isSignal){
-//       int nMatch = 0;
-//       for( int i = 0; i < (m_tau.N); ++i ){
-//         UZH::Tau mytau( &m_tau, i );
-//         if(mytau.TauType()==1) if(tau.tlv().DeltaR(mytau.tlv()) < 0.3) nMatch++;
-//       }
-//       TString tch = ch; 
-//       Hist("N_match0p30_bst_std_"+tch, "histogram_"+tch)->Fill( nMatch );
-//     }
-  }
   b_decayMode_2[ch]                     = tau.decayMode();
   
+  b_id_e_mva_nt_loose_1[ch]             = -1;
+  b_id_e_mva_nt_loose_1_old[ch]         = -1;
   extraLeptonVetos(channel, muon, electron);
   b_dilepton_veto[ch]                   = (int) b_dilepton_veto_;
   b_extraelec_veto[ch]                  = (int) b_extraelec_veto_;
   b_extramuon_veto[ch]                  = (int) b_extramuon_veto_;
   b_lepton_vetos[ch]                    = ( b_dilepton_veto_ || b_extraelec_veto_ || b_extramuon_veto_ );
   
+  
+  ///////////////////
+  // MARK: Leptons //
+  ///////////////////
+  
   TLorentzVector lep_tlv;
-  b_trigweight_1[ch]                    = 1.;
-  b_trigweight_2[ch]                    = 1.;
-  b_idisoweight_1[ch]                   = 1.;
-  b_idisoweight_2[ch]                   = 1.;
-  b_id_e_mva_nt_loose_1[ch]             = -1;
-  b_id_e_mva_nt_loose_1_old[ch]         = -1;
   if(channel=="mutau"){
-    b_pt_1[ch]      = muon.tlv().Pt();
-    b_eta_1[ch]     = muon.tlv().Eta();
-    b_phi_1[ch]     = muon.tlv().Phi();
-    b_m_1[ch]       = muon.tlv().M();
-    b_q_1[ch]       = muon.charge();
-    b_d0_1[ch]      = muon.d0();
-    b_dz_1[ch]      = muon.dz();
-    b_iso_1[ch]     = muon.SemileptonicPFIso() / muon.pt();
+    b_pt_1[ch]              = muon.tlv().Pt();
+    b_eta_1[ch]             = muon.tlv().Eta();
+    b_phi_1[ch]             = muon.tlv().Phi();
+    b_m_1[ch]               = muon.tlv().M();
+    b_q_1[ch]               = muon.charge();
+    b_d0_1[ch]              = muon.d0();
+    b_dz_1[ch]              = muon.dz();
+    b_iso_1[ch]             = muon.SemileptonicPFIso() / muon.pt();
+    b_channel[ch]           = 1;
+    b_lepton_vetos[ch]      = ( b_lepton_vetos[ch] || tau.againstElectronVLooseMVA6() < 0.5 || tau.againstMuonTight3() < 0.5 );
     lep_tlv.SetPtEtaPhiM(b_pt_1[ch], b_eta_1[ch], b_phi_1[ch], b_m_1[ch]);
-    b_channel[ch]   = 1;
-    b_lepton_vetos[ch] = ( b_lepton_vetos[ch] || tau.againstElectronVLooseMVA6() < 0.5 || tau.againstMuonTight3() < 0.5 );
     if (!m_isData){
       b_trigweight_1[ch]    = m_ScaleFactorTool.get_Efficiency_MuTrig(lep_tlv.Pt(),fabs(lep_tlv.Eta()));
       b_idisoweight_1[ch]   = m_ScaleFactorTool.get_ScaleFactor_MuIdIso(lep_tlv.Pt(),fabs(lep_tlv.Eta()));
     }
   }
   else{
-    b_pt_1[ch]      = electron.tlv().Pt();
-    b_eta_1[ch]     = electron.tlv().Eta();
-    b_phi_1[ch]     = electron.tlv().Phi();
-    b_m_1[ch]       = electron.tlv().M();
-    b_q_1[ch]       = electron.charge();
-    b_d0_1[ch]      = electron.d0();
-    b_dz_1[ch]      = electron.dz();
-    b_iso_1[ch]     = electron.SemileptonicPFIso() / electron.pt();
+    b_pt_1[ch]              = electron.tlv().Pt();
+    b_eta_1[ch]             = electron.tlv().Eta();
+    b_phi_1[ch]             = electron.tlv().Phi();
+    b_m_1[ch]               = electron.tlv().M();
+    b_q_1[ch]               = electron.charge();
+    b_d0_1[ch]              = electron.d0();
+    b_dz_1[ch]              = electron.dz();
+    b_iso_1[ch]             = electron.SemileptonicPFIso() / electron.pt();
     b_id_e_mva_nt_loose_1[ch]     = isNonTrigElectronID(electron); // 90% efficiency working point
     b_id_e_mva_nt_loose_1_old[ch] = electron.nonTrigMVAID();
+    b_channel[ch]           = 2;
+    b_lepton_vetos[ch]      = ( b_lepton_vetos[ch] || tau.againstElectronTightMVA6() < 0.5 || tau.againstMuonLoose3() < 0.5 );
     lep_tlv.SetPtEtaPhiM(b_pt_1[ch], b_eta_1[ch], b_phi_1[ch], b_m_1[ch]);
-    b_channel[ch]   = 2;
-    b_lepton_vetos[ch] = ( b_lepton_vetos[ch] || tau.againstElectronTightMVA6() < 0.5 || tau.againstMuonLoose3() < 0.5 );
     if (!m_isData){
       b_trigweight_1[ch]    = m_ScaleFactorTool.get_Efficiency_EleTrig(lep_tlv.Pt(),fabs(lep_tlv.Eta()));
       b_idisoweight_1[ch]   = m_ScaleFactorTool.get_ScaleFactor_EleIdIso(lep_tlv.Pt(),fabs(lep_tlv.Eta()));
     }
   }
   
-  b_weightbtag[ch] = 1.;
-  b_zptweight[ch]  = 1.;
-  if(m_doZpt)   b_zptweight[ch]     = m_RecoilCorrector.ZptWeight( boson_tlv.M(), boson_tlv.Pt() );
-  if (m_isData) b_gen_match_1[ch]  = -1;
+  
+  ///////////////////////
+  // MARK: Reweighting //
+  ///////////////////////
+  
+  b_idisoweight_1[ch]                   = 1.;
+  b_idisoweight_2[ch]                   = 1.;
+  b_trigweight_1[ch]                    = 1.;
+  b_trigweight_2[ch]                    = 1.;
+  b_zptweight[ch]                       = 1.;
+  b_ttptweight[ch]                      = 1.;
+  b_weightbtag[ch]                      = 1.;
+  b_gen_match_1[ch]                     = -1;
+  b_gen_match_2[ch]                     = gen_match_2;
+  if (m_isData) b_gen_match_1[ch]       = -1;
   else{
-    b_weightbtag[ch]    = b_weightbtag_; // do not apply b tag weight when using promote-demote method !!!
-    //b_weightbtag[ch]    = m_BTaggingScaleTool.getScaleFactor_veto(Jet); // getScaleFactor_veto for AK4, getScaleFactor for AK8
-    b_weight[ch]        = b_weight[ch] * b_trigweight_1[ch] * b_idisoweight_1[ch] * b_trigweight_2[ch] * b_idisoweight_2[ch] * b_zptweight[ch]; // * b_weightbtag[ch]
-    b_gen_match_1[ch]   = genMatch(b_eta_1[ch], b_phi_1[ch]);
+    b_gen_match_1[ch]                   = genMatch(b_eta_1[ch], b_phi_1[ch]);
+    b_idisoweight_2[ch]                 = genMatchSF(channel, gen_match_2, b_eta_2[ch]); // leptons faking taus and real taus ID eff
+    if(m_doZpt)  b_zptweight[ch]        = m_RecoilCorrector.ZptWeight( boson_tlv.M(), boson_tlv.Pt() );
+    if(m_doTTpt) b_ttptweight[ch]       = genMatchSF(channel, -36); // 6*-6 = -36
+    b_weightbtag[ch]                    = b_weightbtag_; // do not apply b tag weight when using promote-demote method !!!
+    //b_weightbtag[ch]                  = m_BTaggingScaleTool.getScaleFactor_veto(Jet); // getScaleFactor_veto for AK4, getScaleFactor for AK8
+    b_weight[ch] *= b_trigweight_1[ch] * b_idisoweight_1[ch] * b_trigweight_2[ch] * b_idisoweight_2[ch] * b_zptweight[ch] * b_ttptweight[ch]; // * b_weightbtag[ch]
+    // check boosted tau ID matching standard ID
+    // if (b_gen_match_2[ch] == 5 && m_isSignal){
+    //   int nMatch = 0;
+    //   for( int i = 0; i < (m_tau.N); ++i ){
+    //     UZH::Tau mytau( &m_tau, i );
+    //     if(mytau.TauType()==1) if(tau.tlv().DeltaR(mytau.tlv()) < 0.3) nMatch++;
+    //   }
+    //   TString tch = ch; 
+    //   Hist("N_match0p30_bst_std_"+tch, "histogram_"+tch)->Fill( nMatch );
+    // }
   }
   
   
   
-  ////////////////////////////////
-  /// MARK: Recoil corrections ///
-  ////////////////////////////////
+  //////////////////////////////
+  // MARK: Recoil corrections //
+  //////////////////////////////
   //std::cout << ">>> Recoil corrections " << std::endl;
   
   TLorentzVector met_tlv;
@@ -1538,16 +1548,18 @@ void TauTauAnalysis::FillBranches(const std::string& channel, const std::vector<
   //////////////////
   // MARK: SVFit  //
   //////////////////
-  // apply some extra cuts to save time
-  //bool doSVfit= false;
   //std::cout << ">>> SVFit" << std::endl;
+  // apply some extra cuts to save time
+  bool doSVFit = m_doSVFit && b_iso_1[ch]<0.30 && b_iso_2_medium[ch]==1 && b_lepton_vetos[ch]==0;
+  if(m_doEES || m_doTES || m_doLTF) doSVFit = doSVFit && ncbtag>0 && b_iso_1[ch]<0.15 && b_iso_2[ch]==1;
+  //bool doSVfit= false;
   
   double m_sv = -1;
   double pt_tt_sv = -1;
   double R_pt_m_sv = -1;
-  if ( m_doSVFit && b_iso_1[ch] < 0.30 && b_iso_2_medium[ch] == 1 && b_lepton_vetos[ch] == 0 ){
+  if ( doSVFit ){
     //std::cout << ">>> SVFit" << std::endl;
-    m_SVFitTool.addMeasuredLeptonTau(channel,lep_tlv, tau_tlv);
+    m_SVFitTool.addMeasuredLeptonTau(channel,lep_tlv, tau_tlv, tau.decayMode());
     m_SVFitTool.getSVFitMassAndPT(m_sv,pt_tt_sv,met_tlv_corrected.Px(),met_tlv_corrected.Py(), met.cov00(),met.cov10(),met.cov11());
     if(m_sv > 0) R_pt_m_sv = pt_tt_sv/m_sv;
   }
