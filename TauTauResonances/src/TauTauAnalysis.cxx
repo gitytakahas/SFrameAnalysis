@@ -1327,6 +1327,9 @@ void TauTauAnalysis::FillBranches(const std::string& channel, const std::vector<
   // MARK: Leptons //
   ///////////////////
   
+  b_idisoweight_1[ch]                   = 1.;
+  b_trigweight_1[ch]                    = 1.;
+  
   TLorentzVector lep_tlv;
   if(channel=="mutau"){
     b_pt_1[ch]              = muon.tlv().Pt();
@@ -1370,9 +1373,7 @@ void TauTauAnalysis::FillBranches(const std::string& channel, const std::vector<
   // MARK: Reweighting //
   ///////////////////////
   
-  b_idisoweight_1[ch]                   = 1.;
   b_idisoweight_2[ch]                   = 1.;
-  b_trigweight_1[ch]                    = 1.;
   b_trigweight_2[ch]                    = 1.;
   b_zptweight[ch]                       = 1.;
   b_ttptweight[ch]                      = 1.;
