@@ -9,10 +9,9 @@ nProcesses=1
 nFiles=4
 hCPU="03:30:00"
 hVMEM="5000M"
-postFix = ""
-label = "_ICHEP" #"_triggerless"
+postFix = "_ICHEP" #"_triggerless"
 dataSets = [
-               ["QCD_HT100toInf"+label,
+               ["QCD_HT100toInf",
                 [   "QCD_HT1000to1500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_HLT1_0000.xml",
                     "QCD_HT1000to1500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_HLT1_ext_0000.xml",
                     "QCD_HT100to200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_HLT1_0000_0.xml",

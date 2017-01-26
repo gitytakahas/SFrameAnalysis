@@ -32,8 +32,9 @@ SVFitTool::~SVFitTool(){
 
 
 
-void SVFitTool::addMeasuredLeptonTau( const std::string& channel, const TLorentzVector lep, const TLorentzVector tau ){
+void SVFitTool::addMeasuredLeptonTau( const std::string& channel, const TLorentzVector lep, const TLorentzVector tau, int tauDecayMode){
   //std::cout << "addMeasuredLeptonTau" << std::endl;
+  //std::cout << "addMeasuredLeptonTau - tauDecayMode = " << tauDecayMode << std::endl;
   
   // reset vector
   m_measuredTauLeptons.clear();
@@ -43,13 +44,13 @@ void SVFitTool::addMeasuredLeptonTau( const std::string& channel, const TLorentz
     m_measuredTauLeptons.push_back(svFitStandalone::MeasuredTauLepton( svFitStandalone::kTauToElecDecay,
                                                                        lep.Pt(), lep.Eta(), lep.Phi(), 0.51100e-3 ));
     m_measuredTauLeptons.push_back(svFitStandalone::MeasuredTauLepton( svFitStandalone::kTauToHadDecay,
-                                                                       tau.Pt(), tau.Eta(), tau.Phi(), tau.M() ));
+                                                                       tau.Pt(), tau.Eta(), tau.Phi(), tau.M(), tauDecayMode ));
   }
   else if(channel=="mutau"){
     m_measuredTauLeptons.push_back(svFitStandalone::MeasuredTauLepton( svFitStandalone::kTauToMuDecay,
                                                                        lep.Pt(), lep.Eta(), lep.Phi(),  105.658e-3));
     m_measuredTauLeptons.push_back(svFitStandalone::MeasuredTauLepton( svFitStandalone::kTauToHadDecay,
-                                                                       tau.Pt(), tau.Eta(), tau.Phi(), tau.M()));
+                                                                       tau.Pt(), tau.Eta(), tau.Phi(), tau.M(), tauDecayMode));
   }
   else
   {
