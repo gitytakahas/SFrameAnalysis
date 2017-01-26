@@ -277,7 +277,7 @@ def checkCompletion(dataSets, listOfJobs, outDir, cycleName, postFix,keepTemp):
       elif l[0]==d[0] and l[4]=="":
         checkReady=False
     if checkReady:
-      print "%s is ready, start merging and copying" %(d[0])
+      print "\n%s is ready, start merging and copying" %(d[0])
       #print "outDir %s ,  cycleName %s,  d[0] %s, postFix %s, "%(outDir , cycleName, d[0], postFix)
       mergeFileBaseName="%s/%s.%s%s" %(outDir , cycleName, d[0], postFix)
       if keepTemp:
@@ -291,7 +291,7 @@ def checkCompletion(dataSets, listOfJobs, outDir, cycleName, postFix,keepTemp):
         mergeCmd='hadd -f %s.root %s.root && rm -rf %s.root'  %(mergeFileBaseName,  fileToMerge,  fileToMerge)
         #mergeCmd_mt = 'hadd -f %s/%s_mutau.root %s/%s_mutau*.root && rm -rf %s/%s_mutau*.root'  %(outDir, d[0], fileBaseName, d[0], fileBaseName, d[0])
         #mergeCmd_et = 'hadd -f %s/%s_eletau.root %s/%s_eletau*.root && rm -rf %s/%s_eletau*.root'  %(outDir, d[0], fileBaseName, d[0], fileBaseName, d[0])
-        print "\nmergeCmd is %s " %mergeCmd
+        print "mergeCmd is %s " %mergeCmd
         #print "mergeCmd_private_mt is %s " %mergeCmd_mt
         #print "mergeCmd_private_et is %s " %mergeCmd_et
 
@@ -921,7 +921,7 @@ def main():
       iJobs+=1
     waitForBatchJobs(runningJobs, listOfJobs, userName, timeCheck)
     while not len(dataSets)==0:
-      print "waiting for %d data sets to finish" %(len(dataSets))
+      print "\nwaiting for %d data sets to finish" %(len(dataSets))
       checkCompletion(dataSets, listOfJobs, outDir, cycleName, postFix,keepTemp)
       time.sleep(float(timeCheck))
   elif not mergeOnly:
@@ -939,7 +939,7 @@ def main():
     while not len(runningJobs)==0:
       checkRunningJobs(runningJobs, listOfJobs, timeCheck)
     while not len(dataSets)==0:
-      print "waiting for %d data sets to finish" %(len(dataSets))
+      print "\nwaiting for %d data sets to finish" %(len(dataSets))
       checkCompletion(dataSets, listOfJobs, outDir, cycleName, postFix,keepTemp)
       time.sleep(float(timeCheck))
   else:
