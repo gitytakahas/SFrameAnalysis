@@ -34,7 +34,7 @@ class SVFitTool : public SToolBase {
     ~SVFitTool();
     void BeginInputData( const SInputData& id ) throw( SError );
     
-    void addMeasuredLeptonTau( const std::string& channel, const TLorentzVector lep, const TLorentzVector tau, int tauDecayMode );
+    void addMeasuredLeptonTau( const std::string& channel, const TLorentzVector lep, const TLorentzVector tau, int tauDecayMode = -1 );
     //void addMeasuredElectronTau( const TLorentzVector ele,   const TLorentzVector tau );
     //void addMeasuredMuonTau(     const TLorentzVector mu,    const TLorentzVector tau );
 //     void addMeasuredTauToElectron( const double pt, const double eta, const double phi );

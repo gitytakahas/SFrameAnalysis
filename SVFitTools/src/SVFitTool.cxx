@@ -32,9 +32,9 @@ SVFitTool::~SVFitTool(){
 
 
 
-void SVFitTool::addMeasuredLeptonTau( const std::string& channel, const TLorentzVector lep, const TLorentzVector tau, int tauDecayMode ){
+void SVFitTool::addMeasuredLeptonTau( const std::string& channel, const TLorentzVector lep, const TLorentzVector tau, int tauDecayMode){
   //std::cout << "addMeasuredLeptonTau" << std::endl;
-  std::cout << "addMeasuredLeptonTau - tauDecayMode = " << tauDecayMode << std::endl;
+  //std::cout << "addMeasuredLeptonTau - tauDecayMode = " << tauDecayMode << std::endl;
   
   // reset vector
   m_measuredTauLeptons.clear();
