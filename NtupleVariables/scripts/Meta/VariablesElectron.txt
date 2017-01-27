@@ -13,11 +13,10 @@ Basic	floatingnumber*	et
 ID	int*	isVetoElectron
 ID	int*	isMediumElectron
 ID	int*	isTightElectron
+ID	int*	isMVAMediumElectron
+ID	int*	isMVATightElectron
 ID	int*	isHeepElectron
-ID	int*	isHeep51Electron
 ID	int*	isLooseElectron
-ID	int*	nonTrigMVAID
-ID	floatingnumber*	nonTrigMVA
 
 SuperCluster	floatingnumber*	superCluster_eta
 SuperCluster	floatingnumber*	superCluster_e
@@ -58,7 +57,6 @@ BoostedID	int*	isVetoElectronBoosted
 BoostedID	int*	isMediumElectronBoosted
 BoostedID	int*	isTightElectronBoosted
 BoostedID	int*	isHeepElectronBoosted
-BoostedID	int*	isHeep51ElectronBoosted
 BoostedID	int*	isLooseElectronBoosted
 
 BoostedIsolation	floatingnumber*	pfRhoCorrRelIso03Boost

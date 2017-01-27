@@ -13,7 +13,6 @@ Analysis	floatingnumber*	sumEt
 Analysis	floatingnumber*	corrPx
 Analysis	floatingnumber*	corrPy
 Analysis	floatingnumber*	significance
-Analysis	int* Nmva
 
 CovAnalysis	floatingnumber*	cov00
 CovAnalysis	floatingnumber*	cov10

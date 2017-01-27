@@ -221,8 +221,10 @@ namespace Ntuple {
     m_names["isVetoElectron"] = "isVetoElectron";
     m_names["isMediumElectron"] = "isMediumElectron";
     m_names["isTightElectron"] = "isTightElectron";
-    m_names["nonTrigMVAID"] = "nonTrigMVAID";
-    m_names["nonTrigMVA"] = "nonTrigMVA";
+    m_names["isMVAMediumElectron"] = "isMVAMediumElectron";
+    m_names["isMVATightElectron"] = "isMVATightElectron";
+    //    m_names["nonTrigMVAID"] = "nonTrigMVAID";
+    //    m_names["nonTrigMVA"] = "nonTrigMVA";
     m_names["isHeepElectron"] = "isHeepElectron";
     m_names["isHeep51Electron"] = "isHeep51Electron";
     m_names["isLooseElectron"] = "isLooseElectron";
