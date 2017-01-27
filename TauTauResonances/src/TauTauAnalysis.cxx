@@ -334,7 +334,7 @@ void TauTauAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
     DeclareVariable( b_puppimt_1[channels_[ch]],      "puppimt_1",      treeName);
     DeclareVariable( b_iso_1[channels_[ch]],          "iso_1",          treeName);
     DeclareVariable( b_id_e_mva_nt_loose_1[channels_[ch]],      "id_e_mva_nt_loose_1",     treeName);
-    DeclareVariable( b_id_e_mva_nt_loose_1_old[channels_[ch]],  "id_e_mva_nt_loose_1_old", treeName);
+    //    DeclareVariable( b_id_e_mva_nt_loose_1_old[channels_[ch]],  "id_e_mva_nt_loose_1_old", treeName);
     DeclareVariable( b_gen_match_1[channels_[ch]],    "gen_match_1",    treeName);
     DeclareVariable( b_trigweight_1[channels_[ch]],   "trigweight_1",   treeName);
     DeclareVariable( b_idisoweight_1[channels_[ch]],  "idisoweight_1",  treeName);
@@ -622,7 +622,7 @@ void TauTauAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError )
   b_genweight_  =  1.;
   b_npu_        = -1.;
   
-  
+
   // Cut 0: no cuts
   for (auto ch: channels_){
     fillCutflow("cutflow_" + ch, "histogram_" + ch, kBeforeCuts, 1);
@@ -637,6 +637,7 @@ void TauTauAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError )
 //   }
   
   
+
   // Cut 1: check for data if run/lumiblock in JSON
   if (m_isData) {
     if(!(isGoodEvent(m_eventInfo.runNumber, m_eventInfo.lumiBlock))) throw SError( SError::SkipEvent );
@@ -652,7 +653,6 @@ void TauTauAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError )
   }
   
   
-
   // Cut 2: pass trigger
   //std::cout << ">>> ExecuteEvent - Cut 2" << std::endl;
   TString trigger_result = "both";
@@ -664,7 +664,6 @@ void TauTauAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError )
   for (auto ch: channels_){
     fillCutflow("cutflow_" + ch, "histogram_" + ch, kTrigger, 1);
   }
-  
   
   
   // Cut 3: pass MET filters
@@ -712,12 +711,12 @@ void TauTauAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError )
     if (fabs(myelectron.dz_allvertices()) > m_electronDzCut) continue;
     if (myelectron.passConversionVeto()!=1) continue;
     if (myelectron.expectedMissingInnerHits()>1) continue;
-    if (isNonTrigElectronID(myelectron) < 0.5) continue;
+    //    if (isNonTrigElectronID(myelectron) < 0.5) continue;
+    if (myelectron.isMVATightElectron() < 0.5) continue;
     //if (myelectron.SemileptonicPFIso() / myelectron.pt() > m_electronIsoCut) continue;
 	
     goodElectrons.push_back(myelectron);
   }
-  
   
   if(goodMuons.size()!=0){
     fillCutflow("cutflow_mutau", "histogram_mutau", kLepton, 1);
@@ -726,8 +725,6 @@ void TauTauAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError )
     fillCutflow("cutflow_eletau", "histogram_eletau", kLepton, 1);
   }
   else if(goodMuons.size()==0) throw SError( SError::SkipEvent );
-  
-  
   
   // Cut 6: lepton - tau pair
   
@@ -760,7 +757,6 @@ void TauTauAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError )
   }
   
   if(goodTaus.size()==0) throw SError( SError::SkipEvent );
-  
   
   // First, select muon with highest isolation, and then, highest pT
   
@@ -1315,7 +1311,7 @@ void TauTauAnalysis::FillBranches(const std::string& channel, const std::vector<
   b_decayMode_2[ch]                     = tau.decayMode();
   
   b_id_e_mva_nt_loose_1[ch]             = -1;
-  b_id_e_mva_nt_loose_1_old[ch]         = -1;
+  //  b_id_e_mva_nt_loose_1_old[ch]         = -1;
   extraLeptonVetos(channel, muon, electron);
   b_dilepton_veto[ch]                   = (int) b_dilepton_veto_;
   b_extraelec_veto[ch]                  = (int) b_extraelec_veto_;
@@ -1357,8 +1353,10 @@ void TauTauAnalysis::FillBranches(const std::string& channel, const std::vector<
     b_d0_1[ch]              = electron.d0();
     b_dz_1[ch]              = electron.dz();
     b_iso_1[ch]             = electron.SemileptonicPFIso() / electron.pt();
-    b_id_e_mva_nt_loose_1[ch]     = isNonTrigElectronID(electron); // 90% efficiency working point
-    b_id_e_mva_nt_loose_1_old[ch] = electron.nonTrigMVAID();
+    //    b_id_e_mva_nt_loose_1[ch]     = isNonTrigElectronID(electron); // 90% efficiency working point
+    //    b_id_e_mva_nt_loose_1_old[ch] = electron.nonTrigMVAID();
+    b_id_e_mva_nt_loose_1[ch]     = electron.isMVATightElectron();
+    //    b_id_e_mva_nt_loose_1_old[ch] = electron.nonTrigMVAID();
     b_channel[ch]           = 2;
     b_lepton_vetos[ch]      = ( b_lepton_vetos[ch] || tau.againstElectronTightMVA6() < 0.5 || tau.againstMuonLoose3() < 0.5 );
     lep_tlv.SetPtEtaPhiM(b_pt_1[ch], b_eta_1[ch], b_phi_1[ch], b_m_1[ch]);
@@ -1769,32 +1767,32 @@ Float_t TauTauAnalysis::deltaR(Float_t deta, Float_t dphi){
 
 
 
-bool TauTauAnalysis::isNonTrigElectronID(const UZH::Electron& electron)
-{
-//std::cout << "isNonTrigElectronID" << std::endl;
-// 90% efficiency working point
-// https://twiki.cern.ch/twiki/bin/view/CMS/MultivariateElectronIdentificationRun2#Non_triggering_electron_MVA_deta
-// https://github.com/gitytakahas/EXOVVNtuplizerRunII/blob/80X_ntuplizer/Ntuplizer/plugins/ElectronsNtuplizer.cc#L66-L98
-  Float_t eta = fabs(electron.superCluster_eta());
-  Float_t pt  = electron.pt();
-  Float_t mva = electron.nonTrigMVAID();
-  
-  // assume pt > 5.0 GeV
-  if(pt <= 10.){
-    if(eta < 0.8)           return mva > -0.083313;
-    else if(eta < 1.479)    return mva > -0.235222;
-    else                    return mva > -0.67099;
-  }
-  else if(pt > 10.){
-    if(eta < 0.8)           return mva > 0.913286;
-    else if(eta < 1.479)    return mva > 0.805013;
-    else                    return mva > 0.358969;
-  }
-  else{
-    std::cout << ">>> Does not happen" << std::endl;
-    return false;
-  } 
-}
+//bool TauTauAnalysis::isNonTrigElectronID(const UZH::Electron& electron)
+//{
+////std::cout << "isNonTrigElectronID" << std::endl;
+//// 90% efficiency working point
+//// https://twiki.cern.ch/twiki/bin/view/CMS/MultivariateElectronIdentificationRun2#Non_triggering_electron_MVA_deta
+//// https://github.com/gitytakahas/EXOVVNtuplizerRunII/blob/80X_ntuplizer/Ntuplizer/plugins/ElectronsNtuplizer.cc#L66-L98
+//  Float_t eta = fabs(electron.superCluster_eta());
+//  Float_t pt  = electron.pt();
+//  Float_t mva = electron.nonTrigMVAID();
+//  
+//  // assume pt > 5.0 GeV
+//  if(pt <= 10.){
+//    if(eta < 0.8)           return mva > -0.083313;
+//    else if(eta < 1.479)    return mva > -0.235222;
+//    else                    return mva > -0.67099;
+//  }
+//  else if(pt > 10.){
+//    if(eta < 0.8)           return mva > 0.913286;
+//    else if(eta < 1.479)    return mva > 0.805013;
+//    else                    return mva > 0.358969;
+//  }
+//  else{
+//    std::cout << ">>> Does not happen" << std::endl;
+//    return false;
+//  } 
+//}
 
 
 
@@ -1962,14 +1960,16 @@ void TauTauAnalysis::extraLeptonVetos(const std::string& channel, const UZH::Muo
     
     // extra electron veto
     if(myelectron.passConversionVeto() &&
-       isNonTrigElectronID(myelectron) &&
+       //       isNonTrigElectronID(myelectron) &&
+       myelectron.isMVATightElectron() && 
        myelectron.expectedMissingInnerHits() <= 1){
       if( myelectron.pt() != electron.pt() && myelectron.eta() != electron.eta() && myelectron.phi() != electron.phi())
         b_extraelec_veto_ = true;
     }
     
     // dilepton veto: match with other muons
-    if(myelectron.pt() > 15 && isNonTrigElectronID(myelectron))
+    //    if(myelectron.pt() > 15 && isNonTrigElectronID(myelectron))
+    if(myelectron.pt() > 15 && myelectron.isMVATightElectron())
       passedElectrons.push_back(myelectron);
   }
   

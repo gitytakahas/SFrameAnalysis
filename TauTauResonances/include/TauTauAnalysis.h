@@ -135,7 +135,7 @@ class TauTauAnalysis : public SCycleBase {
     virtual void shiftLeptonAndMET( const float shift, TLorentzVector& lep_shifted, TLorentzVector& met_shifted, bool shiftEnergy = false);
     
     // IDs
-    virtual bool isNonTrigElectronID(const UZH::Electron& electron);
+  //    virtual bool isNonTrigElectronID(const UZH::Electron& electron);
     virtual bool LooseJetID(const UZH::Jet& jet);
     
     // extra scaling factors
