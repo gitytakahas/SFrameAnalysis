@@ -328,7 +328,7 @@ class Templater:
 
 ### Configuration
 os.environ.keys( )
-metadir   = os.environ['SFRAME_DIR'] + '/../NtupleVariables/scripts/Meta_Summer2016/'
+metadir   = os.environ['SFRAME_DIR'] + '/../NtupleVariables/scripts/Meta_Moriond/'
 targetdir = os.environ['SFRAME_DIR'] + '/../NtupleVariables/'
 use_dl    = True
 
