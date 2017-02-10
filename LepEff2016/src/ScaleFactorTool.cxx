@@ -9,12 +9,14 @@ ScaleFactorTool::ScaleFactorTool(SCycleBase* parent, const char* name ):
  SToolBase( parent ), m_name( name ) 
 {
   SetLogName( name );
-  DeclareProperty( m_name+"Mu_TrigFile ",   m_Mu_TrigFile       = std::string (std::getenv("SFRAME_DIR")) + "/../LepEff2016/data/Muon/Run2016BCD/Muon_IsoMu22_OR_TkIsoMu22_eff.root" ); 
-  DeclareProperty( m_name+"Mu_IdIsoFil",    m_Mu_IdIsoFile      = std::string (std::getenv("SFRAME_DIR")) + "/../LepEff2016/data/Muon/Run2016BCD/Muon_IdIso0p15_eff.root" );
+  DeclareProperty( m_name+"Mu_TrigFile ",   m_Mu_TrigFile       = std::string (std::getenv("SFRAME_DIR")) + "/../LepEff2016/data/Muon/Run2016BtoH/Muon_IsoMu24_OR_TkIsoMu24_2016BtoH_eff.root" ); 
+  DeclareProperty( m_name+"Mu_IdIsoFil",    m_Mu_IdIsoFile      = std::string (std::getenv("SFRAME_DIR")) + "/../LepEff2016/data/Muon/Run2016BtoH/Muon_IdIso_IsoLt0p15_2016BtoH_eff.root" );
+  //  DeclareProperty( m_name+"Mu_TrigFile ",   m_Mu_TrigFile       = std::string (std::getenv("SFRAME_DIR")) + "/../LepEff2016/data/Muon/Run2016BCD/Muon_IsoMu22_OR_TkIsoMu22_eff.root" ); 
+  //  DeclareProperty( m_name+"Mu_IdIsoFil",    m_Mu_IdIsoFile      = std::string (std::getenv("SFRAME_DIR")) + "/../LepEff2016/data/Muon/Run2016BCD/Muon_IdIso0p15_eff.root" );
   //DeclareProperty( m_name+"Mu_IdFile",      m_Mu_IdFile         = std::string (std::getenv("SFRAME_DIR")) + "/../LepEff2016/data/Muon/MuonIso_Z_RunBCD_prompt80X_7p65.root" );
   //DeclareProperty( m_name+"Mu_IsoFile",     m_Mu_IsoFile        = std::string (std::getenv("SFRAME_DIR")) + "/../LepEff2016/data/Muon/MuonIso_Z_RunBCD_prompt80X_7p65.root" );
-  DeclareProperty( m_name+"EleTrigFile",    m_Ele_TrigFile      = std::string (std::getenv("SFRAME_DIR")) + "/../LepEff2016/data/Electron/Run2016BCD/Electron_Ele25eta2p1WPTight_eff_fineBinning.root" ); //Electron_Ele25eta2p1WPTight_eff.root
-  DeclareProperty( m_name+"EleIdIsoName",   m_Ele_IdIsoFile     = std::string (std::getenv("SFRAME_DIR")) + "/../LepEff2016/data/Electron/Run2016BCD/Electron_IdIso0p15_eff.root" );
+  DeclareProperty( m_name+"EleTrigFile",    m_Ele_TrigFile      = std::string (std::getenv("SFRAME_DIR")) + "/../LepEff2016/data/Electron/Run2016BtoH/Electron_Ele25_eta2p1_WPTight_eff.root" ); //Electron_Ele25eta2p1WPTight_eff.root
+  DeclareProperty( m_name+"EleIdIsoName",   m_Ele_IdIsoFile     = std::string (std::getenv("SFRAME_DIR")) + "/../LepEff2016/data/Electron/Run2016BtoH/Electron_IdIso_IsoLt0p1_eff.root" );
   //DeclareProperty( m_name+"Ele_IdFile",     m_Ele_IdFile        = std::string (std::getenv("SFRAME_DIR")) + "/../LepEff2016/data/Electron/egammaEffi_txt_SF2D.root" );
   //DeclareProperty( m_name+"Ele_IsoFile",    m_Ele_IsoFile       = std::string (std::getenv("SFRAME_DIR")) + "/../LepEff2016/data/Electron/egammaEffi_txt_SF2D.root" );
 }

@@ -10,7 +10,7 @@
 // Compute pile-up weights to match data distribtution
 class PUWeight {
 public:
-  enum Scenario { Winter15_25ns, Spring16_25ns };
+  enum Scenario { Winter15_25ns, Spring16_25ns, Moriond17_25ns};
 
   static Scenario toScenario(const std::string& str);
   static std::string toString(const Scenario sc);
