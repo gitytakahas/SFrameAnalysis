@@ -888,7 +888,7 @@ void TauTauAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError )
     
     //std::cout << ">>> ExecuteEvent - FillBranches mutau" << std::endl;
     Int_t genmatch_2 = goodTausGen[mutau_pair[0].itau];
-    if( !m_isData && !m_doTES && !m_doLTF)
+    if( !m_isData && genmatch_2<0)
       genmatch_2 = genMatch(goodTaus[mutau_pair[0].itau].eta(), goodTaus[mutau_pair[0].itau].phi());
     FillBranches( "mutau", goodJetsAK4, goodTaus[mutau_pair[0].itau], genmatch_2, goodMuons[mutau_pair[0].ilepton], dummyElectron, Met, PuppiMet );//, MvaMet);
     mu_tau++;
@@ -1353,10 +1353,8 @@ void TauTauAnalysis::FillBranches(const std::string& channel, const std::vector<
     b_d0_1[ch]              = electron.d0();
     b_dz_1[ch]              = electron.dz();
     b_iso_1[ch]             = electron.SemileptonicPFIso() / electron.pt();
-    //    b_id_e_mva_nt_loose_1[ch]     = isNonTrigElectronID(electron); // 90% efficiency working point
-    //    b_id_e_mva_nt_loose_1_old[ch] = electron.nonTrigMVAID();
-    b_id_e_mva_nt_loose_1[ch]     = electron.isMVATightElectron();
-    //    b_id_e_mva_nt_loose_1_old[ch] = electron.nonTrigMVAID();
+    b_id_e_mva_nt_loose_1[ch]     = electron.isMVATightElectron(); // Moriond
+    b_id_e_mva_nt_loose_1_old[ch] = isNonTrigElectronID(electron); // Moriond - 90% efficiency working point
     b_channel[ch]           = 2;
     b_lepton_vetos[ch]      = ( b_lepton_vetos[ch] || tau.againstElectronTightMVA6() < 0.5 || tau.againstMuonLoose3() < 0.5 );
     lep_tlv.SetPtEtaPhiM(b_pt_1[ch], b_eta_1[ch], b_phi_1[ch], b_m_1[ch]);
@@ -1558,6 +1556,7 @@ void TauTauAnalysis::FillBranches(const std::string& channel, const std::vector<
   double R_pt_m_sv = -1;
   if ( doSVFit ){
     //std::cout << ">>> SVFit" << std::endl;
+    // TODO: return TLV
     m_SVFitTool.addMeasuredLeptonTau(channel,lep_tlv, tau_tlv, tau.decayMode());
     m_SVFitTool.getSVFitMassAndPT(m_sv,pt_tt_sv,met_tlv_corrected.Px(),met_tlv_corrected.Py(), met.cov00(),met.cov10(),met.cov11());
     if(m_sv > 0) R_pt_m_sv = pt_tt_sv/m_sv;
@@ -1797,7 +1796,6 @@ Float_t TauTauAnalysis::deltaR(Float_t deta, Float_t dphi){
 
 
 
-
 bool TauTauAnalysis::LooseJetID(const UZH::Jet& jet)
 {
 // https://twiki.cern.ch/twiki/bin/viewauth/CMS/JetID#Recommendations_for_13_TeV_data
@@ -1957,6 +1955,8 @@ void TauTauAnalysis::extraLeptonVetos(const std::string& channel, const UZH::Muo
     if(fabs(myelectron.dz_allvertices()) > 0.2) continue;
     if(fabs(myelectron.d0_allvertices()) > 0.045) continue;
     if(myelectron.SemileptonicPFIso() / myelectron.pt() > 0.3) continue;
+    if(!myelectron.isMVATightElectron()) continue; // Moriond
+//     if(!isNonTrigElectronID(myelectron)) continue; // ICHEP
     
     // extra electron veto
     if(myelectron.passConversionVeto() &&
