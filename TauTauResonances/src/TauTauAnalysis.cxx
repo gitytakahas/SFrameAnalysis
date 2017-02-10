@@ -74,7 +74,7 @@ TauTauAnalysis::TauTauAnalysis() : SCycleBase()
   // for us https://twiki.cern.ch/twiki/bin/view/CMS/SMTauTau2016#Baseline_sync_selection
   DeclareProperty( "AK4JetPtCut",           m_AK4jetPtCut           = 20.   );
   DeclareProperty( "AK4JetEtaCut",          m_AK4jetEtaCut          = 4.7   );
-  DeclareProperty( "CSVWorkingPoint",       m_CSVWorkingPoint       = 0.8   ); // 0.8 is Medium
+  DeclareProperty( "CSVWorkingPoint",       m_CSVWorkingPoint       = 0.8484   ); // 0.8 is Medium
 
   DeclareProperty( "ElectronPtCut",         m_electronPtCut         = 26.   );
   DeclareProperty( "ElectronEtaCut",        m_electronEtaCut        = 2.1   );
@@ -141,19 +141,19 @@ void TauTauAnalysis::BeginCycle() throw( SError ) {
   // muon triggers
   // https://twiki.cern.ch/twiki/bin/viewauth/CMS/HiggsToTauTauWorking2016
   // https://twiki.cern.ch/twiki/bin/viewauth/CMS/SMTauTau2016
-  m_triggerNames_mutau.push_back("HLT_IsoMu22_v");   // HTT OR
-  m_triggerNames_mutau.push_back("HLT_IsoTkMu22_v"); // HTT
+  //  m_triggerNames_mutau.push_back("HLT_IsoMu22_v");   // HTT OR
+  //  m_triggerNames_mutau.push_back("HLT_IsoTkMu22_v"); // HTT
 //   m_triggerNames_mutau.push_back("HLT_IsoMu18_v");
 //   m_triggerNames_mutau.push_back("HLT_IsoMu20_v4");
 //   m_triggerNames_mutau.push_back("HLT_IsoMu22_v3");
 //   m_triggerNames_mutau.push_back("HLT_IsoMu22_eta2p1_v2");
-//   m_triggerNames_mutau.push_back("HLT_IsoMu24_v"); // not pre-scaled
+   m_triggerNames_mutau.push_back("HLT_IsoMu24_v"); // not pre-scaled
 //   m_triggerNames_mutau.push_back("HLT_IsoMu27_v4");
 //   m_triggerNames_mutau.push_back("HLT_IsoTkMu18_v3");
 //   m_triggerNames_mutau.push_back("HLT_IsoTkMu20_v5");
 //   m_triggerNames_mutau.push_back("HLT_IsoTkMu22_eta2p1_v2");
 //   m_triggerNames_mutau.push_back("HLT_IsoTkMu22_v3");
-//   m_triggerNames_mutau.push_back("HLT_IsoTkMu24_v"); // not pre-scaled
+   m_triggerNames_mutau.push_back("HLT_IsoTkMu24_v"); // not pre-scaled
 //   m_triggerNames_mutau.push_back("HLT_IsoTkMu27_v4");
 //   m_triggerNames_mutau.push_back("HLT_IsoMu17_eta2p1_LooseIsoPFTau20_SingleL1_v5");  // pre-scaled
 //   m_triggerNames_mutau.push_back("HLT_IsoMu17_eta2p1_LooseIsoPFTau20_v5");           // pre-scaled
@@ -659,7 +659,7 @@ void TauTauAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError )
   if(m_isData) trigger_result = passTrigger();
   //trigger_result = passTrigger();
   if(trigger_result != "none") m_logger << VERBOSE << "Trigger pass" << SLogger::endmsg;
-  else throw SError( SError::SkipEvent );
+  //  else throw SError( SError::SkipEvent );
   
   for (auto ch: channels_){
     fillCutflow("cutflow_" + ch, "histogram_" + ch, kTrigger, 1);
@@ -711,7 +711,6 @@ void TauTauAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError )
     if (fabs(myelectron.dz_allvertices()) > m_electronDzCut) continue;
     if (myelectron.passConversionVeto()!=1) continue;
     if (myelectron.expectedMissingInnerHits()>1) continue;
-    //    if (isNonTrigElectronID(myelectron) < 0.5) continue;
     if (myelectron.isMVATightElectron() < 0.5) continue;
     //if (myelectron.SemileptonicPFIso() / myelectron.pt() > m_electronIsoCut) continue;
 	
@@ -765,7 +764,7 @@ void TauTauAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError )
   std::vector<ltau_pair> mutau_pair;
   bool passedDeltaRCut = false; // check
   for(int imuon=0; imuon < (int)goodMuons.size(); imuon++){
-    if(trigger_result == "ele") break; // trigger
+    //    if(trigger_result == "ele") break; // trigger
     for(int itau=0; itau < (int)goodTaus.size(); itau++){
       
       Float_t dR = goodMuons[imuon].tlv().DeltaR(goodTaus[itau].tlv());
@@ -797,7 +796,7 @@ void TauTauAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError )
   std::vector<ltau_pair> eletau_pair;
   
   for(int ielectron=0; ielectron < (int)goodElectrons.size(); ielectron++){
-    if(trigger_result == "mu") break; // trigger
+    //    if(trigger_result == "mu") break; // trigger
     for(int itau=0; itau < (int)goodTaus.size(); itau++){
       
       Float_t dR = goodElectrons[ielectron].tlv().DeltaR(goodTaus[itau].tlv());
@@ -1354,7 +1353,7 @@ void TauTauAnalysis::FillBranches(const std::string& channel, const std::vector<
     b_dz_1[ch]              = electron.dz();
     b_iso_1[ch]             = electron.SemileptonicPFIso() / electron.pt();
     b_id_e_mva_nt_loose_1[ch]     = electron.isMVATightElectron(); // Moriond
-    b_id_e_mva_nt_loose_1_old[ch] = isNonTrigElectronID(electron); // Moriond - 90% efficiency working point
+    //    b_id_e_mva_nt_loose_1_old[ch] = isNonTrigElectronID(electron); // Moriond - 90% efficiency working point
     b_channel[ch]           = 2;
     b_lepton_vetos[ch]      = ( b_lepton_vetos[ch] || tau.againstElectronTightMVA6() < 0.5 || tau.againstMuonLoose3() < 0.5 );
     lep_tlv.SetPtEtaPhiM(b_pt_1[ch], b_eta_1[ch], b_phi_1[ch], b_m_1[ch]);
