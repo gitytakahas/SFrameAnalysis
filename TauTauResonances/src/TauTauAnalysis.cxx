@@ -712,7 +712,8 @@ void TauTauAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError )
     if (fabs(myelectron.dz_allvertices()) > m_electronDzCut) continue;
     if (myelectron.passConversionVeto()!=1) continue;
     if (myelectron.expectedMissingInnerHits()>1) continue;
-    if (isNonTrigElectronID(myelectron) < 0.5) continue;
+    if (myelectron.isMVATightElectron() < 0.5) continue; // Moriond
+//     if (isNonTrigElectronID(myelectron) < 0.5) continue; // ICHEP
     //if (myelectron.SemileptonicPFIso() / myelectron.pt() > m_electronIsoCut) continue;
 	
     goodElectrons.push_back(myelectron);
@@ -892,7 +893,7 @@ void TauTauAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError )
     
     //std::cout << ">>> ExecuteEvent - FillBranches mutau" << std::endl;
     Int_t genmatch_2 = goodTausGen[mutau_pair[0].itau];
-    if( !m_isData && !m_doTES && !m_doLTF)
+    if( !m_isData && genmatch_2<0)
       genmatch_2 = genMatch(goodTaus[mutau_pair[0].itau].eta(), goodTaus[mutau_pair[0].itau].phi());
     FillBranches( "mutau", goodJetsAK4, goodTaus[mutau_pair[0].itau], genmatch_2, goodMuons[mutau_pair[0].ilepton], dummyElectron, Met, PuppiMet );//, MvaMet);
     mu_tau++;
@@ -1357,8 +1358,10 @@ void TauTauAnalysis::FillBranches(const std::string& channel, const std::vector<
     b_d0_1[ch]              = electron.d0();
     b_dz_1[ch]              = electron.dz();
     b_iso_1[ch]             = electron.SemileptonicPFIso() / electron.pt();
-    b_id_e_mva_nt_loose_1[ch]     = isNonTrigElectronID(electron); // 90% efficiency working point
-    b_id_e_mva_nt_loose_1_old[ch] = electron.nonTrigMVAID();
+    b_id_e_mva_nt_loose_1[ch]     = electron.isMVATightElectron(); // Moriond
+    b_id_e_mva_nt_loose_1_old[ch] = isNonTrigElectronID(electron); // Moriond - 90% efficiency working point
+//     b_id_e_mva_nt_loose_1[ch]     = isNonTrigElectronID(electron); // ICHEP - 90% efficiency working point
+//     b_id_e_mva_nt_loose_1_old[ch] = electron.nonTrigMVAID();       // ICHEP
     b_channel[ch]           = 2;
     b_lepton_vetos[ch]      = ( b_lepton_vetos[ch] || tau.againstElectronTightMVA6() < 0.5 || tau.againstMuonLoose3() < 0.5 );
     lep_tlv.SetPtEtaPhiM(b_pt_1[ch], b_eta_1[ch], b_phi_1[ch], b_m_1[ch]);
@@ -1560,6 +1563,7 @@ void TauTauAnalysis::FillBranches(const std::string& channel, const std::vector<
   double R_pt_m_sv = -1;
   if ( doSVFit ){
     //std::cout << ">>> SVFit" << std::endl;
+    // TODO: return TLV
     m_SVFitTool.addMeasuredLeptonTau(channel,lep_tlv, tau_tlv, tau.decayMode());
     m_SVFitTool.getSVFitMassAndPT(m_sv,pt_tt_sv,met_tlv_corrected.Px(),met_tlv_corrected.Py(), met.cov00(),met.cov10(),met.cov11());
     if(m_sv > 0) R_pt_m_sv = pt_tt_sv/m_sv;
@@ -1777,7 +1781,8 @@ bool TauTauAnalysis::isNonTrigElectronID(const UZH::Electron& electron)
 // https://github.com/gitytakahas/EXOVVNtuplizerRunII/blob/80X_ntuplizer/Ntuplizer/plugins/ElectronsNtuplizer.cc#L66-L98
   Float_t eta = fabs(electron.superCluster_eta());
   Float_t pt  = electron.pt();
-  Float_t mva = electron.nonTrigMVAID();
+  Float_t mva = electron.isMVATightElectron(); // Moriond
+//   Float_t mva = electron.nonTrigMVAID(); // ICHEP
   
   // assume pt > 5.0 GeV
   if(pt <= 10.){
@@ -1959,17 +1964,18 @@ void TauTauAnalysis::extraLeptonVetos(const std::string& channel, const UZH::Muo
     if(fabs(myelectron.dz_allvertices()) > 0.2) continue;
     if(fabs(myelectron.d0_allvertices()) > 0.045) continue;
     if(myelectron.SemileptonicPFIso() / myelectron.pt() > 0.3) continue;
+    if(!myelectron.isMVATightElectron()) continue; // Moriond
+//     if(!isNonTrigElectronID(myelectron)) continue; // ICHEP
     
     // extra electron veto
     if(myelectron.passConversionVeto() &&
-       isNonTrigElectronID(myelectron) &&
        myelectron.expectedMissingInnerHits() <= 1){
       if( myelectron.pt() != electron.pt() && myelectron.eta() != electron.eta() && myelectron.phi() != electron.phi())
         b_extraelec_veto_ = true;
     }
     
     // dilepton veto: match with other muons
-    if(myelectron.pt() > 15 && isNonTrigElectronID(myelectron))
+    if(myelectron.pt() > 15)
       passedElectrons.push_back(myelectron);
   }
   

@@ -1,7 +1,7 @@
 path2xml="$SFRAME_DIR/../BatchSubmission/xmls_Izaak"
 path2tmp="$SFRAME_DIR/../AnalysisTemp"
 jobName="signal"
-outDir="/scratch/ineuteli/SFrameAnalysis/AnalysisOutput/"+jobName #"$SFRAME_DIR/../AnalysisOutput/"+jobName
+outDir="/scratch/$USER/SFrameAnalysis/AnalysisOutput/"+jobName #"$SFRAME_DIR/../AnalysisOutput/"+jobName
 cycleName="TauTauAnalysis"
 nEventsMax=-1
 #nEventsMax=200
@@ -25,9 +25,11 @@ if "Summer2016" in postFix: dataSets = [
 userItems = [
                 ["IsData","false"],
                 ["IsSignal","true"],
-                ["doRecoilCorr","false"],
+                ["doRecoilCorr","false"], # set to true?
                 ["doTES","false"],
                 ["TESshift","0.00"],
+                ["doEES","false"],
+                ["EESshift","0.00"],
              ]
 
 jobOptionsFile2=open("AnalysisOptions.py", 'r')

@@ -1,16 +1,15 @@
-path2xml="$SFRAME_DIR/../BatchSubmission/xmls_Izaak"
+path2xml="$SFRAME_DIR/../BatchSubmission/xmls_Summer2016"
 path2tmp="$SFRAME_DIR/../AnalysisTemp"
 jobName="SingleMuon"
-outDir="/scratch/ineuteli/SFrameAnalysis/AnalysisOutput/"+jobName #"$SFRAME_DIR/../AnalysisOutput/"+jobName
+outDir="/scratch/$USER/SFrameAnalysis/AnalysisOutput/"+jobName #"$SFRAME_DIR/../AnalysisOutput/"+jobName
 cycleName="TauTauAnalysis"
 nEventsMax=-1
 #nEventsMax=200
 nProcesses=1
-nFiles=2
+nFiles=4
 hCPU="04:00:00"
 hVMEM="5000M"
-postFix="_ICHEP" #"_ICHEP"
- #"_triggerless"
+postFix="_Summer2016" #"_ICHEP"
 dataSets = [
                ["SingleMuon_1_Run2016",
                 [   "SingleMuon_Run2016B-PromptReco-v2_24p47fb_v2_0000_0.xml",
@@ -101,8 +100,6 @@ userItems = [
                 ["IsSignal","false"],
                 #["doSVFit","true"],
                 ["doRecoilCorr","false"],
-                ["OutputTreeName_mutau", "tree_mutau" ],
-                ["OutputTreeName_eletau","tree_etau"],
              ]
 
 jobOptionsFile2=open("AnalysisOptions.py", 'r')

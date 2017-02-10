@@ -1,7 +1,7 @@
-path2xml="$SFRAME_DIR/../BatchSubmission/xmls_Izaak"
+path2xml="$SFRAME_DIR/../BatchSubmission/xmls_Summer2016"
 path2tmp="$SFRAME_DIR/../AnalysisTemp"
 jobName="VBF"
-outDir="/scratch/ineuteli/SFrameAnalysis/AnalysisOutput/"+jobName #"$SFRAME_DIR/../AnalysisOutput/"+jobName
+outDir="/scratch/$USER/SFrameAnalysis/AnalysisOutput/"+jobName #"$SFRAME_DIR/../AnalysisOutput/"+jobName
 cycleName="TauTauAnalysis"
 nEventsMax=-1
 #nEventsMax=200
@@ -9,11 +9,11 @@ nProcesses=1
 nFiles=2
 hCPU="03:30:00"
 hVMEM="5000M"
-postFix="_ICHEP" #"_ICHEP" #"_Summer2016"
+postFix="_Summer2016" #"_ICHEP" #"_Summer2016"
 dataSets = [
             
         ["VBFHToTauTau_M125_13TeV_powheg_pythia8",
-         [  "VBFHToTauTau_M125_13TeV_powheg_pythia8_161014_151922_0.xml", 
+         [  "VBFHToTauTau_M125_13TeV_powheg_pythia8_161014_151922_0.xml",
             "VBFHToTauTau_M125_13TeV_powheg_pythia8_161014_151922_1.xml", ]],
             
 #         ["VBFHToTauTau_M125_13TeV_powheg_pythia8",
@@ -29,11 +29,13 @@ if "Summer2016" in postFix: dataSets = [
             "VBFHToTauTau_M125_13TeV_powheg_pythia8_V2_0000_2.xml", ]],
             ]
 
-userItems = [ 
+userItems = [
                 ["IsData","false"],
                 ["IsSignal","true"],
                 ["doSVFit","false"],
                 ["doRecoilCorr","True"],
+                ["doEES","false"],
+                ["EESshift","0.00"],
              ]
 
 jobOptionsFile2=open("AnalysisOptions.py", 'r')

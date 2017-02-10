@@ -35,10 +35,10 @@ def main():
                     dest="treeName", default="ntuplizer/tree",
                     help="Tree to be scanned by SFrame for number of input events [default = %default]")
   parser.add_option("-m", "--maxFiles", action="store",
-                    dest="maxFiles", default="500",
+                    dest="maxFiles", default="350",
                     help="Maximum number of files [default = %default]")
   parser.add_option("-o", "--outDir", action="store",
-                    dest="outDir", default="xmls_Izaak",
+                    dest="outDir", default="xmls_Summer2016",
                     help="Output directory for xml files [default = %default]")
 
 
@@ -53,7 +53,7 @@ def main():
   verbose=options.verbose
   useXrootd=options.useXrootd
   treeName=options.treeName
-  maxFiles=int(options.maxFiles)
+  maxFiles_original=int(options.maxFiles)
   outDir=options.outDir
 
   if not os.path.exists(outDir):
@@ -93,10 +93,12 @@ def main():
               fileList.append(prefix + os.path.join(sample, subdir, file))
       
         print "Processing %d files" %len(fileList)
-        nFiles=int(math.ceil(len(fileList)/float(maxFiles)))
+        nFiles=int(math.ceil(len(fileList)/float(maxFiles_original)))
         if (nFiles > 1):
           maxFiles = int(math.ceil(len(fileList)/float(nFiles)))
           print "splitting file into %d subfiles of max. %d input files each" %(nFiles, maxFiles)
+        else :
+          maxFiles = int(maxFiles_original)
         if (len(fileList) == 0):
           print "No files found."
         for i in range(nFiles):

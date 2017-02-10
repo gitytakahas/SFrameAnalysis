@@ -1,12 +1,12 @@
 from ROOT import * #TFile, TCanvas, TH1F, TH2F, THStack, TAxis, TGaxis, TGraph...
 import CMS_lumi, tdrstyle
 from math import sqrt, pow, log
-from cStringIO import StringIO # for stdout capturing
-import sys
-# TODO http://stackoverflow.com/questions/16571150/how-to-capture-stdout-output-from-a-python-function-call
+# from SampleTools import Samples, Sample
+from PrintTools  import color, warning, error, printSameLine, printVerbose, LoadingBar
+#from SampleTools import getSample # on the bottom to prevent loading errors
 
 # CMS style
-lumi = 12.9 #24.5
+lumi = 12.9 # set in plot.py
 CMS_lumi.cmsText = "CMS"
 CMS_lumi.extraText = "Preliminary"
 CMS_lumi.cmsTextSize  = 0.65
@@ -39,7 +39,7 @@ varlist = { "jpt_1": "leading jet pt",              "jpt_2": "leading jet pt",
             "m_sv": "SVFit m_sv",
             "dR_ll": "#DeltaR_{ltau}",
             "pfmt_1":"PF mt_l,MET", "met":"MET" }
-         
+
 
 
 
@@ -121,12 +121,12 @@ def makeHistName(label, var):
     
 def combineWeights(*weights,**kwargs):
     """Combine cuts and apply weight if needed."""
-
+    
     weights = [ w for w in weights if w and type(w) == str ]
-
+    
     if weights: weights = "*".join(weights)
     else:       weights = ""
-
+    
     #print weights
     return weights
     
@@ -136,7 +136,7 @@ def combineWeights(*weights,**kwargs):
     
 def combineCuts(*cuts,**kwargs):
     """Combine cuts and apply weight if needed."""
-
+    
     cuts = [ cut for cut in cuts if cut and type(cut) == str ]
     weight = kwargs.get('weight', False)
     
@@ -153,146 +153,7 @@ def combineCuts(*cuts,**kwargs):
 
     #print cuts
     return cuts
-
-
-
-
-
-class LoadingBar(object):
-    """Class to make a simple, custom loading bar."""
-    # from math import log, import sys
-
-    def __init__(self, *args, **kwargs):
-        '''Constructor for LoadingBar object.'''
-        self.steps = 10
-        if len(args)>0 and isinstance(args[0],int) and args[0]>0: self.steps = args[0]
-        self.tally   = 0
-        self.position = 0
-        self.steps   = max(kwargs.get('steps',self.steps),1)
-        self.width   = max(kwargs.get('width',self.steps),1)
-        self.counter = kwargs.get('counter',False)
-        self.counterformat = "%%%ii" % (log(self.steps,10)+1)
-        self.remove  = kwargs.get('remove',False)
-        self.symbol  = kwargs.get('symbol',"=")
-        self.prepend = kwargs.get('prepend',">>> ")
-        self.append  = kwargs.get('append',"")
-        self.message_ = kwargs.get('message',"")
-        self.done    = False
-        if self.counter: self.counter = " %s/%i" % (self.counterformat%self.tally,self.steps)
-        else:            self.counter = ""
-        sys.stdout.write("%s[%s]" % (self.prepend," "*self.width))
-        sys.stdout.flush()
-        sys.stdout.write("\b"*(self.width+1)) # return to start of line, after '['
-        if self.counter: self.updateCounter()
-        if self.message_: self.message(self.message_)
-
-    def count(self,*args,**kwargs):
-        """Count one step."""
-        if self.done: return
-        i = 1.0
-        message = ""
-        if len(args)>0 and isinstance(args[0],int) and args[0]>0:
-            i = args[0]
-            args.remove(i)
-        if len(args)>0 and isinstance(args[0],str):
-            message = args[0]
-        i = max(min(i,self.steps-self.tally),0)
-        newposition = int(round(float(self.tally+i)*self.width/self.steps))
-        step = newposition-self.position
-        self.position = newposition
-        sys.stdout.write(self.symbol*step)
-        sys.stdout.flush()
-        self.tally += i
-        if self.counter: self.updateCounter()
-        if message: self.message(message)
-        if self.tally >= self.steps:
-            if self.append: self.message(self.append,moveback=self.remove)
-            if self.remove:
-                sys.stdout.write("\b"*(self.width+1+len(self.prepend)))
-                sys.stdout.write(' '*(len(self.prepend)+self.width+len(self.counter)+len(self.message_)+4))
-                sys.stdout.write("\b"*(len(self.prepend)+self.width+len(self.counter)+len(self.message_)+4))
-            elif not self.append: self.message("\n")
-            self.done = True
-
-    def updateCounter(self,**kwargs):
-        """Update the counter."""
-        self.counter = " %s/%i" % (self.counterformat%self.tally,self.steps)
-        sys.stdout.write("%s]%s" % (' '*(self.width-self.position), self.counter))
-        sys.stdout.flush()
-        sys.stdout.write("\b"*(self.width+1-self.position+len(self.counter)))
-
-    def message(self,newmessage,moveback=True):
-        """Append the counter with some progress message."""
-        end_ = ""
-        if "\n" in newmessage:
-            end_ = newmessage[newmessage.index("\n"):]
-            newmessage = newmessage[:newmessage.index("\n")]
-        self.message_ = newmessage.ljust(len(self.message_))+end_
-        sys.stdout.write("%s]%s %s" % (' '*(self.width-self.position), self.counter, self.message_))
-        sys.stdout.flush()
-        if moveback: sys.stdout.write("\b"*(self.width+2-self.position+len(self.counter)+len(self.message_)))
-
-
-
-
-
-def color(string,**kwargs):
-    """Color"""
-    # http://stackoverflow.com/questions/287871/print-in-terminal-with-colors-using-python
-    text_color_dict = { "black"     : "0;30;",  "red"       : "1;31;",
-                        "green"     : "0;32;",  "yellow"    : "1;33;", "orange"    : "1;33;",
-                        "blue"      : "1;34;",  "purple"    : "0;35;",
-                        "magenta"   : "1;36;",  "grey"      : "0;37;",  }
-    background_color_dict = {   "black"     : "40", "red"       : "41",
-                                "green"     : "42", "yellow"    : "43", "orange"    : "43",
-                                "blue"      : "44", "purple"    : "45",
-                                "magenta"   : "46", "grey"      : "47", }                  
-    color_code = text_color_dict[kwargs.get('color',"red")] + background_color_dict[kwargs.get('background',"black")]
-    return kwargs.get('prepend',"") + "\x1b[%sm%s\033[0m" % ( color_code, string )
-
-def warning(string,**kwargs):
-    return color("Warning! "+string, color="yellow", prepend=">>> "+kwargs.get('prepend',""))
     
-def error(string,**kwargs):
-    return color("ERROR! "+string, color="red", prepend=">>> "+kwargs.get('prepend',""))
-
-
-
-
-
-def printSameLine(string):
-    """Print string without making new line. (Write to stdout and flush.)"""
-    sys.stdout.write(string+" ")
-    sys.stdout.flush()
-
-
-
-
-
-class capturing(object):
-    """Capture standard output"""
-
-    def __init__(self,**kwargs):
-        self.old_stdout = sys.stdout
-        self.old_stderr = sys.stderr
-        self.captured0 = StringIO()
-        sys.stdout = self.captured0
-        sys.stderr = self.captured0
-
-    def stop(self):
-        sys.stdout = self.old_stdout
-        sys.stderr = self.old_stderr
-        self.captured0.close()
-
-    def captured(self):
-        sys.stdout = self.old_stdout
-        sys.stderr = self.old_stderr
-        out = self.captured0.getvalue()
-        if '\n' in out[-2:]: out = out[:-1]
-        self.captured0.close()
-        return out
-
-
 
 
 
@@ -370,252 +231,18 @@ class Ratio(object):
 
 
 
-class Samples(object):
-    """Class to combine a set of Sample-objects to make one histogram with the Plot class."""
-
-    def __init__(self, label, **kwargs):
-        self.samples    = [ ]
-        self.label      = label
-        self.cuts       = kwargs.get('cuts', "")
-        self.weight     = kwargs.get('weight', False)
-        self.scale      = kwargs.get('scale', 1.0)
-        self.scaleBU    = self.scale # BU scale to overwrite previous renormalizations (WJ)
-        self.sigma      = kwargs.get('sigma', 0.0)
-        self.isData     = kwargs.get('data', False)
-        self.isBackground = kwargs.get('background', False)
-        self.isSignal   = kwargs.get('signal', False)
-        self.blind      = kwargs.get('blind', { })
-        filename = label
-        treename = "tree"
-        if self.samples:
-            filename = self.samples[0].filename
-            treename = self.samples[0].treeName
-        self.filename   = kwargs.get('filename', filename)
-        self._treeName  = kwargs.get('treeName', treename)
-        self.filenameshort = "/".join(self.filename.split('/')[-2:])
-
-
-    @property
-    def treeName(self): return self._treeName
-
-    @treeName.setter
-    def treeName(self, value):
-        for sample in self.samples: sample.treeName = value
-        self._treeName = value
-
-    
-    def add(self, sample, **kwargs):
-        #scale  = kwargs.get('scale', 1.0) * self.scale
-        #sample.scale *= scale
-        self.samples.append(sample)
-    
-    
-    def hist(self, var, nBins, a, b, **kwargs):
-        name    = kwargs.get('name',  makeHistName(self.label+"_merged", var))
-        title   = kwargs.get('title', self.label)
-        kwargs['scale'] = self.scale * kwargs.get('scale', 1.0) # pass scale down
-        
-        #print ">>> Samples - hist: name = %s" % name
-        hist = TH1F(name, title, nBins, a, b)
-        for sample in self.samples:
-            if 'name' in kwargs: # prevent memory leaks
-                kwargs['name']  = makeHistName(sample.label,name.replace(self.label+'_',''))    
-            hist.Add( sample.hist(var, nBins, a, b, **kwargs) )
-        
-        return hist
-    
-    
-    def hist2D(self, var1, nBins1, a1, b1, var2, nBins2, a2, b2, **kwargs):
-        name   = kwargs.get('name',  makeHistName(self.label+"_merged", "%s_vs_%s" % (var1,var2)))
-        title   = kwargs.get('title', self.label)
-        kwargs['scale'] = self.scale * kwargs.get('scale', 1.0) # pass scale down
-        
-        hist2D = TH2F(name, title, nBins2, a2, b2, nBins1, a1, b1)
-        for sample in self.samples:
-            if 'name' in kwargs: # prevent memory leaks
-                kwargs['name']  = makeHistName(sample.label,name.replace(self.label+'_',''))    
-            hist2D.Add( sample.hist2D(var1, nBins1, a1, b1, var2, nBins2, a2, b2, **kwargs) )
-        
-        return hist2D
-
-
-    def resetScalesAndWeights(self,**kwargs):
-        
-        for sample in self.samples:
-            sample.resetScalesAndWeights(**kwargs)
-
-    
-    def isPartOf(self, *labels):
-        """Check if labels are in label or filename."""
-        
-        if not labels: return False
-        yes = True
-        for label in labels:
-            yes = yes and (label in self.label or label in self.filenameshort)
-        
-        return yes
-
-
-
-
-
-class Sample(object):
-    """Class to make histogram with the Plot class."""
-
-    def __init__(self, filename, label, **kwargs):
-        self.filename   = filename
-        self.filenameshort = "/".join(self.filename.split('/')[-2:])
-        self.file       = TFile(filename)
-        self.label      = label
-        self.cuts       = kwargs.get('cuts', "")
-        self.weight     = kwargs.get('weight', "")
-        self.scale      = kwargs.get('scale', 1.0)
-        self.scaleBU    = self.scale # BU scale to overwrite previous renormalizations (WJ)
-        self.sigma      = kwargs.get('sigma', 0.0)
-        self.N          = kwargs.get('N', 0)
-        self.isData     = kwargs.get('data', False)
-        self.isBackground = kwargs.get('background', False)
-        self.isSignal   = kwargs.get('signal', False)
-        self.treeName   = kwargs.get('treeName', "tree")
-        self.blind      = kwargs.get('blind', { })
-        # TODO: only blind for m_vis variable!
-        # TODO: rewrite class with tree method, applycut method, ...
-
-    @property
-    def tree(self): return self.file.Get(self.treeName)
-
-    #@treeName.setter
-    #def tree(self, tree): self._tree = tree
-        
-
-    
-    def hist(self, var, nBins, a, b, **kwargs):
-        """Make a histogram with a tree."""
-        
-        scale  = kwargs.get('scale', 1.0) * self.scale
-        tree   = self.file.Get(self.treeName)
-        name   = kwargs.get('name',  makeHistName(self.label, var))
-        title  = kwargs.get('title', self.label)
-        
-        blindcuts = ""
-        if var in self.blind: blindcuts = self.blind[var]
-        weight = combineWeights(self.weight, kwargs.get('weight', ""))
-        cuts   = combineCuts(self.cuts, kwargs.get('cuts', ""), blindcuts, weight=weight)
-        
-        hist = TH1F(name, title, nBins, a, b)
-        #print "\n>>> %s: %s" % ( self.filenameshort, cuts)
-        out = tree.Draw("%s >> %s" % (var,name), cuts, "gOff")
-        if out < 0: print error("Drawing histogram for %s sample failed!" % (title))
-        
-        if scale is not 1.0: hist.Scale(scale)
-        if scale is     0.0: print warning("Scale of %s is 0!" % self.label)
-        #print hist.GetEntries()
-        #gDirectory.Delete(label)
-        return hist
-        
-        
-        
-    def hist2D(self, var1, nBins1, a1, b1, var2, nBins2, a2, b2, **kwargs):
-        """Make a 2D histogram with a tree."""
-        
-        scale  = kwargs.get('scale', 1.0) * self.scale
-        tree   = self.file.Get(self.treeName)
-        name   = kwargs.get('name',  makeHistName(self.label, "%s_vs_%s" % (var1,var2)))
-        title  = kwargs.get('title', self.label)
-        
-        blindcuts = ""
-        if var1 in self.blind: blindcuts += self.blind[var1]
-        if var2 in self.blind: blindcuts += self.blind[var2]
-        weight = combineWeights(self.weight, kwargs.get('weight', ""))
-        cuts   = combineCuts(self.cuts, kwargs.get('cuts', ""), blindcuts, weight=weight)
-        
-        hist2D = TH2F(name, title, nBins2, a2, b2, nBins1, a1, b1)
-        out = tree.Draw("%s:%s >> %s" % (var1,var2,name), cuts, "gOff")
-        if out < 0: print error("Drawing histogram for %s sample failed!" % (title))
-        
-        #if scale is not 1.0: hist.Scale(scale)
-        #if scale is     0.0: print warning("Scale of %s is 0!" % self.label)
-        return hist2D
-    
-    
-    
-    def scale(self, hist, scale, **kwargs):
-        """Make a scale."""
-        
-        if len(args):
-            scale = args[0]
-            if I: hist.Scale(scale)
-            else: print ">>> could not scale: I = 0"
-        else:
-            lumi = kwargs.get('lumi', 0)
-            sigma = kwargs.get('sigma', 0)
-            efficiency = kwargs.get('efficiency', 1)
-            acceptance = kwargs.get('acceptance', 1)
-            e = kwargs.get('e', 1)
-            A = kwargs.get('A', 1)
-            N = kwargs.get('N', 1)
-            if lumi and sigma:
-                scale = lumi * sigma * efficiency * e * acceptance * A / N
-                if I: hist.Scale(scale)
-                else: print ">>> could not scale: I = 0"
-
-
-    def norm(self, hist):
-        """Normalize histogram."""
-        
-        I = hist.Integral()
-        if I:
-            hist.Scale(1/I)
-
-
-    def resetScalesAndWeights(self,**kwargs):
-        """Reset all scales and weight to unity. Option to normalize."""
-        norm    = kwargs.get('norm',True)
-        weight  = kwargs.get('weight',"")
-        self.scale  = 1
-        self.weight = weight
-        if norm and self.N:
-            self.scale = 1/self.N
-
-    
-    def addWeight(self, weight):
-        """Combine weight to."""
-        self.weight = combineWeights(self.weight, weight)
-        #print ">>> addWeight: combine weights %s" % self.weight
-
-
-    def applyCuts(self, treename, cuts):
-        """Make tree with cuts applied."""
-        # TODO: implement method that saves new tree with cuts
-
-    
-    def isPartOf(self, *labels):
-        """Check if labels are in label or filename."""
-        
-        if not labels: return False
-        yes = True
-        for label in labels:
-            yes = yes and (label in self.label or label in self.filenameshort)
-        
-        return yes
-
-
-
-
-
 class Plot(object):
     """Class to automatically make CMS plot."""
 
     def __init__(self, samples, var, nBins, a, b, **kwargs):
-        self.samples    = samples
+        self.samples    = samples[:]
         self.var        = var
         self.nBins      = nBins
         self.a          = a
         self.b          = b
         self.cuts       = kwargs.get('cuts', "")
         self.weight     = kwargs.get('weight', "")
-        self.reset      = kwargs.get('reset', False)
-        self.loadingbar = kwargs.get('loadingbar', True)
+        self.shift_QCD  = kwargs.get('shift_QCD', 0)
         
         self.histsS     = [ ]
         self.histsB     = [ ]
@@ -624,18 +251,29 @@ class Plot(object):
         self._histsMC   = [ ]
         self.hist_error = None
         self.ratio      = None
+        self.reset      = kwargs.get('reset', False)
+        self.colors     = colors[:]
+        self.fillcolors = fillcolors[:]
+        self.ignore     = kwargs.get('ignore',[])
+        verbosity       = kwargs.get('verbosity',0)
+        self.loadingbar = kwargs.get('loadingbar', True) and not verbosity
         
         if self.loadingbar:
-            bar = LoadingBar(len(samples),width=16,prepend=">>> making histograms: ",counter=True,remove=True)
-        for sample in samples:
+            bar = LoadingBar(len(samples),width=16,prepend=">>> %s: making histograms: " % (self.var),counter=True,remove=True)
+        for sample in self.samples:
             if self.loadingbar: bar.message(sample.label)
             if self.reset: sample.scale = sample.scaleBU
+            if sample.label in self.ignore:
+                self.colors.pop(self.samples.index(sample))
+                self.fillcolors.pop(self.samples.index(sample))
+                if self.loadingbar: bar.count("%s skipped"%sample.label)
+                continue
             if sample.isSignal and kwargs.get('signal', True):
-                self.histsS.append(sample.hist(var, nBins, a, b, cuts=self.cuts, weight=self.weight))
+                self.histsS.append(sample.hist(var, nBins, a, b, cuts=self.cuts, weight=self.weight, verbosity=verbosity))
             elif sample.isBackground and kwargs.get('background', True):
-                self.histsB.append(sample.hist(var, nBins, a, b, cuts=self.cuts, weight=self.weight))
+                self.histsB.append(sample.hist(var, nBins, a, b, cuts=self.cuts, weight=self.weight, verbosity=verbosity))
             elif sample.isData and kwargs.get('data', True):
-                self.histsD.append(sample.hist(var, nBins, a, b, cuts=self.cuts))
+                self.histsD.append(sample.hist(var, nBins, a, b, cuts=self.cuts,                     verbosity=verbosity))
             if self.loadingbar: bar.count("%s done"%sample.label)
         if kwargs.get('QCD', False):
             histQCD = self.QCD()
@@ -648,33 +286,27 @@ class Plot(object):
         self.pads       = [ ]
         self.frame      = None
         self.legend     = None
-        self.width  = 0.18; self.height = 0.08 + 0.05 * len(self.histsB)
+        self.width  = 0.20; self.height = 0.08 + 0.05 * len(self.histsB)
         self.x2     = 0.95; self.x1 = self.x2 - self.width
         self.y2     = 0.90; self.y1 = self.y2 - self.height
-
+    
     @property
     def hists(self): return ( self.histsB + self.histsS + self.histsD )
-
+    
     @hists.setter
     def hists(self, value): self._hists = value
-
+    
     @property
     def histsMC(self): return ( self.histsB + self.histsS )
-
+    
     @histsMC.setter
     def histsMC(self, value): self._histsMC = value
 
 
 
-    def get(self,name,**kwargs):
+    def get(self,*labels,**kwargs):
         """Method to get all sample corresponding to some name."""
-        matches = [ ]
-        label = kwargs.get('label',"") # extra search label
-        filename = kwargs.get('filename',"")
-        for sample in self.samples:
-            if name in sample.label and label in sample.label and filename in sample.filename:
-                matches.append(sample)
-        return matches
+        return getSample(self.samples,*labels,**kwargs)
 
 
 
@@ -683,12 +315,12 @@ class Plot(object):
     
         # https://root.cern.ch/doc/master/classTHStack.html
         # https://root.cern.ch/doc/master/classTHistPainter.html#HP01e
-        stack       = kwargs.get('stack', False)
-        residue     = kwargs.get('residue', False) and self.histsD
-        ratio       = kwargs.get('ratio', False) and self.histsD
+        stack       = kwargs.get('stack',     False)
+        residue     = kwargs.get('residue',   False) and self.histsD
+        ratio       = kwargs.get('ratio',     False) and self.histsD
         errorbars   = kwargs.get('errorbars', False)
         staterror   = kwargs.get('staterror', False)
-        norm        = kwargs.get('norm', False)
+        norm        = kwargs.get('norm',      False)
         option      = 'hist' #+ kwargs.get('option', '')
         if errorbars: option = 'E0 '+option
         
@@ -740,7 +372,7 @@ class Plot(object):
         self.makeAxes( xlabel=kwargs.get('xlabel', self.var), noxaxis=ratio,
                        logy=kwargs.get('logy',False), logx=kwargs.get('logx',False) )
         if kwargs.get('legend', True):
-            self.makeLegend( title=kwargs.get('title', ""), entries=kwargs.get('entries', ),
+            self.makeLegend( title=kwargs.get('title', ""), entries=kwargs.get('entries', [ ]),
                                                             position=kwargs.get('position', "") )
 
         # CMS LUMI        
@@ -762,6 +394,7 @@ class Plot(object):
     def saveAs(self,filename):
         """Save plot, close canvas and delete the histograms."""
         
+        printSameLine("")
         self.canvas.SaveAs(filename)
         if self.canvas_sigma: self.canvas_sigma.SaveAs(filename.replace(".png","_eff.png"))
         self.close()
@@ -1014,12 +647,12 @@ class Plot(object):
             colors2 = [kRed+3, kRed-7, kAzure+4, kAzure-4, kMagenta+3, kGreen+3, kOrange+6, kMagenta-3]
             line = [1,3,2,3]
             for i in range(len(hists)):
-                hists[i].SetLineColor(colors2[i])
+                hists[i].SetLineColor(self.colors2[i])
                 hists[i].SetLineStyle(line[i%4])
                 hists[i].SetLineWidth(3)
         else:
             for i in range(len(hists)):
-                hists[i].SetLineColor(colors[i%len(colors)])
+                hists[i].SetLineColor(self.colors[i%len(self.colors)])
                 hists[i].SetLineStyle(i%4+1)
                 hists[i].SetLineWidth(3)
 
@@ -1033,7 +666,7 @@ class Plot(object):
         for i in range(len(hists)):
             #hists[i].SetLineColor(colors[i%len(colors)])
             #hists[i].SetLineStyle(1)
-            hists[i].SetFillColor(fillcolors[i%len(colors)])
+            hists[i].SetFillColor(self.fillcolors[i%len(colors)])
 
 
 
@@ -1043,7 +676,7 @@ class Plot(object):
         #print ">>> setLineColor"
         if len(hists) is 0: hists = self.hists
         for i in range(len(hists)):
-            hists[i].SetLineColor(colors[i%len(colors)])
+            hists[i].SetLineColor(self.colors[i%len(colors)])
             hists[i].SetLineStyle(1)
             hists[i].SetLineWidth(3)
 
@@ -1231,9 +864,13 @@ class Plot(object):
         nBins   = self.nBins
         (a,b)   = (self.a,self.b)
         samples = self.samples
-        scale   = 1.06 # scale up QCD 6% in OS region
         name    = kwargs.get('name',makeHistName("QCD",var))
-        verbose = kwargs.get('verbose',False)
+        verbosity = kwargs.get('verbosity',False)
+        
+        shift   = kwargs.get('shift',0.0) + self.shift_QCD
+        printVerbose(">>> QCD: shift = %s, self.shift_QCD = %s" % (shift,self.shift_QCD),verbosity,level=2)
+        scale   = 1.06*(1.0+shift) # scale up QCD 6% in OS region by default
+        if "q_1 * q_2 > 0" in cuts or "q_1*q_2>0" in cuts or "q_1*q_2 > 0" in cuts: scale = 1.0
         
         if "q_1 * q_2 < 0" in cuts or "q_1*q_2<0" in cuts or "q_1*q_2 < 0" in cuts:
             cuts = cuts.replace("q_1 * q_2 < 0","q_1 * q_2 > 0").replace("q_1*q_2 < 0","q_1 * q_2 > 0").replace("q_1*q_2<0","q_1 * q_2 > 0")        
@@ -1241,14 +878,12 @@ class Plot(object):
             cuts = "q_1 * q_2 > 0 && %s" % cuts
         else:
             cuts = "q_1 * q_2 > 0"
+            #print warning("Could not make QCD: no charge requirement")
             #return None
-        
-        if "q_1 * q_2 > 0" in cuts or "q_1*q_2>0" in cuts or "q_1*q_2 > 0" in cuts:
-            scale = 1.0
         
         histsMC_SS = [ ]
         histsD_SS  = [ ]
-        if self.loadingbar: bar = LoadingBar(len(samples),width=16,prepend=">>> calculating QCD: ",counter=True,remove=True)
+        if self.loadingbar: bar = LoadingBar(len(samples),width=16,prepend=">>> %s: calculating QCD: " % (self.var),counter=True,remove=True)
         for sample in samples:
             if self.loadingbar: bar.count(sample.label)
             name_SS = makeHistName(sample.label+"_SS", var)
@@ -1279,16 +914,17 @@ class Plot(object):
            the mt_1 > 80 GeV sideband.
            This method assume that the variable of this Plot object is a transverse mass and is plotted
            from 80 GeV to at least 100 GeV."""
-        printSameLine(">>> renormalizing WJ with mt > 80 GeV sideband for variable %s" % (self.var))
+        printSameLine(">>>\n>>> %srenormalizing WJ with mt > 80 GeV sideband for variable %s" % (kwargs.get('prepend',""),self.var))
         
-        samples = self.samples
-        cuts    = self.cuts
-        var     = self.var
-        nBins   = self.nBins
-        (a,b)   = (self.a,self.b)
+        samples     = self.samples
+        cuts        = self.cuts
+        var         = self.var
+        nBins       = self.nBins
+        (a,b)       = (self.a,self.b)
+        verbosity   = kwargs.get('verbosity',0)
         
         # STACK
-        QCD = False
+        QCD   = False
         stack = THStack("stack","")
         for hist in self.histsMC:
             stack.Add(hist)
@@ -1296,6 +932,8 @@ class Plot(object):
         if QCD: print "(QCD included)"
         else:   print " "
         self.stack = stack
+        printVerbose(">>>   nBins=%s, (a,b)=(%s,%s)" % (nBins,a,b), verbosity)
+        printVerbose(">>>   cuts=%s" % (cuts), verbosity)
         
         # CHECK MC and DATA
         if not self.histsMC:
@@ -1329,6 +967,7 @@ class Plot(object):
             #print sample.label
             if "WJ" in sample.label or "W + jets" in sample.label or "W + Jets" in sample.label:
                 WJs.append(sample)
+                if "TES" in sample.label: print ">>>   note: %s" % (sample.label)
                 
         # CHECK WJ SAMPLE
         if   len(WJs) == 1:
@@ -1386,6 +1025,116 @@ class Plot(object):
             return
         WJ.scale = WJ.scaleBU * scale
         print ">>>   WJ renormalization scale = %.3f (new total scale = %.3f)" % (scale, WJ.scale)
+
+
+
+    def renormalizeTT(self,**kwargs):
+        """Renormalize TT by requireing that MC and data has the same number of events in some control region:
+              - category 1: ...
+              - category 2: ...
+           ..."""
+        printSameLine(">>> renormalizing TT for %s" % (self.var))
+        
+        samples = self.samples
+        cuts    = self.cuts
+        var     = self.var
+        nBins   = self.nBins
+        (a,b)   = (self.a,self.b)
+        
+        # STACK
+        QCD = False
+        stack = THStack("stack","")
+        for hist in self.histsMC:
+            stack.Add(hist)
+            if "QCD" in hist.GetName(): QCD = True
+        if QCD: print "(QCD included)"
+        else:   print " "
+        self.stack = stack
+        
+        # CHECK MC and DATA
+        if not self.histsMC:
+            print warning("Could not renormalize TT: no MC!", prepend="  ")
+            return
+        if not self.stack:
+            print warning("Could not renormalize TT: no stack!", prepend="  ")
+            return
+        if not self.histsD:
+            print warning("Could not renormalize TT: no data!", prepend="  ")
+            return
+        
+        # CHECK mt
+        for v in [ "mt_1" ]:
+            if v in var: break
+        else:
+            print warning("Could not renormalize TT: Plot object has no transverse mass variable!", prepend="  ")
+            return
+        
+        # CHECK a, b (assume histogram range goes from 80 to >100 GeV)
+        if a is not 60:
+            print warning("Renormalizing TT with mt > %s GeV, instead of mt > 60 GeV!" % a, prepend="  ")
+        if b < 150:
+            print warning("Renormalizing TT with mt < %s GeV < 150 GeV!" % b, prepend="  ")
+            return
+        
+        # GET TT SAMPLE to set scale
+        TT = None
+        TTs = [ ]
+        for sample in samples:
+            #print sample.label
+            if "TT" in sample.label or "ttbar" in sample.label: # or "tt" in sample.label
+                TTs.append(sample)
+                
+        # CHECK TT SAMPLE
+        if   len(TTs) == 1:
+            TT = TTs[0]
+        elif len(TTs)  > 1:
+            TT = TTs[0]
+            print warning("More than one TT sample, renormalizing with first instance (%s)!" % (TT.label), prepend="  ")
+        else:
+            print warning("Could not renormalize TT: no TT sample!", prepend="  ")
+            return
+                
+        # GET TT HIST to calculate scale
+        histTT = None
+        histsTT = [ ]
+        for hist in self.histsTT:
+            #print hist.GetName()
+            if "TT" in hist.GetName() or "ttbar" in hist.GetName():
+                histsTT.append(hist)
+                
+        # CHECK TT HIST
+        if   len(histsTT) == 1:
+            histTT = histsTT[0]
+        elif len(histsTT)  > 1:
+            histTT = histsTT[0]
+            print warning("More than one TT sample, renormalizing with first instance (%s)!" % (histTT.GetName()), prepend="  ")
+        else:
+            print warning("Could not renormalize TT: no TT sample!", prepend="  ")
+            return
+                
+        # INTEGRATE
+        I_MC = self.stack.GetStack().Last().Integral()
+        I_D  = self.histsD[0].Integral()
+        I_TT = histTT.Integral()
+        print ">>>   data: %.1f, MC: %.1f, TT: %.1f " % (I_D,I_MC,I_TT)
+        if I_MC < 10:
+            print warning("Could not renormalize TT: integral of MC is %s < 10!" % I_MC, prepend="  ")
+            return
+        if I_D < 10:
+            print warning("Could not renormalize TT: integral of data is %s < 10!" % I_D, prepend="  ")
+            return
+        if I_TT < 10:
+            print warning("Could not renormalize TT: integral of TT is %s < 10!" % I_TT, prepend="  ")
+            return
+        
+        # SET TT SCALE
+        scale = ( I_D - I_MC + I_TT ) / I_TT # renormalize TT such that #(MC) = #(data)
+        if scale < 0:
+            print warning("Could not renormalize TT: scale = %.2f < 0!" % scale, prepend="  ")
+            TT.scale = TT.scaleBU # use BU scale to overwrite previous renormalizations
+            return
+        TT.scale = TT.scaleBU * scale
+        print ">>>   TT renormalization scale = %.3f (new total scale = %.3f)" % (scale, TT.scale)
         
         
         
@@ -1424,10 +1173,14 @@ class Plot(object):
         stack           = self.stack
         graph_sigma     = TGraph(N)
         
-        # NORM
-        norm            = 1.0
-        if signal.GetSumOfWeights():
-            norm        = 5.0/signal.GetSumOfWeights() # signal yield renormalization
+        # CHECK SIGNAL SCALE
+        norm   = 1
+        for sample in samples:
+            if sample.isSignal and sample.scale:
+                norm = sample.scaleBU/sample.scale
+                break
+        #if signal.GetSumOfWeights():
+        #    norm        = 5.0/signal.GetSumOfWeights() # signal yield renormalization
         
         # TODO: CHECKS
         if not N: N = 40
@@ -1460,21 +1213,22 @@ class Plot(object):
         
         # DRAW
         W = 800; H  = 600
-        T = 0.08*H
-        B = 0.12*H
-        L = 0.12*W
-        R = 0.04*W
+        T = 0.080*H
+        B = 0.122*H
+        L = 0.120*W
+        R = 0.040*W
         canvas = makeCanvas(name="canvas_sigma", scaleleftmargin=1.1)
         canvas.cd()
         frame = canvas.DrawFrame(1.4,0.001, 4.1, 10)
         frame.SetMinimum(0)
         frame.SetMaximum(sigma_max*1.05)
         frame.GetXaxis().SetLimits(a0,b0)
-        frame.GetYaxis().SetTitleSize(0.05)
-        frame.GetXaxis().SetTitleSize(0.05)
-        frame.GetXaxis().SetLabelSize(0.04)
+        frame.GetXaxis().SetTitleSize(0.045)
+        frame.GetYaxis().SetTitleSize(0.050)
+        frame.GetXaxis().SetLabelSize(0.040)
         frame.GetYaxis().SetLabelSize(0.038)
-        frame.GetYaxis().SetTitleOffset(1.3)
+        frame.GetXaxis().SetTitleOffset(1.10)
+        frame.GetYaxis().SetTitleOffset(1.30)
         frame.GetYaxis().SetTitle("S/(1+#sqrt{B})")
         frame.GetXaxis().SetTitle("%s cut on %s" % ("lower" if lower else "upper", makeLatex(var)))
         graph_sigma.SetLineColor(colors[0])
@@ -1484,14 +1238,54 @@ class Plot(object):
         graph_sigma.SetLineStyle(1)
         graph_sigma.Draw('PL') #E0
         frame.Draw('sameaxis')
-        CMS_lumi.CMS_lumi(self.canvas,13,0)
         self.graph_sigma = graph_sigma
         self.canvas_sigma = canvas
         
+        # CMS LUMI        
+        #CMS_lumi.cmsTextSize  = 0.65
+        #CMS_lumi.lumiTextSize = 0.60
+        #CMS_lumi.relPosX = 0.105
+        CMS_lumi.CMS_lumi(self.canvas_sigma,13,0)
+        
         return
-        
-        
-        
+    
+
+    
+    def checkSignal(self,blindlimits=(),S_exp=0):
+        """Check signal bump, signal region, signal yield, ..."""
+        var = self.var
+        if len(blindlimits) is 2 and self.stack != None:
+            for signal in self.histsS:
+                (aa,bb) = blindlimits
+                mu      = signal.GetMean()
+                sd      = signal.GetStdDev()
+                N       = signal.GetEntries()
+                Sw      = signal.GetSumOfWeights()
+                S       = self.integrateHist(signal,aa,bb)
+                B       = self.integrateStack(aa,bb)
+                scale   = -1
+                upscale = -1
+                norm    = 1
+                for sample in self.samples:
+                    if sample.isSignal and sample.scaleBU:
+                        scale = sample.scale
+                        upscale = sample.scale/sample.scaleBU
+                        if upscale:
+                            S = S*sample.scaleBU/sample.scale
+                            Sw = Sw*sample.scaleBU/sample.scale
+                print ">>> " + color("%.1f expected signal events (sum of weights) and %i MC events"     % (Sw,N), color="grey")
+                print ">>> " + color("  signal mean = %.2f, sigma = %.2f, nBins = %d"                    % (mu,sd,self.nBins), color="grey")
+                print ">>> " + color("  total scale = %.4f, upscale = %.1f"                              % (scale,upscale), color="grey")
+                print ">>> " + color("  thus 1-sigma signal region should be [ %4.1f, %4.1f ]"           % (mu-1*sd,mu+1*sd), color="grey")
+                print ">>> " + color("  thus 2-sigma signal region should be [ %4.1f, %4.1f ]"           % (mu-2*sd,mu+2*sd), color="grey")
+                #print ">>> " + color("  %.1f expected signal events (%.1f%%) in signal region %s(%i,%i)" % (S,100*S/Sw,var,aa,bb), color="grey")
+                print ">>> " + color("  %4.1f total expected signal events compared to dimuon analysis"  % (S_exp), color="grey")
+                print ">>> " + color("  %4.1f (%.1f) expected signal events in signal region %s(%i,%i)"  % (S,S*283,var,aa,bb), color="grey")
+                print ">>> " + color("  %4.1f expected background events in signal region %s(%i,%i)"     % (B,var,aa,bb), color="grey")
+                if B:
+                    sigma = S_exp/(1+sqrt(B))
+                    print ">>> " + color("  %.2f expected significance in signal region %s(%i,%i)"          % (sigma,var,aa,bb), color="grey")
+        else: print warning("Could not check signal yield: \"len(blindlimits)==2\" = %s and \"plot.stack!=None\" = %s" % (len(blindlimits)==2,plot.stack!=None))
         
         
         
@@ -1562,6 +1356,7 @@ class Plot2D(object):
     def saveAs(self,filename):
         """Save plot, close canvas and delete the histograms."""
         
+        printSameLine("")
         self.canvas.SaveAs(filename)
         self.close()
     
@@ -1573,8 +1368,7 @@ class Plot2D(object):
         if self.canvas: self.canvas.Close()
         if self.hist:   gDirectory.Delete(self.hist.GetName())
         
-        
-        
-        
-        
-        
+
+
+from SampleTools import getSample
+

@@ -7,7 +7,7 @@ echo
 BASEDIR="/shome/$USER/analysis/SFrameAnalysis/BatchSubmission"
 cd $BASEDIR
 
-FILES=`ls Signal_*_Izaak.py Background_*_Izaak.py Data_*_Izaak.py | grep -v "_TES" | grep -v "_LTF"`
+FILES=`ls Signal_*_Izaak.py Background_*_Izaak.py Data_*_Izaak.py | grep -v "_TES" | grep -v "_EES" | grep -v "_LTF"`
 LABEL="postFix=\""
 LABEL1="postFix=\"_ICHEP\""
 LABEL2="postFix=\"_Summer2016\""
