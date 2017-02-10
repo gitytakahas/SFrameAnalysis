@@ -9,7 +9,7 @@ nProcesses=1
 nFiles=8
 hCPU="04:00:00"
 hVMEM="5000M"
-postFix="_Summer2016" #"_ICHEP" #"_Summer2016"
+postFix="_LTF0p97_Summer2016" #"_ICHEP" #"_Summer2016"
 dataSets = [
 
        ["DYJetsToLL_M-50_TuneCUETP8M1",
@@ -185,8 +185,8 @@ userItems = [
                 ["TESshift","0.00"],
                 ["doEES","false"],
                 ["EESshift","0.00"],
-                ["doLTF","false"],
-                ["LTFshift","0.00"],
+                ["doLTF","true"],
+                ["LTFshift","-0.03"],
                 ["doZpt","true"], # only to LO DY!
              ]
 

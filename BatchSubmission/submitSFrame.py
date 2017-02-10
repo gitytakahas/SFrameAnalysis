@@ -718,9 +718,9 @@ def main():
     os.system( "mkdir -p " + tempDirRoot )
     os.system( "mkdir -p " + tempDirSh )
   else:
-    tempDirLog=tempfile.mkdtemp(prefix="sframe_log_", dir=path2tmplog)
-    tempDirRoot=tempfile.mkdtemp(prefix="sframe_root_", dir=path2tmproot)
-    tempDirSh=tempfile.mkdtemp(prefix="sframe_sh_", dir=path2tmpsh)
+    tempDirLog=tempfile.mkdtemp(prefix="sframe_jobName_log_", dir=path2tmplog)
+    tempDirRoot=tempfile.mkdtemp(prefix="sframe_jobName_root_", dir=path2tmproot)
+    tempDirSh=tempfile.mkdtemp(prefix="sframe_jobName_sh_", dir=path2tmpsh)
 
   if (useSandbox):
     analysisDir = (path2sframe.rstrip("/")).rstrip("SFrame")
@@ -906,7 +906,7 @@ def main():
         submitOut = runProcess.stdout.read()
         runningJobs.append([submitOut.split(" ")[2], j[2]+j[3]])
       if not (iJobs%10):
-        print "job %d from %d: "%(iJobs,nJobs),
+        print "submitting job %d of %d: "%(iJobs,nJobs),
         while runningJobsLimit>0:
           #subProcess=subprocess.Popen('qstat -u $USER | awk \'{print $5}\' | grep r |wc -l' , stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
           #nRunning=int(subProcess.stdout.read())
