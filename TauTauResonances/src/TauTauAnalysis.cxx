@@ -687,6 +687,7 @@ void TauTauAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError )
     if (fabs(mymuon.eta()) > m_muonEtaCut) {continue;}
     if (fabs(mymuon.d0_allvertices()) > m_muonD0Cut) {continue;}
     if (fabs(mymuon.dz_allvertices()) > m_muonDzCut) {continue;}
+    //    if (mymuon.isMediumMuonGH() < 0.5) {continue;}
     if (mymuon.isMediumMuon() < 0.5) {continue;}
     //if (mymuon.SemileptonicPFIso() / mymuon.pt() > m_muonIsoCut) continue;
     
@@ -1932,6 +1933,7 @@ void TauTauAnalysis::extraLeptonVetos(const std::string& channel, const UZH::Muo
     if(mymuon.SemileptonicPFIso() / mymuon.pt() > 0.3) continue;
     
     // extra muon veto
+    //    if(mymuon.isMediumMuonGH() > 0.5){
     if(mymuon.isMediumMuon() > 0.5){
 	  if(mymuon.pt() != muon.pt() && mymuon.eta() != muon.eta() && mymuon.phi() != muon.phi())
 	    b_extramuon_veto_ = true;
@@ -2284,6 +2286,7 @@ void TauTauAnalysis::cutflowCheck(const std::string& ch){
     fillCutflow("lepton_"+ch, "histogram_"+ch, 1);
     
     // ID
+    //    if(muon.isMediumMuonGH() < 0.5)
     if(muon.isMediumMuon() < 0.5)
       goto next1;
     fillCutflow("lepton_"+ch, "histogram_"+ch, 2);
