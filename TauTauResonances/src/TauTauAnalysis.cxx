@@ -1815,8 +1815,8 @@ float TauTauAnalysis::genMatchSF(const std::string& channel, const int genmatch_
   // electron -> tau
   if      (genmatch_2 == 3) {
     if (channel=="mutau"){       // for VLoose
-        if      ( eta < 1.460 ) return 1.317; // UPDATE !!!
-        else if ( eta > 1.558 ) return 1.547; // UPDATE !!!
+        if      ( eta < 1.460 ) return 1; // UPDATE when available !!!
+        else if ( eta > 1.558 ) return 1; // UPDATE when available !!!
     }
     else if (channel=="eletau"){ // for Tight
         if      ( eta < 1.460 ) return 1.87;
@@ -1834,10 +1834,10 @@ float TauTauAnalysis::genMatchSF(const std::string& channel, const int genmatch_
     }
     else if (channel=="mutau"){  // for Tight
         if      ( eta < 0.4 ) return 1.425;
-        else if ( eta < 0.8 ) return 1.367;
-        else if ( eta < 1.2 ) return 1.251;
-        else if ( eta < 1.7 ) return 1.770;
-        else                  return 1.713;
+        else if ( eta < 0.8 ) return 1.720;
+        else if ( eta < 1.2 ) return 1.260;
+        else if ( eta < 1.7 ) return 2.590;
+        else                  return 2.290;
     }
   }
   // real tau
