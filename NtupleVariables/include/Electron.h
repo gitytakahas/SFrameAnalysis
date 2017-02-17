@@ -80,7 +80,6 @@ namespace UZH {
     int* m_isMediumElectronBoosted;
     int* m_isTightElectronBoosted;
     int* m_isHeepElectronBoosted;
-    int* m_isHeep51ElectronBoosted;
     int* m_isLooseElectronBoosted;
     floatingnumber* m_pfRhoCorrRelIso03Boost;
     floatingnumber* m_pfRhoCorrRelIso04Boost;
@@ -94,11 +93,10 @@ namespace UZH {
     int* m_isVetoElectron;
     int* m_isMediumElectron;
     int* m_isTightElectron;
+    int* m_isMVAMediumElectron;
+    int* m_isMVATightElectron;
     int* m_isHeepElectron;
-    int* m_isHeep51Electron;
     int* m_isLooseElectron;
-    int* m_nonTrigMVAID;
-    floatingnumber* m_nonTrigMVA;
     floatingnumber* m_pfRhoCorrRelIso03;
     floatingnumber* m_pfRhoCorrRelIso04;
     floatingnumber* m_pfDeltaCorrRelIso;
@@ -152,7 +150,6 @@ namespace UZH {
     int isMediumElectronBoosted() const { /*if(!m_ana->getConnectSucceeded(Ntuple::ElectronNtupleObject::kisMediumElectronBoosted)) std::cout<<"isMediumElectronBoosted not connected!"<<std::endl;*/ return *(m_isMediumElectronBoosted); } 
     int isTightElectronBoosted() const { /*if(!m_ana->getConnectSucceeded(Ntuple::ElectronNtupleObject::kisTightElectronBoosted)) std::cout<<"isTightElectronBoosted not connected!"<<std::endl;*/ return *(m_isTightElectronBoosted); } 
     int isHeepElectronBoosted() const { /*if(!m_ana->getConnectSucceeded(Ntuple::ElectronNtupleObject::kisHeepElectronBoosted)) std::cout<<"isHeepElectronBoosted not connected!"<<std::endl;*/ return *(m_isHeepElectronBoosted); } 
-    int isHeep51ElectronBoosted() const { /*if(!m_ana->getConnectSucceeded(Ntuple::ElectronNtupleObject::kisHeep51ElectronBoosted)) std::cout<<"isHeep51ElectronBoosted not connected!"<<std::endl;*/ return *(m_isHeep51ElectronBoosted); } 
     int isLooseElectronBoosted() const { /*if(!m_ana->getConnectSucceeded(Ntuple::ElectronNtupleObject::kisLooseElectronBoosted)) std::cout<<"isLooseElectronBoosted not connected!"<<std::endl;*/ return *(m_isLooseElectronBoosted); } 
     floatingnumber pfRhoCorrRelIso03Boost() const { /*if(!m_ana->getConnectSucceeded(Ntuple::ElectronNtupleObject::kpfRhoCorrRelIso03Boost)) std::cout<<"pfRhoCorrRelIso03Boost not connected!"<<std::endl;*/ return *(m_pfRhoCorrRelIso03Boost); } 
     floatingnumber pfRhoCorrRelIso04Boost() const { /*if(!m_ana->getConnectSucceeded(Ntuple::ElectronNtupleObject::kpfRhoCorrRelIso04Boost)) std::cout<<"pfRhoCorrRelIso04Boost not connected!"<<std::endl;*/ return *(m_pfRhoCorrRelIso04Boost); } 
@@ -166,11 +163,10 @@ namespace UZH {
     int isVetoElectron() const { /*if(!m_ana->getConnectSucceeded(Ntuple::ElectronNtupleObject::kisVetoElectron)) std::cout<<"isVetoElectron not connected!"<<std::endl;*/ return *(m_isVetoElectron); } 
     int isMediumElectron() const { /*if(!m_ana->getConnectSucceeded(Ntuple::ElectronNtupleObject::kisMediumElectron)) std::cout<<"isMediumElectron not connected!"<<std::endl;*/ return *(m_isMediumElectron); } 
     int isTightElectron() const { /*if(!m_ana->getConnectSucceeded(Ntuple::ElectronNtupleObject::kisTightElectron)) std::cout<<"isTightElectron not connected!"<<std::endl;*/ return *(m_isTightElectron); } 
+    int isMVAMediumElectron() const { /*if(!m_ana->getConnectSucceeded(Ntuple::ElectronNtupleObject::kisMVAMediumElectron)) std::cout<<"isMVAMediumElectron not connected!"<<std::endl;*/ return *(m_isMVAMediumElectron); } 
+    int isMVATightElectron() const { /*if(!m_ana->getConnectSucceeded(Ntuple::ElectronNtupleObject::kisMVATightElectron)) std::cout<<"isMVATightElectron not connected!"<<std::endl;*/ return *(m_isMVATightElectron); } 
     int isHeepElectron() const { /*if(!m_ana->getConnectSucceeded(Ntuple::ElectronNtupleObject::kisHeepElectron)) std::cout<<"isHeepElectron not connected!"<<std::endl;*/ return *(m_isHeepElectron); } 
-    int isHeep51Electron() const { /*if(!m_ana->getConnectSucceeded(Ntuple::ElectronNtupleObject::kisHeep51Electron)) std::cout<<"isHeep51Electron not connected!"<<std::endl;*/ return *(m_isHeep51Electron); } 
     int isLooseElectron() const { /*if(!m_ana->getConnectSucceeded(Ntuple::ElectronNtupleObject::kisLooseElectron)) std::cout<<"isLooseElectron not connected!"<<std::endl;*/ return *(m_isLooseElectron); } 
-    int nonTrigMVAID() const { /*if(!m_ana->getConnectSucceeded(Ntuple::ElectronNtupleObject::knonTrigMVAID)) std::cout<<"nonTrigMVAID not connected!"<<std::endl;*/ return *(m_nonTrigMVAID); } 
-    floatingnumber nonTrigMVA() const { /*if(!m_ana->getConnectSucceeded(Ntuple::ElectronNtupleObject::knonTrigMVA)) std::cout<<"nonTrigMVA not connected!"<<std::endl;*/ return *(m_nonTrigMVA); } 
     floatingnumber pfRhoCorrRelIso03() const { /*if(!m_ana->getConnectSucceeded(Ntuple::ElectronNtupleObject::kpfRhoCorrRelIso03)) std::cout<<"pfRhoCorrRelIso03 not connected!"<<std::endl;*/ return *(m_pfRhoCorrRelIso03); } 
     floatingnumber pfRhoCorrRelIso04() const { /*if(!m_ana->getConnectSucceeded(Ntuple::ElectronNtupleObject::kpfRhoCorrRelIso04)) std::cout<<"pfRhoCorrRelIso04 not connected!"<<std::endl;*/ return *(m_pfRhoCorrRelIso04); } 
     floatingnumber pfDeltaCorrRelIso() const { /*if(!m_ana->getConnectSucceeded(Ntuple::ElectronNtupleObject::kpfDeltaCorrRelIso)) std::cout<<"pfDeltaCorrRelIso not connected!"<<std::endl;*/ return *(m_pfDeltaCorrRelIso); } 
@@ -211,7 +207,6 @@ namespace UZH {
     void isMediumElectronBoosted( const int& val){ *(m_isMediumElectronBoosted)=val; } 
     void isTightElectronBoosted( const int& val){ *(m_isTightElectronBoosted)=val; } 
     void isHeepElectronBoosted( const int& val){ *(m_isHeepElectronBoosted)=val; } 
-    void isHeep51ElectronBoosted( const int& val){ *(m_isHeep51ElectronBoosted)=val; } 
     void isLooseElectronBoosted( const int& val){ *(m_isLooseElectronBoosted)=val; } 
     void pfRhoCorrRelIso03Boost( const floatingnumber& val){ *(m_pfRhoCorrRelIso03Boost)=val; } 
     void pfRhoCorrRelIso04Boost( const floatingnumber& val){ *(m_pfRhoCorrRelIso04Boost)=val; } 
@@ -225,11 +220,10 @@ namespace UZH {
     void isVetoElectron( const int& val){ *(m_isVetoElectron)=val; } 
     void isMediumElectron( const int& val){ *(m_isMediumElectron)=val; } 
     void isTightElectron( const int& val){ *(m_isTightElectron)=val; } 
+    void isMVAMediumElectron( const int& val){ *(m_isMVAMediumElectron)=val; } 
+    void isMVATightElectron( const int& val){ *(m_isMVATightElectron)=val; } 
     void isHeepElectron( const int& val){ *(m_isHeepElectron)=val; } 
-    void isHeep51Electron( const int& val){ *(m_isHeep51Electron)=val; } 
     void isLooseElectron( const int& val){ *(m_isLooseElectron)=val; } 
-    void nonTrigMVAID( const int& val){ *(m_nonTrigMVAID)=val; } 
-    void nonTrigMVA( const floatingnumber& val){ *(m_nonTrigMVA)=val; } 
     void pfRhoCorrRelIso03( const floatingnumber& val){ *(m_pfRhoCorrRelIso03)=val; } 
     void pfRhoCorrRelIso04( const floatingnumber& val){ *(m_pfRhoCorrRelIso04)=val; } 
     void pfDeltaCorrRelIso( const floatingnumber& val){ *(m_pfDeltaCorrRelIso)=val; } 

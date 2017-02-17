@@ -74,16 +74,15 @@ namespace Ntuple {
      kcorrPx=4, 
      kcorrPy=5, 
      ksignificance=6, 
-     kNmva=7, 
      ket=1, 
      kphi=2, 
-     kcov00=8, 
-     kcov10=9, 
-     kcov11=10, 
-     krecoil_pt=11, 
-     krecoil_eta=12, 
-     krecoil_phi=13, 
-     krecoil_pdgId=14, 
+     kcov00=7, 
+     kcov10=8, 
+     kcov11=9, 
+     krecoil_pt=10, 
+     krecoil_eta=11, 
+     krecoil_phi=12, 
+     krecoil_pdgId=13, 
  
       kEnd 
     }; 
@@ -98,7 +97,6 @@ namespace Ntuple {
     std::vector< floatingnumber >  *corrPx;
     std::vector< floatingnumber >  *corrPy;
     std::vector< floatingnumber >  *significance;
-    std::vector< int >  *Nmva;
     std::vector< floatingnumber >  *et;
     std::vector< floatingnumber >  *phi;
     std::vector< floatingnumber >  *cov00;
