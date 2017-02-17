@@ -93,7 +93,7 @@ TauTauAnalysis::TauTauAnalysis() : SCycleBase()
   DeclareProperty( "TauDzCut",              m_tauDzCut              = 0.2  );
 
   // ICHEP: https://hypernews.cern.ch/HyperNews/CMS/get/physics-validation/2689.html
-  DeclareProperty( "JSONName",              m_jsonName              = std::string (std::getenv("SFRAME_DIR")) + "/../GoodRunsLists/JSON/Cert_271036-276811_13TeV_PromptReco_Collisions16_JSON_ICHEP.txt" );
+  DeclareProperty( "JSONName",              m_jsonName              = std::string (std::getenv("SFRAME_DIR")) + "/../GoodRunsLists/JSON/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt" ); // Cert_271036-284044_13TeV_PromptReco_Collisions16_JSON.txt
   
 }
 
@@ -631,13 +631,13 @@ void TauTauAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError )
     fillCutflow("cutflow_" + ch, "histogram_" + ch, kBeforeCuts, 1);
     b_channel[ch] = 0;
   }
-//   if (m_isSignal){
-//     checks();
-//     visiblePTCheck();
-//     for (auto ch: channels_){
-//       cutflowCheck(ch);
-//     }
-//   }
+  // if (m_isSignal){
+  // checks();
+  // visiblePTCheck();
+  // for (auto ch: channels_){
+  //   cutflowCheck(ch);
+  // }
+  // }
   
   
   
