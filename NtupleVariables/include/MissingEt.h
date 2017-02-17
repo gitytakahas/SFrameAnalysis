@@ -52,7 +52,6 @@ namespace UZH {
     floatingnumber* m_corrPx;
     floatingnumber* m_corrPy;
     floatingnumber* m_significance;
-    int* m_Nmva;
     floatingnumber* m_et;
     floatingnumber* m_phi;
     floatingnumber* m_cov00;
@@ -74,7 +73,6 @@ namespace UZH {
     floatingnumber corrPx() const { /*if(!m_ana->getConnectSucceeded(Ntuple::MissingEtNtupleObject::kcorrPx)) std::cout<<"corrPx not connected!"<<std::endl;*/ return *(m_corrPx); } 
     floatingnumber corrPy() const { /*if(!m_ana->getConnectSucceeded(Ntuple::MissingEtNtupleObject::kcorrPy)) std::cout<<"corrPy not connected!"<<std::endl;*/ return *(m_corrPy); } 
     floatingnumber significance() const { /*if(!m_ana->getConnectSucceeded(Ntuple::MissingEtNtupleObject::ksignificance)) std::cout<<"significance not connected!"<<std::endl;*/ return *(m_significance); } 
-    int Nmva() const { /*if(!m_ana->getConnectSucceeded(Ntuple::MissingEtNtupleObject::kNmva)) std::cout<<"Nmva not connected!"<<std::endl;*/ return *(m_Nmva); } 
     floatingnumber et() const { /*if(!m_ana->getConnectSucceeded(Ntuple::MissingEtNtupleObject::ket)) std::cout<<"et not connected!"<<std::endl;*/ return *(m_et); } 
     floatingnumber phi() const { /*if(!m_ana->getConnectSucceeded(Ntuple::MissingEtNtupleObject::kphi)) std::cout<<"phi not connected!"<<std::endl;*/ return *(m_phi); } 
     floatingnumber cov00() const { /*if(!m_ana->getConnectSucceeded(Ntuple::MissingEtNtupleObject::kcov00)) std::cout<<"cov00 not connected!"<<std::endl;*/ return *(m_cov00); } 
@@ -89,7 +87,6 @@ namespace UZH {
     void corrPx( const floatingnumber& val){ *(m_corrPx)=val; } 
     void corrPy( const floatingnumber& val){ *(m_corrPy)=val; } 
     void significance( const floatingnumber& val){ *(m_significance)=val; } 
-    void Nmva( const int& val){ *(m_Nmva)=val; } 
     void et( const floatingnumber& val){ *(m_et)=val; } 
     void phi( const floatingnumber& val){ *(m_phi)=val; } 
     void cov00( const floatingnumber& val){ *(m_cov00)=val; } 
