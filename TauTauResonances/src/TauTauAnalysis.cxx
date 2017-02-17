@@ -1805,6 +1805,7 @@ bool TauTauAnalysis::LooseJetID(const UZH::Jet& jet)
 float TauTauAnalysis::genMatchSF(const std::string& channel, const int genmatch_2, const float tau_eta){
   //std::cout << "genMatchSF" << std::endl;
   // matching ID code:      https://twiki.cern.ch/twiki/bin/viewauth/CMS/HiggsToTauTauWorking2016#MC_Matching
+  //                        https://twiki.cern.ch/twiki/bin/view/CMS/TauIDRecommendation13TeVMoriond17#Muon_to_tau_fake_rate (Moriond)
   // tau reweighting:       old: https://indico.cern.ch/event/563239/contributions/2279020/attachments/1325496/1989607/lepTauFR_tauIDmeeting_20160822.pdf
   //                        new: https://indico.cern.ch/event/566825/contributions/2398691/attachments/1385164/2107478/HIG-16-043-preapproval-rehearsal.pdf#page=14
   // top pt reweighting:    https://twiki.cern.ch/twiki/bin/view/CMS/MSSMAHTauTauEarlyRun2#Top_quark_pT_reweighting
@@ -1814,34 +1815,34 @@ float TauTauAnalysis::genMatchSF(const std::string& channel, const int genmatch_
   // electron -> tau
   if      (genmatch_2 == 3) {
     if (channel=="mutau"){       // for VLoose
-        if      ( eta < 1.460 ) return 1.317;
-        else if ( eta > 1.558 ) return 1.547;
+        if      ( eta < 1.460 ) return 1.317; // UPDATE !!!
+        else if ( eta > 1.558 ) return 1.547; // UPDATE !!!
     }
     else if (channel=="eletau"){ // for Tight
-        if      ( eta < 1.460 ) return 1.486;
-        else if ( eta > 1.558 ) return 1.560;
+        if      ( eta < 1.460 ) return 1.87;
+        else if ( eta > 1.558 ) return 1.46;
     }
   }
   // muon -> tau        for Tight
   else if (genmatch_2 == 4) {
-    if (channel=="mutau"){       // for Tight
-        if      ( eta < 0.4 ) return 1.470;
+    if (channel=="eletau"){      // for Loose
+        if      ( eta < 0.4 ) return 1.154;
+        else if ( eta < 0.8 ) return 1.160;
+        else if ( eta < 1.2 ) return 1.210;
+        else if ( eta < 1.7 ) return 1.530;
+        else                  return 2.780;
+    }
+    else if (channel=="mutau"){  // for Tight
+        if      ( eta < 0.4 ) return 1.425;
         else if ( eta < 0.8 ) return 1.367;
         else if ( eta < 1.2 ) return 1.251;
         else if ( eta < 1.7 ) return 1.770;
         else                  return 1.713;
     }
-    else if (channel=="eletau"){ // for Loose
-        if      ( eta < 0.4 ) return 1.146;
-        else if ( eta < 0.8 ) return 1.084;
-        else if ( eta < 1.2 ) return 1.218;
-        else if ( eta < 1.7 ) return 1.490;
-        else                  return 2.008;
-    }
   }
   // real tau
   else if (genmatch_2 == 5) {
-    return 0.90;
+    return 0.95;
   }
   // real top
   else if (genmatch_2 == -36) {
@@ -1932,11 +1933,9 @@ void TauTauAnalysis::extraLeptonVetos(const std::string& channel, const UZH::Muo
     if(fabs(myelectron.d0_allvertices()) > 0.045) continue;
     if(myelectron.SemileptonicPFIso() / myelectron.pt() > 0.3) continue;
     if(!myelectron.isMVATightElectron()) continue; // Moriond
-//     if(!isNonTrigElectronID(myelectron)) continue; // ICHEP
     
     // extra electron veto
     if(myelectron.passConversionVeto() &&
-       //       isNonTrigElectronID(myelectron) &&
        myelectron.isMVATightElectron() && 
        myelectron.expectedMissingInnerHits() <= 1){
       if( myelectron.pt() != electron.pt() && myelectron.eta() != electron.eta() && myelectron.phi() != electron.phi())
@@ -1944,7 +1943,6 @@ void TauTauAnalysis::extraLeptonVetos(const std::string& channel, const UZH::Muo
     }
     
     // dilepton veto: match with other muons
-    //    if(myelectron.pt() > 15 && isNonTrigElectronID(myelectron))
     if(myelectron.pt() > 15 && myelectron.isMVATightElectron())
       passedElectrons.push_back(myelectron);
   }
@@ -2110,9 +2108,7 @@ void TauTauAnalysis::cutflowCheck(const std::string& ch){
 //  6: fake jet / PU
 // https://twiki.cern.ch/twiki/bin/viewauth/CMS/HiggsToTauTauWorking2016#MC_Matching
   
-  
   if( ch == "eletau" ) return;
-  
    
   // GET GEN PARTICLES
   int ntauh_18_2p3 = 0;
